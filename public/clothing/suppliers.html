@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wholesellers · Clothing CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/clothing.css">
+</head>
+<body data-page="suppliers">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Wholesellers</h2>
+                    <p>Kis wholeseller se maal aata hai aur kitna balance baaki hai</p>
+                </div>
+                <button class="btn btn-primary" onclick="App.addSupplier()"><i class="fas fa-plus"></i> Add Wholeseller</button>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3>Supplier List</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Wholeseller</th><th>Phone</th><th>GST</th><th class="num">Orders</th>
+                                <th class="num">Purchased</th><th class="num">Paid</th><th class="num">Balance</th>
+                                <th>Status</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suppliersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

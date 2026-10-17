@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales · Clothing CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/clothing.css">
+</head>
+<body data-page="sales">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Sales</h2>
+                    <p>Billing counter — bill banao, profit dekho</p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn btn-light" onclick="App.scanFor('sale')"><i class="fas fa-barcode"></i> Scan</button>
+                    <button class="btn btn-primary" onclick="App.openSale()"><i class="fas fa-cash-register"></i> New Sale</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-cash-register"></i></div>
+                    <div><div class="stat-value" id="saTotal">₹0</div><div class="stat-label">Total Sales</div></div></div>
+                <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-arrow-trend-up"></i></div>
+                    <div><div class="stat-value" id="saProfit">₹0</div><div class="stat-label">Gross Profit</div></div></div>
+                <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-receipt"></i></div>
+                    <div><div class="stat-value" id="saCount">0</div><div class="stat-label">Total Bills</div></div></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3>Sales History</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Bill</th><th>Customer</th><th>Items</th><th class="num">Amount</th><th class="num">Profit</th><th class="num">Margin</th><th>Mode</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="salesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

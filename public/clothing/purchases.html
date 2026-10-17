@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purchases · Clothing CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/clothing.css">
+</head>
+<body data-page="purchases">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Purchases</h2>
+                    <p>Kis wholeseller se kya maal aaya — stock in</p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn btn-light" onclick="App.scanFor('purchase')"><i class="fas fa-barcode"></i> Scan</button>
+                    <button class="btn btn-primary" onclick="App.openPurchase()"><i class="fas fa-plus"></i> New Purchase</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-cart-flatbed"></i></div>
+                    <div><div class="stat-value" id="puTotal">₹0</div><div class="stat-label">Total Purchased</div></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-circle-check"></i></div>
+                    <div><div class="stat-value" id="puPaid">₹0</div><div class="stat-label">Paid</div></div></div>
+                <div class="stat-card"><div class="stat-icon red"><i class="fas fa-hand-holding-dollar"></i></div>
+                    <div><div class="stat-value" id="puDue">₹0</div><div class="stat-label">Balance Due</div></div></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3>Purchase History</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Purchase</th><th>Wholeseller</th><th>Items</th>
+                                <th class="num">Total</th><th class="num">Paid</th><th class="num">Balance</th>
+                                <th>Status</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchasesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

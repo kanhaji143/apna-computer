@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff · Clothing CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/clothing.css">
+</head>
+<body data-page="staff">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Staff</h2>
+                    <p>Kaam karne wale log aur unki salary</p>
+                </div>
+                <button class="btn btn-primary" onclick="App.addStaff()"><i class="fas fa-plus"></i> Add Staff</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-users"></i></div>
+                    <div><div class="stat-value" id="stCount">0</div><div class="stat-label">Total Staff</div></div></div>
+                <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-money-check-dollar"></i></div>
+                    <div><div class="stat-value" id="stSalary">₹0</div><div class="stat-label">Monthly Salary</div></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-circle-check"></i></div>
+                    <div><div class="stat-value" id="stPaid">₹0</div><div class="stat-label">Salary Paid (total)</div></div></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3>Staff List</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Staff</th><th>Role</th><th>Join Date</th><th class="num">Salary</th><th class="num">Paid</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="staffBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3>Salary History</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>ID</th><th>Staff</th><th>Month</th><th>Date</th><th class="num">Amount</th></tr></thead>
+                        <tbody id="salaryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

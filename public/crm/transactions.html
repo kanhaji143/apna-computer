@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fee Receipts · Apna School CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/crm.css?v=11">
+</head>
+<body data-page="transactions">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Fee Receipts</h2>
+                    <p id="txnCount">Loading...</p>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span class="badge green" style="font-size:13px;padding:8px 14px">
+                        Total Collection: <span id="txnTotal">—</span>
+                    </span>
+                    <button class="btn btn-primary" onclick="CRM.openCollect()">
+                        <i class="fas fa-plus"></i> Collect Fee
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3>Fee Transactions</h3>
+                    <input type="text" class="form-control" style="width:260px"
+                           placeholder="Search receipt, student, fee head..."
+                           oninput="CRM.globalSearch(this.value)">
+                </div>
+                <div class="table-wrap">
+                    <table style="min-width:1500px">
+                        <thead>
+                            <tr>
+                                <th>Receipt No</th><th>Date</th><th>Adm No</th><th>Student</th><th>Class</th>
+                                <th>Month</th><th>Fee Head</th><th>Std Fee</th><th>Received</th><th>Discount</th>
+                                <th>Net Amount</th><th>Status</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="txnBody"></tbody>
+                    </table>
+                </div>
+                <div id="txnPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<script src="assets/crm.js?v=11"></script>
+</body>
+</html>

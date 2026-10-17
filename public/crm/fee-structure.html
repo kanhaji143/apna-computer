@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fee Structure · Apna School CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/crm.css?v=11">
+</head>
+<body data-page="feestructure">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Fee Structure</h2>
+                    <p>Class-wise fee chart &amp; head-wise rate master (Excel "Lists" sheet se)</p>
+                </div>
+                <button class="btn btn-primary" onclick="CRM.printFeeStructure()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+
+            <div class="stats-grid" id="fsStats"></div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3><i class="fas fa-table-list" style="color:var(--primary)"></i> Class-wise Fee Chart</h3>
+                </div>
+                <div class="table-wrap">
+                    <table style="min-width:1020px">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Admission</th>
+                                <th>Monthly</th>
+                                <th>Half-Yearly</th>
+                                <th>Annual</th>
+                                <th>Computer</th>
+                                <th>Session (Standard)</th>
+                                <th>Session (Discount ke baad)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fsMatrix"></tbody>
+                    </table>
+                </div>
+                <div class="card-body" style="font-size:12.5px;color:var(--muted);padding-top:0;border-top:none">
+                    <i class="fas fa-circle-info"></i>
+                    Session Total = Admission + Half-Yearly + Annual + (Monthly &times; 12). Transport Fee route ke hisaab se alag lagta hai.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3><i class="fas fa-layer-group" style="color:var(--warning)"></i> Class Detail</h3>
+                    <span style="font-size:12.5px;color:var(--muted)">Class chuno &rarr;</span>
+                </div>
+                <div class="card-body" style="padding-bottom:0">
+                    <div id="fsPills" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+                </div>
+                <div class="table-wrap">
+                    <table style="min-width:820px">
+                        <thead>
+                            <tr>
+                                <th>Fee Head</th>
+                                <th>Frequency</th>
+                                <th style="text-align:right">Standard Fee</th>
+                                <th style="text-align:right">Discount</th>
+                                <th style="text-align:right">Final Fee</th>
+                                <th style="text-align:right">Session Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fsDetailBody"></tbody>
+                        <tfoot id="fsDetailTotals" style="font-weight:700;background:#fafbfc"></tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3><i class="fas fa-rotate" style="color:var(--primary)"></i> Fee Head Frequency</h3>
+                </div>
+                <div class="table-wrap">
+                    <table style="min-width:460px">
+                        <thead><tr><th>Fee Head</th><th>Kab Lena Hai (Frequency)</th></tr></thead>
+                        <tbody id="fsFreqBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3><i class="fas fa-gear" style="color:var(--muted)"></i> System Configuration</h3>
+                </div>
+                <div class="card-body" id="fsConfig"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<script src="assets/crm.js?v=11"></script>
+</body>
+</html>

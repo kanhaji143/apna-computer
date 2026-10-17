@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profit / Loss · Clothing CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/clothing.css">
+</head>
+<body data-page="reports">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Profit / Loss</h2>
+                    <p>Business ka asli hisaab — kitna kamaya, kitna kharcha</p>
+                </div>
+                <button class="btn btn-light" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            </div>
+
+            <div class="stats-grid" id="rptStats"></div>
+
+            <div class="card">
+                <div class="card-head"><h3><i class="fas fa-calendar-days" style="color:var(--info)"></i> Monthly Report — Mahine ka hisaab</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th><th class="num">Bills</th><th class="num">Sales</th><th class="num">COGS</th>
+                                <th class="num">Gross Profit</th><th class="num">Purchases</th><th class="num">Expenses</th>
+                                <th class="num">Net Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthBody"></tbody>
+                    </table>
+                </div>
+                <div class="card-body" id="monthChart" style="border-top:1px solid var(--border)"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3><i class="fas fa-file-invoice-dollar" style="color:var(--primary)"></i> Profit &amp; Loss Statement</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Particulars</th><th class="num">Amount</th></tr></thead>
+                        <tbody id="plBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3><i class="fas fa-trophy" style="color:var(--warn)"></i> Top Products by Profit</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>#</th><th>Product</th><th class="num">Qty Sold</th><th class="num">Sales</th><th class="num">Profit</th></tr></thead>
+                        <tbody id="topBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><h3><i class="fas fa-truck-field" style="color:var(--danger)"></i> Wholeseller Payables (Balance)</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Wholeseller</th><th>City</th><th class="num">Purchased</th><th class="num">Paid</th><th class="num">Balance Due</th></tr></thead>
+                        <tbody id="payBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

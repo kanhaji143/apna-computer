@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fees · Apna School CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/crm.css?v=11">
+</head>
+<body data-page="fees">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Fees</h2>
+                    <p id="feesCount">Loading...</p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="CRM.whatsappFeeDue()" style="background:#25D366">
+                    <i class="fab fa-whatsapp"></i> Fee Due Alert
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3>Fee Register</h3>
+                    <input type="text" class="form-control" style="width:240px"
+                           placeholder="Search student..."
+                           oninput="CRM.globalSearch(this.value)">
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Adm No</th><th>Student</th><th>Class</th><th>Expected</th>
+                                <th>Collected</th><th>Outstanding</th><th>Status</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feesBody"></tbody>
+                    </table>
+                </div>
+                <div id="feesPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<script src="assets/crm.js?v=11"></script>
+</body>
+</html>
