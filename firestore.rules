@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// Apna Computer Ltd — Firestore Rules
+// Clothing CRM + School CRM (demo: public read/write)
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Clothing CRM ----
+    match /cl_products/{id}  { allow read, write: if true; }
+    match /cl_suppliers/{id} { allow read, write: if true; }
+    match /cl_purchases/{id} { allow read, write: if true; }
+    match /cl_sales/{id}     { allow read, write: if true; }
+    match /cl_expenses/{id}  { allow read, write: if true; }
+    match /cl_staff/{id}     { allow read, write: if true; }
+    match /cl_salary/{id}    { allow read, write: if true; }
+    match /cl_config/{id}    { allow read, write: if true; }
+
+    // ---- default: deny ----
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
