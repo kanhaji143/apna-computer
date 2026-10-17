@@ -1,0 +1,1460 @@
+{
+    "session":  "2026-27",
+    "frequency":  {
+                      "Admission Fee":  "One Time",
+                      "Monthly Fee":  "Monthly",
+                      "Quarterly Exam Fee":  "Quarterly",
+                      "Half-Yearly Exam Fee":  "Half-Yearly",
+                      "Annual Exam Fee":  "Annual",
+                      "Transport Fee":  "Monthly",
+                      "Computer Fee":  "As Required",
+                      "Library Fee":  "As Required",
+                      "Sports Fee":  "As Required",
+                      "Activity Fee":  "As Required",
+                      "Fine":  "As Required",
+                      "Old Due":  "As Required",
+                      "Other":  "As Required"
+                  },
+    "classes":  [
+                    {
+                        "class":  "PG",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2000,
+                                          "discount":  1000,
+                                          "final":  1000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  400,
+                                          "discount":  0,
+                                          "final":  400,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  200,
+                                          "discount":  0,
+                                          "final":  200,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  200,
+                                          "discount":  0,
+                                          "final":  200,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "LKG",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2000,
+                                          "discount":  1000,
+                                          "final":  1000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  450,
+                                          "discount":  0,
+                                          "final":  450,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  200,
+                                          "discount":  0,
+                                          "final":  200,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  200,
+                                          "discount":  0,
+                                          "final":  200,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "UKG",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2000,
+                                          "discount":  1000,
+                                          "final":  1000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  450,
+                                          "discount":  0,
+                                          "final":  450,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  200,
+                                          "discount":  0,
+                                          "final":  200,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  200,
+                                          "discount":  0,
+                                          "final":  200,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 1",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  500,
+                                          "discount":  0,
+                                          "final":  500,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 2",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  550,
+                                          "discount":  0,
+                                          "final":  550,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 3",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  550,
+                                          "discount":  0,
+                                          "final":  550,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 4",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  600,
+                                          "discount":  0,
+                                          "final":  600,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 5",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  600,
+                                          "discount":  0,
+                                          "final":  600,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 6",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  650,
+                                          "discount":  0,
+                                          "final":  650,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 7",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  700,
+                                          "discount":  0,
+                                          "final":  700,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 8",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  2500,
+                                          "discount":  1000,
+                                          "final":  1500,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  800,
+                                          "discount":  0,
+                                          "final":  800,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  300,
+                                          "discount":  0,
+                                          "final":  300,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 9",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  4000,
+                                          "discount":  1000,
+                                          "final":  3000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  1200,
+                                          "discount":  0,
+                                          "final":  1200,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 10",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  4000,
+                                          "discount":  1000,
+                                          "final":  3000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  1400,
+                                          "discount":  0,
+                                          "final":  1400,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 11",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  4000,
+                                          "discount":  1000,
+                                          "final":  3000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  2000,
+                                          "discount":  0,
+                                          "final":  2000,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  400,
+                                          "discount":  0,
+                                          "final":  400,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    },
+                    {
+                        "class":  "Class 12",
+                        "heads":  [
+                                      {
+                                          "head":  "Admission Fee",
+                                          "standard":  4000,
+                                          "discount":  1000,
+                                          "final":  3000,
+                                          "frequency":  "One Time"
+                                      },
+                                      {
+                                          "head":  "Monthly Fee",
+                                          "standard":  2200,
+                                          "discount":  0,
+                                          "final":  2200,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Quarterly Exam Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Quarterly"
+                                      },
+                                      {
+                                          "head":  "Half-Yearly Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Half-Yearly"
+                                      },
+                                      {
+                                          "head":  "Annual Exam Fee",
+                                          "standard":  1000,
+                                          "discount":  0,
+                                          "final":  1000,
+                                          "frequency":  "Annual"
+                                      },
+                                      {
+                                          "head":  "Transport Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "Monthly"
+                                      },
+                                      {
+                                          "head":  "Computer Fee",
+                                          "standard":  400,
+                                          "discount":  0,
+                                          "final":  400,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Library Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Sports Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Activity Fee",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Fine",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Old Due",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      },
+                                      {
+                                          "head":  "Other",
+                                          "standard":  0,
+                                          "discount":  0,
+                                          "final":  0,
+                                          "frequency":  "As Required"
+                                      }
+                                  ]
+                    }
+                ]
+}
