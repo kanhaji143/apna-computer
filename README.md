@@ -70,6 +70,25 @@ firebase login
 firebase deploy --only hosting
 ```
 
+## 🤝 Collaboration — code update kaise karein
+
+Collaborator (write access) ke liye 4 steps:
+
+```bash
+git pull                      # 1. Latest code lo
+# 2. Files edit karo (VS Code / koi bhi editor)
+git add .                     # 3. Changes add karo
+git commit -m "change ka naam"
+git push                      # 4. GitHub par bhejo
+```
+
+Deploy (live site par dikhane ke liye):
+
+```bash
+firebase login
+firebase deploy --only hosting
+```
+
 ## 🔒 Privacy note
 
 Student data (`crm-data.json`) is kept in this **private** repository on purpose —
