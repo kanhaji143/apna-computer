@@ -150,6 +150,11 @@
                     <span><b>टेक्स्ट से PDF <span class="en" style="font-size:10px;color:var(--light)">Text to PDF</span></b>
                     <span>लिखिए और सीधे PDF बनाकर सेव करें</span></span>
                 </button>
+                <button class="tool-card" data-tool="pdf2txt">
+                    <span class="ti"><i class="fas fa-align-left"></i></span>
+                    <span><b>PDF से टेक्स्ट <span class="en" style="font-size:10px;color:var(--light)">PDF to Text</span></b>
+                    <span>PDF का पूरा टेक्स्ट निकालकर सेव करें</span></span>
+                </button>
                 <button class="tool-card" data-tool="convert">
                     <span class="ti"><i class="fas fa-arrows-rotate"></i></span>
                     <span><b>इमेज कन्वर्टर <span class="en" style="font-size:10px;color:var(--light)">PNG / JPG / WebP</span></b>
@@ -617,6 +622,14 @@
                     '<input id="tPages" value="1" placeholder="1 / 1-3 / all"></div>' +
                     '<p class="small muted">हर पेज अलग JPG इमेज बनेगा और डाउनलोड हो जाएगा।</p>';
                 run.innerHTML = '<i class="fas fa-images"></i> JPG बनाएं';
+            } else if (type === 'pdf2txt') {
+                title.textContent = 'PDF से टेक्स्ट · PDF to Text';
+                body.innerHTML =
+                    '<div class="field" style="margin-bottom:10px"><label>PDF फाइल चुनें *</label><input type="file" id="tPdf" accept="application/pdf"></div>' +
+                    '<div class="field" style="margin-bottom:10px"><label>कौन से पेज? (जैसे <b>1</b>, <b>1-3</b> या <b>all</b>)</label>' +
+                    '<input id="tPages" value="all" placeholder="all / 1-3"></div>' +
+                    '<p class="small muted">टेक्स्ट आपके ब्राउज़र में ही निकलेगा — कोई फाइल कहीं अपलोड नहीं होगी।</p>';
+                run.innerHTML = '<i class="fas fa-file-lines"></i> टेक्स्ट निकालें';
             } else {
                 title.textContent = 'Tool';
                 body.innerHTML = '<p class="muted">यह टूल उपलब्ध नहीं है।</p>';
@@ -778,6 +791,119 @@
             reader.readAsArrayBuffer(file);
         }
 
+        /* ---------- PDF → Text ---------- */
+        /* pdf.js gives text items with x/y positions. We group items that sit on the
+           same baseline back into lines, and insert a blank line when the vertical
+           gap between two baselines is large (a paragraph break). This keeps the
+           extracted text readable instead of one long run-on string. */
+        function pdfPageToText(items) {
+            items = (items || []).filter(function (it) { return it && typeof it.str === 'string'; });
+            if (!items.length) return '';
+
+            var sameLineTolerance = 3;   // points; baselines this close = same line
+            var wordGap = 1.6;           // points; horizontal gap this big = space
+
+            var lines = [];
+            items.forEach(function (it) {
+                var y = it.transform[5];
+                var line = null;
+                for (var i = lines.length - 1; i >= 0 && i >= lines.length - 3; i--) {
+                    if (Math.abs(lines[i].y - y) <= sameLineTolerance) { line = lines[i]; break; }
+                }
+                if (!line) { line = { y: y, items: [] }; lines.push(line); }
+                line.items.push(it);
+            });
+
+            lines.sort(function (a, b) { return b.y - a.y; });
+
+            // Line spacing varies with font size, so a fixed paragraph threshold is
+            // wrong. Measure the typical gap between neighbouring lines and only
+            // break the paragraph when the gap is clearly larger than that.
+            var deltas = [];
+            for (var i = 1; i < lines.length; i++) {
+                var d = lines[i - 1].y - lines[i].y;
+                if (d > sameLineTolerance) deltas.push(d);
+            }
+            var paraGap = 12;
+            if (deltas.length) {
+                deltas.sort(function (a, b) { return a - b; });
+                paraGap = Math.max(deltas[Math.floor(deltas.length / 2)] * 1.9, 8);
+            }
+
+            var out = '', prevY = null;
+            lines.forEach(function (line) {
+                line.items.sort(function (a, b) { return a.transform[4] - b.transform[4]; });
+                var text = '', rightEdge = null;
+                line.items.forEach(function (it) {
+                    var left = it.transform[4], right = left + (it.width || 0);
+                    if (rightEdge !== null && left - rightEdge > wordGap) text += ' ';
+                    text += it.str;
+                    rightEdge = Math.max(rightEdge === null ? right : rightEdge, right);
+                });
+                text = text.replace(/\s+$/, '');
+                if (!text) return;
+                if (prevY !== null && prevY - line.y > paraGap) out += '\n\n';
+                else if (out) out += '\n';
+                out += text;
+                prevY = line.y;
+            });
+            return out;
+        }
+
+        function downloadText(text, name) {
+            downloadBlob(new Blob([text], { type: 'text/plain;charset=utf-8' }), name);
+        }
+
+        function pdfToText() {
+            var input = document.getElementById('tPdf');
+            var file = input && input.files && input.files[0];
+            if (!file) { U.toast('पहले PDF फाइल चुनें।'); return; }
+            if (!window.pdfjsLib) { U.toast('PDF लाइब्रेरी लोड नहीं हुई — इंटरनेट चेक करें।'); return; }
+
+            var run = document.getElementById('toolRun');
+            run.disabled = true;
+            run.innerHTML = '<i class="fas fa-spinner fa-spin"></i> टेक्स्ट निकल रहा है...';
+
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            var reader = new FileReader();
+            reader.onload = function () {
+                pdfjsLib.getDocument({ data: new Uint8Array(reader.result) }).promise.then(function (pdf) {
+                    var pages = parsePageSpec(document.getElementById('tPages').value, pdf.numPages);
+                    var chunks = [];
+                    var seq = Promise.resolve();
+                    pages.forEach(function (num) {
+                        seq = seq.then(function () {
+                            return pdf.getPage(num).then(function (page) {
+                                return page.getTextContent().then(function (tc) {
+                                    var t = pdfPageToText(tc.items);
+                                    if (t) chunks.push('--- पेज ' + num + ' ---\n' + t);
+                                });
+                            });
+                        });
+                    });
+                    return seq.then(function () {
+                        var text = chunks.join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+                        if (!text) { U.toast('इस PDF में टेक्स्ट नहीं मिला (स्कैन की हुई फोटो हो सकती है)।'); return; }
+                        downloadText(text, 'pdf-text-' + Date.now() + '.txt');
+                        U.toast('✅ ' + pages.length + ' पेज का टेक्स्ट डाउनलोड हो गया।');
+                    });
+                }).catch(function (err) {
+                    console.error(err);
+                    U.toast('PDF पढ़ी नहीं जा सकी — फाइल सही है?');
+                }).then(function () {
+                    run.disabled = false;
+                    run.innerHTML = '<i class="fas fa-file-lines"></i> टेक्स्ट निकालें';
+                });
+            };
+            reader.onerror = function () {
+                U.toast('फाइल पढ़ी नहीं जा सकी।');
+                run.disabled = false;
+                run.innerHTML = '<i class="fas fa-file-lines"></i> टेक्स्ट निकालें';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
         function downloadBlob(blob, name) {
             var a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -800,6 +926,8 @@
             if (!type) return;
 
             if (type === 'pdf2jpg') { pdfToJpg(); return; }
+
+            if (type === 'pdf2txt') { pdfToText(); return; }
 
             if (type === 'txt2pdf') {
                 var text = document.getElementById('tText').value.trim();
