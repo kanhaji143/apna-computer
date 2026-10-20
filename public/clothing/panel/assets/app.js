@@ -49,7 +49,7 @@
             };
             sb.innerHTML =
                 '<div class="sidebar-brand"><i class="fas ' + (B.logoIcon || 'fa-shirt') + '"></i>' +
-                '<div class="bt">' + CL.esc(B.name || 'Clothing CRM') + '<small>' + CL.esc(s.config.shopName || '') + '</small></div></div>' +
+                '<div class="bt">' + CL.esc(B.name || 'Apnivo Business') + '<small>' + CL.esc(s.config.shopName || '') + '</small></div></div>' +
                 '<div class="sidebar-section">Main Menu</div>' +
                 '<nav class="sidebar-nav">' + NAV.map(function (n) {
                     return '<a href="' + n.href + '" class="' + (n.id === p ? 'active' : '') + '">' +
@@ -834,7 +834,7 @@
             '.foot{margin-top:8px;font-size:10.5px;text-align:center}' +
             '@media print{body{width:auto}@page{margin:4mm}}' +
             '</style></head><body>' +
-            '<div class="c hd">' + CL.esc(cfg.shopName || 'Apna Clothing Store') + '</div>' +
+            '<div class="c hd">' + CL.esc(cfg.shopName || 'Apnivo Store') + '</div>' +
             '<div class="c sm">' + CL.esc(cfg.address || '') + '</div>' +
             '<div class="c sm">Ph: ' + CL.esc(cfg.phone || '') + '</div>' +
             '<div class="line"></div>' +

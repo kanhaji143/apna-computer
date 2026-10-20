@@ -144,7 +144,7 @@
             staff:     JSON.parse(JSON.stringify(SEED_STAFF)),
             salary:    [],
             config: {
-                shopName: 'Apna Clothing Store',
+                shopName: 'Apnivo Store',
                 owner: 'Krishna Kumar',
                 phone: '9876543210',
                 address: 'Amethi, Uttar Pradesh',
