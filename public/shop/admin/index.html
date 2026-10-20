@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="dashboard" data-title="Dashboard">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Namaste, <span id="helloName">Admin</span> 👋</h2><p>Aaj ke kaam ka quick overview.</p></div>
+                <div class="actions">
+                    <a class="btn btn-ghost btn-sm" href="/shop/admin/service-requests.html"><i class="fas fa-inbox"></i> Requests</a>
+                    <a class="btn btn-primary btn-sm" href="/shop/admin/transactions.html"><i class="fas fa-plus"></i> New Transaction</a>
+                </div>
+            </div>
+
+            <div class="kpis">
+                <div class="kpi green">
+                    <div class="kpi-label">Today's Collection</div>
+                    <div class="kpi-value" id="kToday">₹0</div>
+                    <div class="kpi-sub" id="kTodaySub">0 transactions</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-label">This Month</div>
+                    <div class="kpi-value" id="kMonth">₹0</div>
+                    <div class="kpi-sub" id="kMonthSub">gross collection</div>
+                </div>
+                <div class="kpi amber">
+                    <div class="kpi-label">Month Expenses</div>
+                    <div class="kpi-value" id="kExpense">₹0</div>
+                    <div class="kpi-sub" id="kNet">Net: ₹0</div>
+                </div>
+                <div class="kpi red">
+                    <div class="kpi-label">Pending Payments</div>
+                    <div class="kpi-value" id="kPending">₹0</div>
+                    <div class="kpi-sub" id="kPendingSub">0 customers</div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns:1.35fr 1fr;align-items:start">
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-chart-column" style="color:var(--brand-2)"></i> Last 7 Days Collection</h3></div>
+                    <div class="card-body">
+                        <div id="chart" style="display:flex;align-items:flex-end;gap:10px;height:170px;padding-top:10px"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-circle-exclamation" style="color:var(--red)"></i> Pending Payments</h3>
+                        <div class="actions"><a href="/shop/admin/payments-pending.html" class="btn btn-ghost btn-sm">All</a></div></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Customer</th><th class="t-right">Due</th><th></th></tr></thead>
+                            <tbody id="pendingBody"><tr><td colspan="3" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns:1.35fr 1fr;align-items:start;margin-top:16px">
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-receipt" style="color:var(--brand-2)"></i> Recent Transactions</h3>
+                        <div class="actions"><a href="/shop/admin/transactions.html" class="btn btn-ghost btn-sm">View all</a></div></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Receipt</th><th>Customer</th><th>Service</th><th class="t-right">Amount</th><th>Status</th></tr></thead>
+                            <tbody id="recentBody"><tr><td colspan="5" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-inbox" style="color:var(--accent)"></i> Service Requests</h3>
+                        <div class="actions"><a href="/shop/admin/service-requests.html" class="btn btn-ghost btn-sm">All</a></div></div>
+                    <div class="card-body" id="reqBox">
+                        <p class="small muted">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui;
+        var TX = [], EX = [], RQ = [];
+
+        function statusBadge(s) {
+            var map = { paid: 'b-paid', pending: 'b-pending', partial: 'b-partial' };
+            return '<span class="badge ' + (map[s] || 'badge grey') + '">' + U.esc(s || '—') + '</span>';
+        }
+
+        S.ready(function (ctx) {
+            document.getElementById('helloName').textContent = (ctx.user && ctx.user.name) || 'Admin';
+            load();
+        });
+
+        function load() {
+            Promise.all([S.all(S.coll.transactions), S.all(S.coll.expenses), S.all(S.coll.requests)])
+                .then(function (r) {
+                    TX = r[0]; EX = r[1]; RQ = r[2];
+                    render();
+                }).catch(function (e) {
+                    console.error(e);
+                    U.toast('Data load nahi hua.');
+                });
+        }
+
+        function render() {
+            var today = U.todayISO(), month = today.slice(0, 7);
+
+            var todayTx = TX.filter(function (t) { return t.transactionDate === today; });
+            var monthTx = TX.filter(function (t) { return String(t.transactionDate || '').slice(0, 7) === month; });
+            var monthExp = EX.filter(function (e) { return String(e.expenseDate || '').slice(0, 7) === month; });
+
+            var todayAmt = U.sum(todayTx, 'amountReceived');
+            var monthAmt = U.sum(monthTx, 'amountReceived');
+            var expAmt = U.sum(monthExp, 'amount');
+            var pendingRows = TX.filter(function (t) {
+                return U.num(t.totalAmount) - U.num(t.amountReceived) > 0;
+            });
+            var pendingAmt = pendingRows.reduce(function (s, t) {
+                return s + Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived));
+            }, 0);
+
+            document.getElementById('kToday').textContent = U.money(todayAmt);
+            document.getElementById('kTodaySub').textContent = todayTx.length + ' transactions';
+            document.getElementById('kMonth').textContent = U.money(monthAmt);
+            document.getElementById('kExpense').textContent = U.money(expAmt);
+            document.getElementById('kNet').textContent = 'Net: ' + U.money(monthAmt - expAmt);
+            document.getElementById('kPending').textContent = U.money(pendingAmt);
+            document.getElementById('kPendingSub').textContent = pendingRows.length + ' customers';
+
+            // chart
+            var days = [];
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date(); d.setDate(d.getDate() - i);
+                var iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                var amt = TX.filter(function (t) { return t.transactionDate === iso; })
+                    .reduce(function (s, t) { return s + U.num(t.amountReceived); }, 0);
+                days.push({ label: d.toLocaleDateString('en-IN', { weekday: 'short' }), amt: amt });
+            }
+            var max = Math.max.apply(null, days.map(function (d) { return d.amt; }).concat([1]));
+            document.getElementById('chart').innerHTML = days.map(function (d) {
+                var h = Math.max(4, Math.round(d.amt / max * 130));
+                return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">' +
+                    '<span style="font-size:10px;color:var(--light)">' + (d.amt ? '₹' + d.amt.toLocaleString('en-IN') : '') + '</span>' +
+                    '<div style="width:100%;height:' + h + 'px;background:linear-gradient(180deg,#3b82f6,#1e40af);border-radius:6px 6px 3px 3px"></div>' +
+                    '<span style="font-size:10.5px;color:var(--mid)">' + d.label + '</span></div>';
+            }).join('');
+
+            // pending table
+            var pb = document.getElementById('pendingBody');
+            var top = pendingRows.sort(U.byDateDesc('transactionDate')).slice(0, 6);
+            pb.innerHTML = top.length ? top.map(function (t) {
+                var due = Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived));
+                return '<tr><td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.mobile || '') + '</span></td>' +
+                    '<td class="t-right amount red">' + U.money(due) + '</td>' +
+                    '<td class="t-right"><a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" href="' +
+                    U.waLink(t.mobile, 'Namaste ' + t.customerName + ', aapka ' + U.money(due) + ' payment pending hai. — Apna Online Center') +
+                    '" title="WhatsApp reminder"><i class="fab fa-whatsapp" style="color:#25D366"></i></a></td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">Koi pending payment nahi 🎉</td></tr>';
+
+            // recent
+            var rb = document.getElementById('recentBody');
+            var rec = TX.slice().sort(U.byDateDesc('transactionDate')).slice(0, 7);
+            rb.innerHTML = rec.length ? rec.map(function (t) {
+                return '<tr><td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b><span class="subtle">' + U.fmtDate(t.transactionDate) + '</span></td>' +
+                    '<td>' + U.esc(t.customerName) + '</td><td class="small muted">' + U.esc(t.service) + '</td>' +
+                    '<td class="t-right amount">' + U.money(t.totalAmount) + '</td><td>' + statusBadge(t.paymentStatus) + '</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">Abhi koi transaction nahi.</td></tr>';
+
+            // requests
+            var open = RQ.filter(function (r) { return r.status !== 'completed' && r.status !== 'rejected'; })
+                .sort(U.byDateDesc('createdAt')).slice(0, 4);
+            document.getElementById('reqBox').innerHTML = open.length ? open.map(function (r) {
+                return '<div style="padding:10px 0;border-bottom:1px solid #f1f5f9">' +
+                    '<div style="display:flex;gap:8px;align-items:center"><b style="font-size:12.5px">' + U.esc(r.customerName) + '</b>' +
+                    '<span class="badge blue" style="margin-left:auto">' + U.esc(String(r.status || '').replace(/_/g, ' ')) + '</span></div>' +
+                    '<div class="subtle">' + U.esc(r.serviceName) + ' · ' + U.esc(r.mobile) + '</div></div>';
+            }).join('') : '<p class="small muted">Koi open request nahi.</p>';
+        }
+    })();
+    </script>
+</body>
+</html>

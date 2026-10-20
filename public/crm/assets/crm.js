@@ -16,6 +16,10 @@
     const NAV = [
         { id: 'dashboard',    label: 'Dashboard',     icon: 'fa-gauge-high',         href: 'index.html' },
         { id: 'students',     label: 'Students',      icon: 'fa-user-graduate',      href: 'students.html' },
+        { id: 'attendance',   label: 'Attendance',    icon: 'fa-calendar-check',     href: 'attendance.html' },
+        { id: 'exams',        label: 'Exams & Results', icon: 'fa-file-pen',         href: 'exams.html' },
+        { id: 'idcard',       label: 'ID Cards',      icon: 'fa-id-card',            href: 'id-card.html' },
+        { id: 'parentview',   label: 'Parent View',   icon: 'fa-users',              href: 'parent-view.html' },
         { id: 'employees',    label: 'Employees',     icon: 'fa-chalkboard-user',    href: 'employees.html' },
         { id: 'transport',    label: 'Transport',     icon: 'fa-bus',                href: 'transport.html' },
         { id: 'fees',         label: 'Fees',          icon: 'fa-indian-rupee-sign',  href: 'fees.html' },
@@ -143,9 +147,22 @@
         var saved = null;
         try { saved = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) { saved = null; }
         if (saved && saved.students) { return Promise.resolve(saved); }
+        // Firestore pehle (sab devices pe same data), fail ho to empty store
+        if (window.SFB && SFB.ready) {
+            return SFB.loadStore().catch(function (e) {
+                console.warn('[CRM] Firestore load failed:', e.message);
+                return { students: [], employees: [], transport: [], previousDues: [],
+                         expenses: [], feeRegister: [], feeTransactions: [] };
+            });
+        }
         return fetch(DATA_URL).then(function (r) { return r.json(); });
     }
     function loadStruct() {
+        if (window.SFB && SFB.ready) {
+            return SFB.loadStruct()
+                .then(function (d) { feeStruct = d; return d; })
+                .catch(function () { feeStruct = { session: '', frequency: {}, classes: [] }; return feeStruct; });
+        }
         return fetch(STRUCT_URL).then(function (r) { return r.json(); })
             .then(function (d) { feeStruct = d; return d; })
             .catch(function () { feeStruct = { session: '', frequency: {}, classes: [] }; return feeStruct; });
@@ -174,17 +191,34 @@
         el._t = setTimeout(function () { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; }, 2600);
     }
 
+    function navForRole(role) {
+        role = String(role || 'owner').toLowerCase();
+        var all = NAV.slice();
+        if (role === 'owner' || role === 'administrator' || role === 'admin') return all;
+        if (role === 'cashier') {
+            var allow = ['dashboard','students','idcard','parentview','fees','transactions','dues','expenses','reports'];
+            return all.filter(function (n) { return allow.indexOf(n.id) > -1; });
+        }
+        if (role === 'teacher') {
+            var allow = ['dashboard','students','attendance','exams','idcard'];
+            return all.filter(function (n) { return allow.indexOf(n.id) > -1; });
+        }
+        return all;
+    }
+
     /* ---------- SHELL ---------- */
     function renderShell() {
         var page = document.body.getAttribute('data-page');
         var sidebar = document.getElementById('sidebar');
         var topbar = document.getElementById('topbar');
         var user = getUser();
-        var cur = NAV.filter(function (n) { return n.id === page; })[0];
+        var role = user ? (user.role || 'owner') : 'owner';
+        var nav = navForRole(role);
+        var cur = nav.filter(function (n) { return n.id === page; })[0];
         var title = cur ? cur.label : 'Dashboard';
 
         if (sidebar) {
-            var links = NAV.map(function (n) {
+            var links = nav.map(function (n) {
                 return '<a href="' + n.href + '" class="' + (n.id === page ? 'active' : '') + '">' +
                        '<i class="fas ' + n.icon + '"></i><span>' + n.label + '</span></a>';
             }).join('');
@@ -1130,6 +1164,12 @@
                 '<td>' + esc(d['Remarks']) + '</td>' +
                 '<td style="white-space:nowrap">' +
                     '<button class="btn btn-icon" title="Student Ledger" onclick="CRM.openLedger(\'' + esc(d['Admission No']) + '\')"><i class="fas fa-eye"></i></button>' +
+                    '<a class="btn btn-icon" target="_blank" rel="noopener" title="WhatsApp reminder" href="' + (function () {
+                        var st = studentByAdm(d['Admission No']) || {};
+                        var mob = st['Mobile'] || '';
+                        var msg = 'Namaste, ' + (d['Student Name'] || '') + ' ka ' + money(d['Balance']) + ' previous dues pending hai. Kripya jald payment karein. — Apna School';
+                        return mob ? 'https://wa.me/91' + String(mob).replace(/[^0-9]/g, '').replace(/^91/, '') + '?text=' + encodeURIComponent(msg) : '#';
+                    })() + '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
                 '</td></tr>';
         }).join('') || '<tr><td colspan="10"><div class="empty"><i class="fas fa-clock-rotate-left"></i>No previous dues</div></td></tr>';
 
@@ -1631,9 +1671,10 @@
             e.preventDefault();
             var email = document.getElementById('loginEmail').value.trim();
             var pass = document.getElementById('loginPassword').value;
+            var role = (document.getElementById('loginRole') || {}).value || 'owner';
             if (!email || !pass) { toast('Enter email and password'); return; }
             var name = email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-            setUser({ name: name, email: email, role: 'Administrator' });
+            setUser({ name: name, email: email, role: role });
             location.href = 'index.html';
         });
     }

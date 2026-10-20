@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body data-page="login">
+
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-head">
+                <div class="login-logo">A</div>
+                <h1>Apna Online Center</h1>
+                <p>Staff / Admin Panel</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="field" style="margin-bottom:12px">
+                    <label>Email</label>
+                    <input id="email" type="email" value="admin@apna.com" required autocomplete="username">
+                </div>
+                <div class="field" style="margin-bottom:12px">
+                    <label>Password</label>
+                    <input id="password" type="password" value="admin123" required autocomplete="current-password">
+                </div>
+                <div class="field" style="margin-bottom:16px">
+                    <label>Login As</label>
+                    <select id="role">
+                        <option value="Admin">Admin (full access)</option>
+                        <option value="Cashier">Cashier / Staff</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit" style="width:100%;padding:11px"><i class="fas fa-right-to-bracket"></i> Login</button>
+                <p class="login-note">Demo login — koi bhi email/password chalega.</p>
+            </form>
+
+            <a href="/shop/" class="login-back"><i class="fas fa-arrow-left"></i> Back to website</a>
+            <a href="/" class="login-back" style="margin-top:6px;color:var(--light)"><i class="fas fa-layer-group"></i> Apna Computer Hub</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP;
+        var next = S.ui.qs('next') || '/shop/admin/';
+        if (S.auth.user()) location.replace(next);
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var email = document.getElementById('email').value.trim();
+            var pass = document.getElementById('password').value;
+            var role = document.getElementById('role').value;
+            if (!email || !pass) { S.ui.toast('Email aur password bharein.'); return; }
+            S.auth.login(email, pass, role);
+            S.ui.toast('Login successful');
+            location.href = next;
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart · Apna Clothing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/store.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner"><span>Free shipping above ₹999</span><span class="sp"></span><a href="orders.html">My Orders</a><a href="../panel/login.html">Seller Login</a></div></div>
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="brand"><span class="logo">A</span> Apna Clothing</a>
+    <form class="search" onsubmit="doSearch(event)"><i class="fas fa-magnifying-glass" style="color:var(--light)"></i><input id="q" placeholder="Search..."><button type="submit">Search</button></form>
+    <nav class="nav"><a href="products.html">Shop</a><a href="wishlist.html" style="position:relative"><i class="fas fa-heart" style="font-size:18px;color:var(--red,#dc2626)"></i><span class="wish-badge" style="display:none">0</span></a><a href="cart.html" class="cart"><i class="fas fa-bag-shopping" style="font-size:18px"></i><span class="cart-badge" style="display:none">0</span></a></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 style="font-size:24px;font-weight:900;letter-spacing:-.5px;margin:24px 0 16px">Your Cart</h1>
+  <div class="cart" id="cartArea"></div>
+</div>
+
+<footer class="footer"><div class="wrap"><div class="bottom"><span>© 2026 Apna Clothing</span></div></div></footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/store.js"></script>
+<script>
+function doSearch(e) { e.preventDefault(); var q = document.getElementById('q').value.trim(); location.href = 'products.html?q=' + encodeURIComponent(q); }
+function iconFor(cat) { var m = { Jeans:'fa-jeans', Shirt:'fa-shirt', Saree:'fa-person-dress', Kurti:'fa-vest', Jacket:'fa-vest-patches' }; return m[cat] || 'fa-tag'; }
+function renderCart() {
+  var cart = StoreAPI.getCart();
+  var area = document.getElementById('cartArea');
+  if (!cart.length) { area.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px"><i class="fas fa-bag-shopping" style="font-size:48px;color:#cbd5e1"></i><h2 style="margin-top:12px;font-size:20px">Your cart is empty</h2><p class="small muted" style="margin:6px 0 16px">Add some products to get started.</p><a href="products.html" class="btn btn-primary">Start Shopping</a></div>'; StoreAPI.renderShell(); return; }
+  var itemsHtml = '<div>';
+  cart.forEach(function (i, idx) {
+    var p = StoreAPI.findProduct(i.productId);
+    if (!p) return;
+    itemsHtml += '<div class="cart-item"><div class="img">' + (p.imageUrl ? '<img src="' + p.imageUrl + '" alt="">' : '<i class="fas ' + iconFor(p.category) + '"></i>') + '</div>' +
+      '<div class="info"><b>' + p.name + '</b><small>' + (p.category||'') + (i.size ? ' · Size ' + i.size : '') + (i.color ? ' · ' + i.color : '') + '</small>' +
+      '<div class="qty"><button onclick="chg(' + idx + ',-1)">-</button><span>' + i.qty + '</span><button onclick="chg(' + idx + ',1)">+</button></div>' +
+      '<span class="remove" onclick="rem(' + idx + ')"><i class="fas fa-trash"></i> Remove</span></div>' +
+      '<div class="price">' + StoreAPI.money(p.sale * i.qty) + '</div></div>';
+  });
+  itemsHtml += '</div>';
+  var total = StoreAPI.cartTotal();
+  var shipping = total >= 999 ? 0 : 99;
+  var grand = total + shipping;
+  var summaryHtml = '<div class="summary"><h3>Order Summary</h3>' +
+    '<div class="row"><span>Subtotal (' + cart.length + ' items)</span><span>' + StoreAPI.money(total) + '</span></div>' +
+    '<div class="row"><span>Shipping</span><span>' + (shipping ? StoreAPI.money(shipping) : 'FREE') + '</span></div>' +
+    '<div class="row total"><span>Total</span><span>' + StoreAPI.money(grand) + '</span></div>' +
+    '<a href="checkout.html" class="btn btn-primary">Proceed to Checkout</a>' +
+    '<p class="small muted" style="margin-top:10px;text-align:center">Free shipping on orders above ₹999</p></div>';
+  area.innerHTML = itemsHtml + summaryHtml;
+  StoreAPI.renderShell();
+}
+function chg(idx, d) { var cart = StoreAPI.getCart(); if (cart[idx]) { cart[idx].qty = Math.max(1, cart[idx].qty + d); StoreAPI.saveCart(cart); renderCart(); } }
+function rem(idx) { StoreAPI.removeFromCart(idx); renderCart(); }
+document.addEventListener('DOMContentLoaded', function () {
+  StoreAPI.loadProducts().then(function () { StoreAPI.renderShell(); renderCart(); });
+});
+</script>
+</body>
+</html>

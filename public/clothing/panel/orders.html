@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketplace Orders · Clothing CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/clothing.css">
+</head>
+<body data-page="orders">
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div><h2>Marketplace Orders</h2><p id="info">Customer orders from storefront</p></div>
+                <button class="btn btn-light btn-sm" onclick="ORD.load()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th class="num">Total</th><th>Payment</th><th>Status</th><th class="t-right">Actions</th></tr></thead>
+                        <tbody id="body"><tr><td colspan="7" class="empty-row">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalHost"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function () {
+    'use strict';
+    var FB = window.FB;
+    var db = null;
+    var orders = [];
+    var ORD = {};
+
+    function init() { if (typeof firebase !== 'undefined' && !firebase.apps.length) firebase.initializeApp(FB.config); db = firebase.firestore(); }
+
+    function money(n) { return '\u20B9' + Number(n || 0).toLocaleString('en-IN'); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function badge(s) {
+        var m = { placed: 'badge blue', confirmed: 'badge amber', shipped: 'badge amber', delivered: 'badge green', cancelled: 'badge grey' };
+        return '<span class="badge ' + (m[s] || 'badge grey') + '">' + esc(String(s || '').replace(/_/g, ' ')) + '</span>';
+    }
+
+    ORD.load = function () {
+        if (!db) { init(); }
+        db.collection('cl_orders').get().then(function (snap) {
+            orders = [];
+            snap.forEach(function (d) { orders.push(Object.assign({ id: d.id }, d.data())); });
+            orders.sort(function (a, b) { return String(b.createdAt || '').localeCompare(String(a.createdAt || '')); });
+            render();
+        }).catch(function (e) { console.error(e); });
+    };
+
+    function render() {
+        var b = document.getElementById('body');
+        if (!orders.length) { b.innerHTML = '<tr><td colspan="7" class="empty-row">No orders yet.</td></tr>'; return; }
+        b.innerHTML = orders.map(function (o) {
+            var items = (o.items || []).map(function (i) { return esc(i.name) + ' ×' + i.qty; }).join(', ');
+            return '<tr>' +
+                '<td><b style="font-size:11.5px">' + esc(o.orderId) + '</b><span class="subtle">' + esc((o.createdAt || '').slice(0, 10)) + '</span></td>' +
+                '<td><b>' + esc(o.customer && o.customer.name) + '</b><span class="subtle">' + esc(o.customer && o.customer.mobile) + '</span></td>' +
+                '<td class="small muted" style="max-width:240px">' + items + '</td>' +
+                '<td class="num">' + money(o.total) + '</td>' +
+                '<td class="small">' + esc(o.paymentMode) + '</td>' +
+                '<td>' + badge(o.status) + '</td>' +
+                '<td class="t-right"><select onchange="ORD.setStatus(\'' + esc(o.id) + '\', this.value)" style="padding:4px 6px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px">' +
+                    ['placed','confirmed','shipped','delivered','cancelled'].map(function (s) { return '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
+                '</select></td></tr>';
+        }).join('');
+    }
+
+    ORD.setStatus = function (id, status) {
+        db.collection('cl_orders').doc(id).set({ status: status, updatedAt: new Date().toISOString() }, { merge: true })
+            .then(function () { ORD.load(); })
+            .catch(function (e) { console.error(e); });
+    };
+
+    window.ORD = ORD;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!window.App) return;
+        // reuse app shell? app.js has its own shell. Just init firebase + load.
+        init();
+        ORD.load();
+    });
+})();
+</script>
+</body>
+</html>

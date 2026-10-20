@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="payments-history" data-title="Payment History">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Payment History</h2><p id="info">—</p></div>
+                <div class="actions"><button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button></div>
+            </div>
+
+            <div class="filters">
+                <input class="grow" id="search" placeholder="🔍 Customer, mobile ya receipt...">
+                <select id="method">
+                    <option value="">All methods</option><option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank">Bank</option>
+                </select>
+                <input type="date" id="from" title="From date">
+                <input type="date" id="to" title="To date">
+                <button class="btn btn-ghost btn-sm" id="clearBtn"><i class="fas fa-rotate-left"></i> Clear</button>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Receipt</th><th>Date</th><th>Customer</th><th>Service</th><th>Method</th><th class="t-right">Received</th><th>Status</th><th></th></tr></thead>
+                        <tbody id="body"><tr><td colspan="8" class="empty-row">Loading...</td></tr></tbody>
+                        <tfoot id="foot"></tfoot>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="printArea" class="hidden"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, rows = [], cfg = {};
+
+        ['search', 'method', 'from', 'to'].forEach(function (id) {
+            document.getElementById(id).addEventListener('input', render);
+        });
+
+        S.ready(function (ctx) {
+            cfg = ctx.config;
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            document.getElementById('clearBtn').addEventListener('click', function () {
+                ['search', 'method', 'from', 'to'].forEach(function (id) { document.getElementById(id).value = ''; });
+                render();
+            });
+            load();
+        });
+
+        function load() {
+            S.all(S.coll.transactions).then(function (r) {
+                rows = r.filter(function (t) { return U.num(t.amountReceived) > 0; }).sort(U.byDateDesc('transactionDate'));
+                render();
+            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function filtered() {
+            var q = document.getElementById('search').value.trim().toLowerCase();
+            var m = document.getElementById('method').value;
+            var from = document.getElementById('from').value;
+            var to = document.getElementById('to').value;
+            return rows.filter(function (t) {
+                if (m && (t.paymentMethod || 'cash') !== m) return false;
+                if (from && String(t.transactionDate) < from) return false;
+                if (to && String(t.transactionDate) > to) return false;
+                if (q && [t.customerName, t.mobile, t.receiptNumber, t.service].join(' ').toLowerCase().indexOf(q) < 0) return false;
+                return true;
+            });
+        }
+
+        function render() {
+            var list = filtered();
+            document.getElementById('info').textContent = list.length + ' payments · ' + U.money(U.sum(list, 'amountReceived'));
+            var b = document.getElementById('body');
+            b.innerHTML = list.length ? list.map(function (t) {
+                return '<tr>' +
+                    '<td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b></td>' +
+                    '<td class="t-nowrap small">' + U.fmtDate(t.transactionDate) + '</td>' +
+                    '<td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.mobile || '') + '</span></td>' +
+                    '<td class="small muted">' + U.esc(t.service) + '</td>' +
+                    '<td><span class="badge grey">' + U.esc(t.paymentMethod || 'cash') + '</span></td>' +
+                    '<td class="t-right amount green">' + U.money(t.amountReceived) + '</td>' +
+                    '<td><span class="badge ' + (t.paymentStatus === 'paid' ? 'b-paid' : 'b-partial') + '">' + U.esc(t.paymentStatus || 'paid') + '</span></td>' +
+                    '<td class="t-right"><button class="btn btn-ghost btn-sm btn-icon" data-print="' + t.id + '" title="Print receipt"><i class="fas fa-print"></i></button></td>' +
+                    '</tr>';
+            }).join('') : '<tr><td colspan="8" class="empty-row">Koi payment nahi mili.</td></tr>';
+
+            document.getElementById('foot').innerHTML = list.length ?
+                '<tr style="background:#f8fafc"><td colspan="5" style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL (' + list.length + ')</td>' +
+                '<td class="t-right amount green">' + U.money(U.sum(list, 'amountReceived')) + '</td><td colspan="2"></td></tr>' : '';
+
+            b.querySelectorAll('[data-print]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var t = rows.filter(function (x) { return x.id === btn.getAttribute('data-print'); })[0];
+                    printReceipt(t);
+                });
+            });
+        }
+
+        function printReceipt(t) {
+            var d = Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived));
+            document.getElementById('printArea').innerHTML =
+                '<div style="font-family:Inter,Arial,sans-serif;max-width:340px;margin:0 auto;color:#111">' +
+                '<div style="text-align:center;border-bottom:2px dashed #999;padding-bottom:10px;margin-bottom:10px">' +
+                '<h2 style="margin:0;font-size:18px">' + U.esc(cfg.shopName) + '</h2>' +
+                '<div style="font-size:11px;color:#555">' + U.esc(cfg.address) + '</div>' +
+                '<div style="font-size:11px;color:#555">' + U.esc(cfg.phone) + '</div></div>' +
+                '<div style="font-size:12px;display:flex;justify-content:space-between"><span>Receipt: <b>' + U.esc(t.receiptNumber || '—') + '</b></span><span>' + U.fmtDate(t.transactionDate) + '</span></div>' +
+                '<div style="font-size:12px;margin-top:4px">Customer: <b>' + U.esc(t.customerName) + '</b></div>' +
+                '<table style="width:100%;font-size:12px;margin-top:10px;border-collapse:collapse">' +
+                '<tr style="border-top:1px dashed #999;border-bottom:1px dashed #999"><td style="padding:6px 0"><b>Service</b></td><td style="text-align:right"><b>Amount</b></td></tr>' +
+                '<tr><td style="padding:6px 0">' + U.esc(t.service) + '</td><td style="text-align:right">' + U.money(t.totalAmount) + '</td></tr>' +
+                '<tr><td style="padding:4px 0">Received (' + U.esc(t.paymentMethod || 'cash') + ')</td><td style="text-align:right">' + U.money(t.amountReceived) + '</td></tr>' +
+                '<tr style="border-top:1px dashed #999"><td style="padding:6px 0"><b>Due</b></td><td style="text-align:right"><b>' + U.money(d) + '</b></td></tr></table>' +
+                '<div style="text-align:center;font-size:10.5px;color:#666;margin-top:14px;border-top:1px dashed #999;padding-top:8px">Dhanyavaad!</div></div>';
+            window.print();
+        }
+
+        function exportCsv() {
+            var data = [['Receipt', 'Date', 'Customer', 'Mobile', 'Service', 'Method', 'Received', 'Total', 'Status']];
+            filtered().forEach(function (t) {
+                data.push([t.receiptNumber, t.transactionDate, t.customerName, t.mobile, t.service,
+                    t.paymentMethod || 'cash', U.num(t.amountReceived), U.num(t.totalAmount), t.paymentStatus || '']);
+            });
+            U.csv('payment-history.csv', data);
+        }
+    })();
+    </script>
+</body>
+</html>

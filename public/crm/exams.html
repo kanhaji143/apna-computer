@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exams & Results · Apna School CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/crm.css?v=11">
+<style>
+  .exam-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  @media (max-width: 900px) { .exam-grid { grid-template-columns: 1fr; } }
+  .marks-input { width:70px; padding:4px 6px; border:1px solid #e2e8f0; border-radius:6px; font-size:13px; text-align:center; }
+  .grade { font-weight:700; }
+  .grade.A { color:#16a34a; } .grade.B { color:#2563eb; } .grade.C { color:#d97706; } .grade.D { color:#ea580c; } .grade.F { color:#dc2626; }
+</style>
+</head>
+<body data-page="exams">
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div><h2>Exams & Results</h2><p>Create exams, enter marks, view results (sc_exams, sc_results)</p></div>
+            </div>
+
+            <div class="exam-grid">
+                <!-- Create Exam -->
+                <div class="card">
+                    <div class="card-head"><h3>Create Exam</h3></div>
+                    <div class="card-body">
+                        <div class="form-group"><label>Exam Name *</label><input class="form-control" id="exName" placeholder="e.g. Half-Yearly Exam"></div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                            <div class="form-group"><label>Class</label><select class="form-control" id="exClass"></select></div>
+                            <div class="form-group"><label>Subject</label><input class="form-control" id="exSubject" placeholder="Maths"></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                            <div class="form-group"><label>Date</label><input type="date" class="form-control" id="exDate"></div>
+                            <div class="form-group"><label>Max Marks</label><input type="number" class="form-control" id="exMax" value="100"></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="EX.create()"><i class="fas fa-plus"></i> Create Exam</button>
+                    </div>
+                </div>
+
+                <!-- Exams List -->
+                <div class="card">
+                    <div class="card-head"><h3>Exams</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Name</th><th>Class</th><th>Subject</th><th>Date</th><th>Max</th><th></th></tr></thead>
+                            <tbody id="exBody"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enter Marks -->
+            <div class="card" style="margin-top:14px">
+                <div class="card-head"><h3>Enter Marks</h3>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <select class="form-control" id="markExam" style="width:260px"><option value="">Select exam...</option></select>
+                        <button class="btn btn-primary btn-sm" onclick="EX.loadMarks()"><i class="fas fa-rotate"></i> Load Students</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Admission</th><th>Name</th><th>Class</th><th>Marks (out of max)</th></tr></thead>
+                        <tbody id="marksBody"><tr><td colspan="4" class="empty-row">Select an exam and click Load.</td></tr></tbody>
+                    </table>
+                </div>
+                <div style="padding:12px;display:flex;justify-content:flex-end">
+                    <button class="btn btn-primary" onclick="EX.saveMarks()"><i class="fas fa-floppy-disk"></i> Save Marks</button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="card" style="margin-top:14px">
+                <div class="card-head"><h3>Results</h3>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <select class="form-control" id="resExam" style="width:260px"><option value="">Select exam...</option></select>
+                        <button class="btn btn-light btn-sm" onclick="EX.loadResults()"><i class="fas fa-rotate"></i> View</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Admission</th><th>Name</th><th>Marks</th><th>Max</th><th>%</th><th>Grade</th></tr></thead>
+                        <tbody id="resBody"><tr><td colspan="6" class="empty-row">Select an exam to view results.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalHost"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/school-fb.js?v=1"></script>
+<script src="assets/crm.js?v=12"></script>
+<script>
+(function () {
+    'use strict';
+    var SFB = window.SFB;
+    var db = null;
+    var store = null;
+    var exams = [];
+    var markRows = []; // {adm, name, class, marks}
+    var EX = {};
+
+    function init() { if (typeof firebase !== 'undefined' && !firebase.apps.length) firebase.initializeApp(SFB.config); db = firebase.firestore(); }
+
+    function toast(m) { if (window.CRM) CRM.toast(m); else alert(m); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function money(n) { return '\u20B9' + Number(n || 0).toLocaleString('en-IN'); }
+
+    function grade(pct) {
+        if (pct >= 90) return 'A'; if (pct >= 75) return 'B'; if (pct >= 60) return 'C'; if (pct >= 40) return 'D'; return 'F';
+    }
+
+    function todayISO() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+
+    function classes() {
+        var set = {};
+        (store.students || []).forEach(function (s) { var c = String(s['Class'] || '').trim(); if (c) set[c] = true; });
+        return Object.keys(set).sort();
+    }
+
+    function populateClassSelect(sel) {
+        var el = document.getElementById(sel);
+        el.innerHTML = classes().map(function (c) { return '<option value="' + c + '">' + c + '</option>'; }).join('');
+    }
+
+    function loadExams() {
+        if (!db) return;
+        db.collection('sc_exams').get().then(function (snap) {
+            exams = [];
+            snap.forEach(function (d) { exams.push(Object.assign({ id: d.id }, d.data())); });
+            exams.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+            renderExams();
+            populateExamSelects();
+        }).catch(function (e) { console.error(e); toast('Exams load failed'); });
+    }
+
+    function renderExams() {
+        var body = document.getElementById('exBody');
+        if (!exams.length) { body.innerHTML = '<tr><td colspan="6" class="empty-row">No exams yet.</td></tr>'; return; }
+        body.innerHTML = exams.map(function (e) {
+            return '<tr>' +
+                '<td><b>' + esc(e.name) + '</b></td>' +
+                '<td>' + esc(e.className || '') + '</td>' +
+                '<td>' + esc(e.subject || '') + '</td>' +
+                '<td class="small muted">' + esc(e.date || '') + '</td>' +
+                '<td>' + esc(e.maxMarks || 100) + '</td>' +
+                '<td class="t-right"><button class="btn btn-ghost btn-sm btn-icon" onclick="EX.deleteExam(\'' + e.id + '\')" title="Delete"><i class="fas fa-trash"></i></button></td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    function populateExamSelects() {
+        var opts = '<option value="">Select exam...</option>' + exams.map(function (e) {
+            return '<option value="' + e.id + '">' + esc(e.name) + ' — ' + esc(e.className || '') + ' (' + esc(e.subject || '') + ')</option>';
+        }).join('');
+        document.getElementById('markExam').innerHTML = opts;
+        document.getElementById('resExam').innerHTML = opts;
+    }
+
+    EX.create = function () {
+        var name = document.getElementById('exName').value.trim();
+        var cls = document.getElementById('exClass').value;
+        var subj = document.getElementById('exSubject').value.trim();
+        var date = document.getElementById('exDate').value || todayISO();
+        var max = Number(document.getElementById('exMax').value) || 100;
+        if (!name) { toast('Exam name required'); return; }
+        var id = 'EX_' + Date.now();
+        db.collection('sc_exams').doc(id).set({
+            name: name, className: cls, subject: subj, date: date, maxMarks: max, createdAt: new Date().toISOString()
+        }).then(function () {
+            toast('Exam created');
+            document.getElementById('exName').value = '';
+            document.getElementById('exSubject').value = '';
+            loadExams();
+        }).catch(function (e) { console.error(e); toast('Create failed: ' + e.message); });
+    };
+
+    EX.deleteExam = function (id) {
+        if (!confirm('Delete exam and its results?')) return;
+        db.collection('sc_exams').doc(id).delete().then(function () {
+            // delete results
+            return db.collection('sc_results').where('examId', '==', id).get();
+        }).then(function (snap) {
+            var batch = db.batch();
+            snap.forEach(function (d) { batch.delete(d.ref); });
+            return batch.commit();
+        }).then(function () { toast('Exam deleted'); loadExams(); })
+        .catch(function (e) { console.error(e); toast('Delete failed'); });
+    };
+
+    EX.loadMarks = function () {
+        var examId = document.getElementById('markExam').value;
+        if (!examId) { toast('Select an exam'); return; }
+        var exam = exams.filter(function (e) { return e.id === examId; })[0];
+        if (!exam) return;
+        var cls = exam.className;
+        var students = (store.students || []).filter(function (s) {
+            return !cls || String(s['Class'] || '').trim() === cls;
+        }).sort(function (a, b) { return String(a['Student Name'] || '').localeCompare(String(b['Student Name'] || '')); });
+
+        // load existing results
+        db.collection('sc_results').where('examId', '==', examId).get().then(function (snap) {
+            var existing = {};
+            snap.forEach(function (d) { var r = d.data(); existing[r.admissionNo] = r.marks; });
+            markRows = students.map(function (s) {
+                var adm = String(s['Admission No']);
+                return { adm: adm, name: s['Student Name'] || '', cls: s['Class'] || '', marks: (existing[adm] != null ? existing[adm] : '') };
+            });
+            renderMarks(exam);
+        }).catch(function (e) { console.error(e); toast('Load failed'); });
+    };
+
+    function renderMarks(exam) {
+        var body = document.getElementById('marksBody');
+        if (!markRows.length) { body.innerHTML = '<tr><td colspan="4" class="empty-row">No students.</td></tr>'; return; }
+        body.innerHTML = markRows.map(function (r, i) {
+            return '<tr>' +
+                '<td><b>' + esc(r.adm) + '</b></td>' +
+                '<td>' + esc(r.name) + '</td>' +
+                '<td class="small muted">' + esc(r.cls) + '</td>' +
+                '<td><input type="number" class="marks-input" data-idx="' + i + '" min="0" max="' + (exam.maxMarks || 100) + '" value="' + esc(r.marks) + '" placeholder="—"></td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    EX.saveMarks = function () {
+        var examId = document.getElementById('markExam').value;
+        if (!examId) { toast('Select an exam'); return; }
+        var exam = exams.filter(function (e) { return e.id === examId; })[0];
+        if (!exam) return;
+        // read marks from inputs
+        document.querySelectorAll('.marks-input').forEach(function (inp) {
+            var idx = Number(inp.getAttribute('data-idx'));
+            var v = inp.value.trim();
+            markRows[idx].marks = (v === '' ? null : Number(v));
+        });
+        var batch = db.batch();
+        markRows.forEach(function (r) {
+            var ref = db.collection('sc_results').doc(examId + '_' + r.adm);
+            if (r.marks == null) {
+                batch.delete(ref);
+            } else {
+                batch.set(ref, {
+                    examId: examId,
+                    admissionNo: r.adm,
+                    studentName: r.name,
+                    className: r.cls,
+                    marks: r.marks,
+                    maxMarks: exam.maxMarks || 100,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            }
+        });
+        batch.commit().then(function () { toast('Marks saved.'); })
+        .catch(function (e) { console.error(e); toast('Save failed: ' + e.message); });
+    };
+
+    EX.loadResults = function () {
+        var examId = document.getElementById('resExam').value;
+        if (!examId) { toast('Select an exam'); return; }
+        var exam = exams.filter(function (e) { return e.id === examId; })[0];
+        if (!exam) return;
+        db.collection('sc_results').where('examId', '==', examId).get().then(function (snap) {
+            var rows = [];
+            snap.forEach(function (d) { rows.push(d.data()); });
+            rows.sort(function (a, b) { return String(a.studentName || '').localeCompare(String(b.studentName || '')); });
+            var body = document.getElementById('resBody');
+            if (!rows.length) { body.innerHTML = '<tr><td colspan="6" class="empty-row">No results yet.</td></tr>'; return; }
+            body.innerHTML = rows.map(function (r) {
+                var pct = r.maxMarks ? Math.round((r.marks / r.maxMarks) * 100) : 0;
+                var g = grade(pct);
+                return '<tr>' +
+                    '<td><b>' + esc(r.admissionNo) + '</b></td>' +
+                    '<td>' + esc(r.studentName || '') + '</td>' +
+                    '<td>' + esc(r.marks) + '</td>' +
+                    '<td>' + esc(r.maxMarks) + '</td>' +
+                    '<td>' + pct + '%</td>' +
+                    '<td><span class="grade ' + g + '">' + g + '</span></td>' +
+                '</tr>';
+            }).join('');
+        }).catch(function (e) { console.error(e); toast('Load failed'); });
+    };
+
+    window.EX = EX;
+
+    /* boot */
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!window.CRM) return;
+        var u = CRM.user();
+        if (!u) { location.replace('login.html'); return; }
+        SFB.init();
+        var tries = 0;
+        var iv = setInterval(function () {
+            tries++;
+            if (SFB.ready) {
+                clearInterval(iv);
+                SFB.loadStore().then(function (data) {
+                    store = data;
+                    store.students = store.students || [];
+                    populateClassSelect('exClass');
+                    init();
+                    loadExams();
+                    CRM.renderShell && CRM.renderShell();
+                }).catch(function (e) { console.error(e); toast('Data load failed: ' + e.message); });
+            } else if (tries > 50) {
+                clearInterval(iv);
+                toast('Firestore not ready');
+            }
+        }, 100);
+    });
+})();
+</script>
+</body>
+</html>

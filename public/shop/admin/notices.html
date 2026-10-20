@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notices — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="notices" data-title="Notices">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Notices</h2><p>Website par dikhne wali updates.</p></div>
+                <div class="actions"><button class="btn btn-primary btn-sm" id="addBtn"><i class="fas fa-plus"></i> Add Notice</button></div>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Title</th><th>Message</th><th>Date</th><th>Visible</th><th class="t-right">Actions</th></tr></thead>
+                        <tbody id="body"><tr><td colspan="5" class="empty-row">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal">
+        <div class="modal">
+            <div class="modal-head"><h3 id="modalTitle">Add Notice</h3><button class="x" data-close><i class="fas fa-xmark"></i></button></div>
+            <form id="form">
+                <div class="modal-body">
+                    <div class="field" style="margin-bottom:12px"><label>Title *</label><input name="title" required placeholder="Notice ka title"></div>
+                    <div class="field" style="margin-bottom:12px"><label>Message *</label><textarea name="body" required placeholder="Pura message..."></textarea></div>
+                    <div class="field" style="margin-bottom:12px"><label>Image (optional)</label>
+                        <input type="file" id="imgFile" accept="image/*" style="padding:6px">
+                        <p class="small muted" style="margin-top:4px">Device se photo choose karein — auto compress ho jaayegi. Khali chhod sakte hain.</p>
+                        <div id="imgPreviewWrap" style="margin-top:8px;display:none">
+                            <img id="imgPreview" src="" alt="" style="max-width:100%;max-height:160px;border-radius:8px;border:1px solid var(--border)">
+                            <button type="button" class="btn btn-ghost btn-sm" id="imgRemove" style="margin-top:6px"><i class="fas fa-trash"></i> Image hatao</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="imageUrl" id="imgUrlHidden">
+                    <div class="field"><label>Website par dikhayein?</label>
+                        <select name="isActive"><option value="true">Yes — visible</option><option value="false">No — hidden</option></select>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, rows = [], editing = null;
+
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { U.closeModal('modal'); });
+        });
+        document.getElementById('modal').addEventListener('click', function (e) { if (e.target === this) U.closeModal('modal'); });
+
+        S.ready(function () {
+            document.getElementById('addBtn').addEventListener('click', function () { openForm(null); });
+            document.getElementById('form').addEventListener('submit', save);
+            document.getElementById('imgFile').addEventListener('change', onFilePick);
+            document.getElementById('imgRemove').addEventListener('click', removeImage);
+            load();
+        });
+
+        function onFilePick(e) {
+            var f = e.target.files && e.target.files[0];
+            if (!f) return;
+            var reader = new FileReader();
+            reader.onload = function () {
+                compressImage(reader.result, 800, 0.82, function (dataUrl) {
+                    document.getElementById('imgUrlHidden').value = dataUrl;
+                    var preview = document.getElementById('imgPreview');
+                    preview.src = dataUrl;
+                    document.getElementById('imgPreviewWrap').style.display = 'block';
+                });
+            };
+            reader.readAsDataURL(f);
+        }
+
+        function compressImage(src, maxW, quality, cb) {
+            var img = new Image();
+            img.onload = function () {
+                var w = img.naturalWidth, h = img.naturalHeight;
+                if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(img, 0, 0, w, h);
+                cb(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = function () { cb(src); };
+            img.src = src;
+        }
+
+        function removeImage() {
+            document.getElementById('imgUrlHidden').value = '';
+            document.getElementById('imgFile').value = '';
+            document.getElementById('imgPreview').src = '';
+            document.getElementById('imgPreviewWrap').style.display = 'none';
+        }
+
+        function showPreview(url) {
+            if (url) {
+                document.getElementById('imgUrlHidden').value = url;
+                document.getElementById('imgPreview').src = url;
+                document.getElementById('imgPreviewWrap').style.display = 'block';
+            } else {
+                removeImage();
+            }
+        }
+
+        function load() {
+            S.all(S.coll.notices).then(function (r) {
+                rows = r.sort(U.byDateDesc('createdAt'));
+                render();
+            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function render() {
+            var b = document.getElementById('body');
+            b.innerHTML = rows.length ? rows.map(function (r) {
+                return '<tr data-id="' + r.id + '">' +
+                    '<td><div style="display:flex;gap:10px;align-items:center">' +
+                        (r.imageUrl ? '<img src="' + U.esc(r.imageUrl) + '" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display=\'none\'">' : '<span style="width:44px;height:44px;border-radius:8px;background:var(--brand-light);display:grid;place-items:center;color:var(--brand-2)"><i class="fas fa-image"></i></span>') +
+                        '<b>' + U.esc(r.title) + '</b></div></td>' +
+                    '<td class="small muted" style="max-width:300px">' + U.esc(r.body) + '</td>' +
+                    '<td class="t-nowrap small muted">' + U.fmtDate(r.createdAt) + '</td>' +
+                    '<td><span class="badge ' + (r.isActive !== false ? 'b-paid' : 'badge grey') + '">' + (r.isActive !== false ? 'Visible' : 'Hidden') + '</span></td>' +
+                    '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
+                    '<button class="toggle" title="Show/Hide"><i class="fas ' + (r.isActive !== false ? 'fa-eye-slash' : 'fa-eye') + '"></i></button>' +
+                    '<button class="edit" title="Edit"><i class="fas fa-pen"></i></button>' +
+                    '<button class="del" title="Delete"><i class="fas fa-trash"></i></button></div></td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">Koi notice nahi.</td></tr>';
+
+            b.querySelectorAll('tr[data-id]').forEach(function (tr) {
+                var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
+                tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
+                tr.querySelector('.toggle').addEventListener('click', function () {
+                    S.set(S.coll.notices, rec.id, { isActive: rec.isActive === false }).then(function () { load(); });
+                });
+                tr.querySelector('.del').addEventListener('click', function () {
+                    if (!confirm('Notice delete karein?')) return;
+                    S.remove(S.coll.notices, rec.id).then(function () { U.toast('Notice delete ho gaya.'); load(); });
+                });
+            });
+        }
+
+        function openForm(rec) {
+            editing = rec;
+            document.getElementById('modalTitle').textContent = rec ? 'Edit Notice' : 'Add Notice';
+            var f = document.getElementById('form');
+            f.reset();
+            if (rec) {
+                f.querySelector('[name="title"]').value = rec.title || '';
+                f.querySelector('[name="body"]').value = rec.body || '';
+                showPreview(rec.imageUrl || '');
+                f.querySelector('[name="isActive"]').value = rec.isActive === false ? 'false' : 'true';
+            } else {
+                removeImage();
+            }
+            U.openModal('modal');
+        }
+
+        function save(e) {
+            e.preventDefault();
+            var f = e.target;
+            var data = {
+                title: f.querySelector('[name="title"]').value.trim(),
+                body: f.querySelector('[name="body"]').value.trim(),
+                isActive: f.querySelector('[name="isActive"]').value === 'true'
+            };
+            var imgUrl = document.getElementById('imgUrlHidden').value.trim();
+            if (imgUrl) data.imageUrl = imgUrl; else data.imageUrl = null;
+            var p = editing ? S.set(S.coll.notices, editing.id, data) : S.add(S.coll.notices, data);
+            p.then(function () { U.closeModal('modal'); U.toast('Notice save ho gaya.'); load(); })
+             .catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+        }
+    })();
+    </script>
+</body>
+</html>

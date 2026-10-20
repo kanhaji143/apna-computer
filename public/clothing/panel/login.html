@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login · Clothing CRM</title>
+<title id="pgTitle">Login · Clothing CRM</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/clothing.css">
@@ -12,7 +12,7 @@
 
 <div class="login-page">
     <div class="login-visual">
-        <div class="lv-brand"><i class="fas fa-shirt"></i> Clothing CRM</div>
+        <div class="lv-brand" id="lvBrand"><i class="fas fa-shirt"></i> Clothing CRM</div>
         <h2>Apne <span>kapde ke business</span> ka poora hisaab</h2>
         <p>Stock, purchase, sale, profit-loss, wholeseller balance aur staff — sab ek jagah.</p>
         <div class="lv-points">
@@ -27,7 +27,7 @@
     <div class="login-form-wrap">
         <div class="login-card">
             <h3>Welcome back</h3>
-            <div class="lc-sub">Sign in to your Clothing CRM</div>
+            <div class="lc-sub" id="lcSub">Sign in to your Clothing CRM</div>
             <form id="loginForm">
                 <div class="form-group">
                     <label>Email</label>
@@ -42,7 +42,7 @@
             <div class="login-note">
                 <strong>Demo mode:</strong> koi bhi email + password chalega. Baad me Firebase Auth jod sakte hain.
             </div>
-            <div class="login-foot"><a href="../index.html">&larr; Back to Shop</a></div>
+            <div class="login-foot"><a href="../store/index.html">&larr; Back to Shop</a></div>
         </div>
     </div>
 </div>
@@ -52,8 +52,17 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="assets/data.js"></script>
+<script src="assets/brand.js"></script>
 <script src="assets/firebase.js"></script>
 <script>
+(function () {
+    var B = window.CL_BRAND || {};
+    if (B.name) {
+        document.getElementById('pgTitle').textContent = 'Login · ' + B.name;
+        document.getElementById('lvBrand').innerHTML = '<i class="fas ' + (B.logoIcon || 'fa-shirt') + '"></i> ' + B.name;
+        document.getElementById('lcSub').textContent = 'Sign in to your ' + B.name;
+    }
+})();
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var email = document.getElementById('loginEmail').value.trim();

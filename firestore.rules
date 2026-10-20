@@ -15,6 +15,36 @@ service cloud.firestore {
     match /cl_staff/{id}     { allow read, write: if true; }
     match /cl_salary/{id}    { allow read, write: if true; }
     match /cl_config/{id}    { allow read, write: if true; }
+    match /cl_orders/{id}    { allow read, write: if true; }
+    match /cl_reviews/{id}   { allow read, write: if true; }
+
+    // ---- School CRM (JSON data transferred: 2026-10-19) ----
+    match /sc_students/{id}         { allow read, write: if true; }
+    match /sc_fee_register/{id}     { allow read, write: if true; }
+    match /sc_fee_transactions/{id} { allow read, write: if true; }
+    match /sc_employees/{id}        { allow read, write: if true; }
+    match /sc_transport/{id}        { allow read, write: if true; }
+    match /sc_previous_dues/{id}    { allow read, write: if true; }
+    match /sc_expenses/{id}         { allow read, write: if true; }
+    match /sc_config/{id}           { allow read, write: if true; }
+    match /sc_attendance/{id}       { allow read, write: if true; }
+    match /sc_exams/{id}           { allow read, write: if true; }
+    match /sc_results/{id}         { allow read, write: if true; }
+
+    // ---- Online Center (shop website + CRM) ----
+    match /oc_customers/{id}         { allow read, write: if true; }
+    match /oc_transactions/{id}      { allow read, write: if true; }
+    match /oc_expenses/{id}          { allow read, write: if true; }
+    match /oc_service_requests/{id}  { allow read, write: if true; }
+    match /oc_ticket_enquiries/{id}  { allow read, write: if true; }
+    match /oc_notices/{id}           { allow read, write: if true; }
+    match /oc_config/{id}            { allow read, write: if true; }
+
+    // ---- Hub (website enquiries) ----
+    match /hub_leads/{id} {
+      allow create: if true;   // public form submit
+      allow read, update, delete: if false;  // leads private
+    }
 
     // ---- default: deny ----
     match /{document=**} {

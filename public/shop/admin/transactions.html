@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="transactions" data-title="Transactions">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Transactions</h2><p id="txCount">—</p></div>
+                <div class="actions">
+                    <button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button>
+                    <button class="btn btn-primary btn-sm" id="addBtn"><i class="fas fa-plus"></i> New Transaction</button>
+                </div>
+            </div>
+
+            <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+                <div class="kpi"><div class="kpi-label">Total Billed</div><div class="kpi-value" id="kTotal">₹0</div></div>
+                <div class="kpi green"><div class="kpi-label">Received</div><div class="kpi-value" id="kReceived">₹0</div></div>
+                <div class="kpi red"><div class="kpi-label">Due</div><div class="kpi-value" id="kDue">₹0</div></div>
+                <div class="kpi amber"><div class="kpi-label">Transactions</div><div class="kpi-value" id="kCount">0</div></div>
+            </div>
+
+            <div class="filters">
+                <input class="grow" id="search" placeholder="🔍 Receipt, naam, mobile ya service...">
+                <select id="status">
+                    <option value="">All status</option>
+                    <option value="paid">Paid</option>
+                    <option value="partial">Partial</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <input type="month" id="month">
+                <button class="btn btn-ghost btn-sm" id="clearBtn"><i class="fas fa-rotate-left"></i> Clear</button>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Receipt / Date</th><th>Customer</th><th>Service</th>
+                            <th class="t-right">Total</th><th class="t-right">Received</th><th class="t-right">Due</th>
+                            <th>Status</th><th class="t-right">Actions</th>
+                        </tr></thead>
+                        <tbody id="body"><tr><td colspan="8" class="empty-row">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- form modal -->
+    <div class="modal-backdrop" id="modal">
+        <div class="modal wide">
+            <div class="modal-head"><h3 id="modalTitle">New Transaction</h3><button class="x" data-close><i class="fas fa-xmark"></i></button></div>
+            <form id="form">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="field"><label>Customer Name *</label>
+                            <input name="customerName" list="custList" required placeholder="Naam likhein ya chunein">
+                            <datalist id="custList"></datalist>
+                        </div>
+                        <div class="field"><label>Mobile *</label><input name="mobile" type="tel" required placeholder="10-digit mobile"></div>
+                        <div class="field"><label>Service *</label>
+                            <select name="service" required>
+                                <option value="">Select service</option>
+                                <option>Aadhaar Services</option><option>PAN Card</option><option>Voter ID</option>
+                                <option>Money Transfer</option><option>Ticket Booking</option><option>Online Form</option>
+                                <option>Photo Print</option><option>Lamination</option><option>Bill Payment</option><option>Other</option>
+                            </select>
+                        </div>
+                        <div class="field"><label>Date *</label><input name="transactionDate" type="date" required></div>
+                        <div class="field"><label>Total Amount (₹) *</label><input name="totalAmount" type="number" min="0" step="0.01" required placeholder="0"></div>
+                        <div class="field"><label>Amount Received (₹)</label><input name="amountReceived" type="number" min="0" step="0.01" placeholder="0"></div>
+                        <div class="field"><label>Payment Method</label>
+                            <select name="paymentMethod"><option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank">Bank Transfer</option></select>
+                        </div>
+                        <div class="field"><label>Due (auto)</label><input id="dueCalc" disabled value="₹0"></div>
+                        <div class="field full"><label>Notes</label><textarea name="notes" placeholder="Optional"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Save Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="printArea" class="hidden"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui;
+        var rows = [], custs = [], cfg = {}, editing = null;
+
+        ['search', 'status', 'month'].forEach(function (id) {
+            document.getElementById(id).addEventListener('input', render);
+        });
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { U.closeModal('modal'); });
+        });
+        document.getElementById('modal').addEventListener('click', function (e) {
+            if (e.target === this) U.closeModal('modal');
+        });
+        document.getElementById('form').addEventListener('input', function (e) {
+            if (e.target.name === 'totalAmount' || e.target.name === 'amountReceived') calcDue();
+        });
+
+        S.ready(function (ctx) {
+            cfg = ctx.config;
+            document.getElementById('addBtn').addEventListener('click', function () { openForm(null); });
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            document.getElementById('clearBtn').addEventListener('click', function () {
+                document.getElementById('search').value = '';
+                document.getElementById('status').value = '';
+                document.getElementById('month').value = '';
+                render();
+            });
+            document.getElementById('form').addEventListener('submit', save);
+            load();
+        });
+
+        function load() {
+            Promise.all([S.all(S.coll.transactions), S.all(S.coll.customers)])
+                .then(function (r) {
+                    rows = r[0].sort(U.byDateDesc('transactionDate'));
+                    custs = r[1];
+                    document.getElementById('custList').innerHTML = custs.map(function (c) {
+                        return '<option value="' + U.esc(c.name) + '">' + U.esc(c.mobile) + '</option>';
+                    }).join('');
+                    render();
+                }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
+
+        function statusOf(t) {
+            if (t.paymentStatus) return t.paymentStatus;
+            var d = due(t);
+            return d <= 0 ? 'paid' : (U.num(t.amountReceived) > 0 ? 'partial' : 'pending');
+        }
+
+        function badge(s) {
+            var m = { paid: 'b-paid', pending: 'b-pending', partial: 'b-partial' };
+            return '<span class="badge ' + (m[s] || 'badge grey') + '">' + U.esc(s) + '</span>';
+        }
+
+        function render() {
+            var q = document.getElementById('search').value.trim().toLowerCase();
+            var st = document.getElementById('status').value;
+            var mo = document.getElementById('month').value;
+
+            var list = rows.filter(function (t) {
+                if (st && statusOf(t) !== st) return false;
+                if (mo && String(t.transactionDate || '').slice(0, 7) !== mo) return false;
+                if (q && [t.receiptNumber, t.customerName, t.mobile, t.service].join(' ').toLowerCase().indexOf(q) < 0) return false;
+                return true;
+            });
+
+            document.getElementById('kTotal').textContent = U.money(U.sum(list, 'totalAmount'));
+            document.getElementById('kReceived').textContent = U.money(U.sum(list, 'amountReceived'));
+            document.getElementById('kDue').textContent = U.money(list.reduce(function (s, t) { return s + due(t); }, 0));
+            document.getElementById('kCount').textContent = list.length;
+            document.getElementById('txCount').textContent = rows.length + ' total transactions';
+
+            var b = document.getElementById('body');
+            b.innerHTML = list.length ? list.map(function (t) {
+                var s = statusOf(t);
+                return '<tr data-id="' + t.id + '">' +
+                    '<td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b><span class="subtle">' + U.fmtDate(t.transactionDate) + '</span></td>' +
+                    '<td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.mobile || '') + '</span></td>' +
+                    '<td class="small muted">' + U.esc(t.service) + '</td>' +
+                    '<td class="t-right amount">' + U.money(t.totalAmount) + '</td>' +
+                    '<td class="t-right amount green">' + U.money(t.amountReceived) + '</td>' +
+                    '<td class="t-right amount ' + (due(t) > 0 ? 'red' : '') + '">' + U.money(due(t)) + '</td>' +
+                    '<td>' + badge(s) + '</td>' +
+                    '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
+                    '<button class="print" title="Receipt"><i class="fas fa-print"></i></button>' +
+                    (due(t) > 0 ? '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" href="' +
+                        U.waLink(t.mobile, 'Namaste ' + t.customerName + ', aapka ' + U.money(due(t)) + ' payment pending hai. — ' + cfg.shopName) +
+                        '" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' : '') +
+                    '<button class="edit" title="Edit"><i class="fas fa-pen"></i></button>' +
+                    '<button class="del" title="Delete"><i class="fas fa-trash"></i></button>' +
+                    '</div></td></tr>';
+            }).join('') : '<tr><td colspan="8" class="empty-row">Koi transaction nahi mili.</td></tr>';
+
+            b.querySelectorAll('tr[data-id]').forEach(function (tr) {
+                var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
+                tr.querySelector('.print').addEventListener('click', function () { printReceipt(rec); });
+                tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
+                tr.querySelector('.del').addEventListener('click', function () {
+                    if (!confirm('Transaction delete karein (' + rec.receiptNumber + ')?')) return;
+                    S.remove(S.coll.transactions, rec.id).then(function () { U.toast('Transaction delete ho gayi.'); load(); });
+                });
+            });
+        }
+
+        function openForm(rec) {
+            editing = rec;
+            document.getElementById('modalTitle').textContent = rec ? 'Edit Transaction' : 'New Transaction';
+            var f = document.getElementById('form');
+            f.reset();
+            f.querySelector('[name="transactionDate"]').value = U.todayISO();
+            if (rec) {
+                ['customerName', 'mobile', 'service', 'transactionDate', 'totalAmount', 'amountReceived', 'paymentMethod', 'notes'].forEach(function (k) {
+                    var el = f.querySelector('[name="' + k + '"]');
+                    if (el) el.value = rec[k] === undefined || rec[k] === null ? '' : rec[k];
+                });
+            }
+            calcDue();
+            U.openModal('modal');
+        }
+
+        function calcDue() {
+            var f = document.getElementById('form');
+            var t = U.num(f.querySelector('[name="totalAmount"]').value);
+            var r = U.num(f.querySelector('[name="amountReceived"]').value);
+            document.getElementById('dueCalc').value = U.money(Math.max(0, t - r));
+        }
+
+        function save(e) {
+            e.preventDefault();
+            var f = e.target;
+            var get = function (n) { return f.querySelector('[name="' + n + '"]').value; };
+            var total = U.num(get('totalAmount')), received = U.num(get('amountReceived'));
+            if (received > total) { U.toast('Received amount total se zyada nahi ho sakta.'); return; }
+            var diff = Math.max(0, total - received);
+            var data = {
+                customerName: get('customerName').trim(),
+                mobile: get('mobile').trim(),
+                service: get('service'),
+                transactionDate: get('transactionDate'),
+                totalAmount: total,
+                amountReceived: received,
+                remainingAmount: diff,
+                paymentMethod: get('paymentMethod'),
+                paymentStatus: diff <= 0 ? 'paid' : (received > 0 ? 'partial' : 'pending'),
+                notes: get('notes').trim()
+            };
+
+            var p;
+            if (editing) {
+                p = S.set(S.coll.transactions, editing.id, data);
+            } else {
+                data.receiptNumber = 'RCP-' + String(100000 + rows.length + 1);
+                data.transactionId = U.uid('TXN');
+                p = S.add(S.coll.transactions, data);
+            }
+            p.then(function () {
+                U.closeModal('modal');
+                U.toast(editing ? 'Transaction update ho gayi.' : 'Transaction add ho gayi.');
+                load();
+            }).catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+        }
+
+        function printReceipt(t) {
+            var d = due(t);
+            document.getElementById('printArea').innerHTML =
+                '<div style="font-family:Inter,Arial,sans-serif;max-width:340px;margin:0 auto;color:#111">' +
+                '<div style="text-align:center;border-bottom:2px dashed #999;padding-bottom:10px;margin-bottom:10px">' +
+                '<h2 style="margin:0;font-size:18px">' + U.esc(cfg.shopName) + '</h2>' +
+                '<div style="font-size:11px;color:#555">' + U.esc(cfg.address) + '</div>' +
+                '<div style="font-size:11px;color:#555">' + U.esc(cfg.phone) + '</div></div>' +
+                '<div style="font-size:12px;display:flex;justify-content:space-between"><span>Receipt: <b>' + U.esc(t.receiptNumber || '—') + '</b></span><span>' + U.fmtDate(t.transactionDate) + '</span></div>' +
+                '<div style="font-size:12px;margin-top:4px">Customer: <b>' + U.esc(t.customerName) + '</b></div>' +
+                '<div style="font-size:12px">Mobile: ' + U.esc(t.mobile || '—') + '</div>' +
+                '<table style="width:100%;font-size:12px;margin-top:10px;border-collapse:collapse">' +
+                '<tr style="border-top:1px dashed #999;border-bottom:1px dashed #999"><td style="padding:6px 0"><b>Service</b></td><td style="text-align:right"><b>Amount</b></td></tr>' +
+                '<tr><td style="padding:6px 0">' + U.esc(t.service) + '</td><td style="text-align:right">' + U.money(t.totalAmount) + '</td></tr>' +
+                '<tr><td style="padding:4px 0">Received (' + U.esc(t.paymentMethod || 'cash') + ')</td><td style="text-align:right">' + U.money(t.amountReceived) + '</td></tr>' +
+                '<tr style="border-top:1px dashed #999"><td style="padding:6px 0"><b>Due</b></td><td style="text-align:right"><b>' + U.money(d) + '</b></td></tr></table>' +
+                '<div style="text-align:center;font-size:10.5px;color:#666;margin-top:14px;border-top:1px dashed #999;padding-top:8px">Dhanyavaad! Aapka din shubh ho.</div></div>';
+            window.print();
+        }
+
+        function exportCsv() {
+            var data = [['Receipt', 'Date', 'Customer', 'Mobile', 'Service', 'Total', 'Received', 'Due', 'Status', 'Method']];
+            rows.forEach(function (t) {
+                data.push([t.receiptNumber, t.transactionDate, t.customerName, t.mobile, t.service,
+                    U.num(t.totalAmount), U.num(t.amountReceived), due(t), statusOf(t), t.paymentMethod || '']);
+            });
+            U.csv('transactions.csv', data);
+        }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Report — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="monthly-report" data-title="Monthly Report">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Monthly Report</h2><p id="monthLabel">—</p></div>
+                <div class="actions">
+                    <input type="month" id="month" class="btn btn-ghost" style="font-weight:600">
+                    <button class="btn btn-ghost btn-sm" id="printBtn"><i class="fas fa-print"></i> Print</button>
+                    <button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button>
+                </div>
+            </div>
+
+            <div class="kpis">
+                <div class="kpi green"><div class="kpi-label">Collection</div><div class="kpi-value" id="kIn">₹0</div><div class="kpi-sub" id="kInN">—</div></div>
+                <div class="kpi red"><div class="kpi-label">Expenses</div><div class="kpi-value" id="kOut">₹0</div></div>
+                <div class="kpi"><div class="kpi-label">Net Profit</div><div class="kpi-value" id="kNet">₹0</div></div>
+                <div class="kpi amber"><div class="kpi-label">Pending Due</div><div class="kpi-value" id="kDue">₹0</div></div>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns:1.4fr 1fr;align-items:start">
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-calendar-days" style="color:var(--brand-2)"></i> Day-wise Summary</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Date</th><th class="t-right">Transactions</th><th class="t-right">Collection</th><th class="t-right">Expenses</th><th class="t-right">Net</th></tr></thead>
+                            <tbody id="dayBody"><tr><td colspan="5" class="empty-row">Loading...</td></tr></tbody>
+                            <tfoot id="dayFoot"></tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card" style="margin-bottom:14px">
+                        <div class="card-head"><h3><i class="fas fa-chart-pie" style="color:var(--accent)"></i> Service-wise</h3></div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Service</th><th class="t-right">Jobs</th><th class="t-right">Collection</th></tr></thead>
+                                <tbody id="svcBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3><i class="fas fa-credit-card" style="color:var(--brand-2)"></i> Payment Methods</h3></div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Method</th><th class="t-right">Collection</th></tr></thead>
+                                <tbody id="methodBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="printArea" class="hidden"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, TX = [], EX = [], cfg = {}, last = null;
+
+        S.ready(function (ctx) {
+            cfg = ctx.config;
+            document.getElementById('month').value = U.todayISO().slice(0, 7);
+            document.getElementById('month').addEventListener('change', load);
+            document.getElementById('printBtn').addEventListener('click', printReport);
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            load();
+        });
+
+        function load() {
+            Promise.all([S.all(S.coll.transactions), S.all(S.coll.expenses)])
+                .then(function (r) { TX = r[0]; EX = r[1]; render(); })
+                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
+
+        function calc() {
+            var m = document.getElementById('month').value || U.todayISO().slice(0, 7);
+            var tx = TX.filter(function (t) { return String(t.transactionDate || '').slice(0, 7) === m; });
+            var ex = EX.filter(function (e) { return String(e.expenseDate || '').slice(0, 7) === m; });
+            var inc = U.sum(tx, 'amountReceived');
+            var out = U.sum(ex, 'amount');
+            var pending = tx.reduce(function (s, t) { return s + due(t); }, 0);
+
+            var days = {};
+            tx.forEach(function (t) {
+                var d = t.transactionDate;
+                if (!days[d]) days[d] = { date: d, tx: 0, inc: 0, out: 0 };
+                days[d].tx++; days[d].inc += U.num(t.amountReceived);
+            });
+            ex.forEach(function (e) {
+                var d = e.expenseDate;
+                if (!days[d]) days[d] = { date: d, tx: 0, inc: 0, out: 0 };
+                days[d].out += U.num(e.amount);
+            });
+
+            return { m: m, tx: tx, ex: ex, inc: inc, out: out, net: inc - out, pending: pending, days: days };
+        }
+
+        function render() {
+            var o = calc(); last = o;
+            document.getElementById('monthLabel').textContent = new Date(o.m + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+            document.getElementById('kIn').textContent = U.money(o.inc);
+            document.getElementById('kInN').textContent = o.tx.length + ' transactions';
+            document.getElementById('kOut').textContent = U.money(o.out);
+            document.getElementById('kNet').textContent = U.money(o.net);
+            document.getElementById('kDue').textContent = U.money(o.pending);
+
+            var dayList = Object.keys(o.days).sort().map(function (k) { return o.days[k]; });
+            document.getElementById('dayBody').innerHTML = dayList.length ? dayList.map(function (d) {
+                return '<tr><td class="t-nowrap"><b>' + U.fmtDate(d.date) + '</b></td>' +
+                    '<td class="t-right">' + d.tx + '</td>' +
+                    '<td class="t-right amount green">' + U.money(d.inc) + '</td>' +
+                    '<td class="t-right amount red">' + U.money(d.out) + '</td>' +
+                    '<td class="t-right amount">' + U.money(d.inc - d.out) + '</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">Is month koi transaction nahi.</td></tr>';
+
+            document.getElementById('dayFoot').innerHTML = dayList.length ?
+                '<tr style="background:#f8fafc"><td style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL</td>' +
+                '<td class="t-right amount">' + o.tx.length + '</td>' +
+                '<td class="t-right amount green">' + U.money(o.inc) + '</td>' +
+                '<td class="t-right amount red">' + U.money(o.out) + '</td>' +
+                '<td class="t-right amount"><b>' + U.money(o.net) + '</b></td></tr>' : '';
+
+            var svc = {};
+            o.tx.forEach(function (t) {
+                var k = t.service || 'Other';
+                if (!svc[k]) svc[k] = { name: k, jobs: 0, amt: 0 };
+                svc[k].jobs++; svc[k].amt += U.num(t.amountReceived);
+            });
+            var svcRows = Object.keys(svc).map(function (k) { return svc[k]; }).sort(function (a, b) { return b.amt - a.amt; });
+            document.getElementById('svcBody').innerHTML = svcRows.length ? svcRows.map(function (s) {
+                return '<tr><td class="small">' + U.esc(s.name) + '</td><td class="t-right">' + s.jobs + '</td>' +
+                    '<td class="t-right amount green">' + U.money(s.amt) + '</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">Koi data nahi.</td></tr>';
+
+            var methods = {};
+            o.tx.forEach(function (t) {
+                var k = t.paymentMethod || 'cash';
+                methods[k] = (methods[k] || 0) + U.num(t.amountReceived);
+            });
+            var mKeys = Object.keys(methods);
+            document.getElementById('methodBody').innerHTML = mKeys.length ? mKeys.map(function (k) {
+                return '<tr><td><span class="badge grey">' + U.esc(k) + '</span></td>' +
+                    '<td class="t-right amount green">' + U.money(methods[k]) + '</td></tr>';
+            }).join('') : '<tr><td colspan="2" class="empty-row">Koi data nahi.</td></tr>';
+        }
+
+        function printReport() {
+            var o = last; if (!o) return;
+            var rows = Object.keys(o.days).sort().map(function (k) {
+                var d = o.days[k];
+                return '<tr><td style="padding:4px 0">' + U.fmtDate(d.date) + '</td><td style="text-align:right">' + U.money(d.inc) + '</td>' +
+                    '<td style="text-align:right">' + U.money(d.out) + '</td></tr>';
+            }).join('');
+
+            document.getElementById('printArea').innerHTML =
+                '<div style="font-family:Inter,Arial,sans-serif;max-width:460px;margin:0 auto;color:#111">' +
+                '<div style="text-align:center;border-bottom:2px dashed #999;padding-bottom:8px;margin-bottom:10px">' +
+                '<h2 style="margin:0;font-size:18px">' + U.esc(cfg.shopName) + '</h2>' +
+                '<div style="font-size:12px">Monthly Report — ' + document.getElementById('monthLabel').textContent + '</div></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:13px;margin:4px 0"><span>Collection</span><b>' + U.money(o.inc) + '</b></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:13px;margin:4px 0"><span>Expenses</span><b>' + U.money(o.out) + '</b></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:14px;margin:6px 0;border-top:1px solid #999;padding-top:6px"><span><b>Net Profit</b></span><b>' + U.money(o.net) + '</b></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:13px;margin:4px 0"><span>Pending Due</span><b>' + U.money(o.pending) + '</b></div>' +
+                '<table style="width:100%;font-size:11.5px;border-collapse:collapse;margin-top:8px;border-top:1px dashed #999">' +
+                '<tr><td style="padding:4px 0"><b>Date</b></td><td style="text-align:right"><b>In</b></td><td style="text-align:right"><b>Out</b></td></tr>' + rows + '</table></div>';
+            window.print();
+        }
+
+        function exportCsv() {
+            var o = last; if (!o) return;
+            var rows = [['Date', 'Transactions', 'Collection', 'Expenses', 'Net']];
+            Object.keys(o.days).sort().forEach(function (k) {
+                var d = o.days[k];
+                rows.push([d.date, d.tx, d.inc, d.out, d.inc - d.out]);
+            });
+            rows.push([]);
+            rows.push(['TOTAL', o.tx.length, o.inc, o.out, o.net]);
+            rows.push(['Pending Due', '', '', '', o.pending]);
+            U.csv('monthly-report-' + o.m + '.csv', rows);
+        }
+    })();
+    </script>
+</body>
+</html>

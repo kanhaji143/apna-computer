@@ -1,0 +1,24 @@
+{
+  "name": "apna-computer-ltd",
+  "version": "1.0.0",
+  "description": "**Live site:** https://apna-computer-ltd.web.app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kanhaji143/apna-computer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kanhaji143/apna-computer/issues"
+  },
+  "homepage": "https://github.com/kanhaji143/apna-computer#readme",
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  }
+}

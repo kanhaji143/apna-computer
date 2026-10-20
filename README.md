@@ -37,10 +37,31 @@ One Firebase project hosting three things:
 
 ```
 public/
-├── index.html          # Multisoftware Hub (marketplace)
-├── crm/                # School CRM (12 pages + assets + data)
+├── index.html          # ✅ NEW Hub (products, samples, CTA)
+├── services.html       # ✅ Website-making service
+├── pricing.html        # ✅ Plans + module-wise quote
+├── about.html          # ✅ Company
+├── contact.html        # ✅ Enquiry form → Firestore hub_leads
+├── assets/
+│   ├── css/hub.css     # shared design system
+│   └── js/hub.js       # shared header/footer/menu
+├── crm/                # School CRM (12 pages + assets)
 └── clothing/           # Clothing CRM (9 pages + assets)
+
+data/                   # JSON originals (web par deploy nahi hote — private)
+└── school/
+    ├── crm-data.json
+    └── fee-structure.json
+
+tools/
+└── upload-school-data.mjs   # JSON → Firestore transfer (REST API, zero-dep)
+
+archive/
+└── index-v1-marketplace.html  # purana landing page (backup)
 ```
+
+> School CRM data ab **Firestore** (`sc_*` collections) me hai — 885 docs + 4 config docs.
+> Details: `FIRESTORE-COLLECTIONS.md` · Master plan: `..\apna-blueprint\COMPLETE-BLUEPRINT.md`
 
 ## 🚀 Deploy
 

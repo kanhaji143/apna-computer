@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Payments — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="payments-pending" data-title="Pending Payments">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Pending Payments</h2><p id="pendingInfo">—</p></div>
+                <div class="actions">
+                    <button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <input class="grow" id="search" placeholder="🔍 Naam, mobile ya receipt...">
+                <select id="age">
+                    <option value="">All pending</option>
+                    <option value="7">7+ days old</option>
+                    <option value="30">30+ days old</option>
+                </select>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Receipt</th><th>Customer</th><th>Service</th><th>Date</th>
+                            <th class="t-right">Total</th><th class="t-right">Received</th><th class="t-right">Due</th><th class="t-right">Actions</th>
+                        </tr></thead>
+                        <tbody id="body"><tr><td colspan="8" class="empty-row">Loading...</td></tr></tbody>
+                        <tfoot id="foot"></tfoot>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, rows = [], cfg = {};
+
+        ['search', 'age'].forEach(function (id) {
+            document.getElementById(id).addEventListener('input', render);
+        });
+
+        S.ready(function (ctx) {
+            cfg = ctx.config;
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            load();
+        });
+
+        function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
+
+        function load() {
+            S.all(S.coll.transactions).then(function (r) {
+                rows = r.filter(function (t) { return due(t) > 0; }).sort(U.byDateDesc('transactionDate'));
+                render();
+            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function daysOld(dateStr) {
+            if (!dateStr) return 0;
+            var d = new Date(dateStr + 'T00:00:00');
+            return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
+        }
+
+        function render() {
+            var q = document.getElementById('search').value.trim().toLowerCase();
+            var age = Number(document.getElementById('age').value || 0);
+            var list = rows.filter(function (t) {
+                if (age && daysOld(t.transactionDate) < age) return false;
+                if (q && [t.customerName, t.mobile, t.receiptNumber, t.service].join(' ').toLowerCase().indexOf(q) < 0) return false;
+                return true;
+            });
+
+            var total = list.reduce(function (s, t) { return s + due(t); }, 0);
+            document.getElementById('pendingInfo').textContent = list.length + ' pending · Total due ' + U.money(total);
+
+            var b = document.getElementById('body');
+            b.innerHTML = list.length ? list.map(function (t) {
+                var d = due(t), old = daysOld(t.transactionDate);
+                return '<tr>' +
+                    '<td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b></td>' +
+                    '<td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.mobile || '') + '</span></td>' +
+                    '<td class="small muted">' + U.esc(t.service) + '</td>' +
+                    '<td class="t-nowrap small muted">' + U.fmtDate(t.transactionDate) +
+                        (old > 0 ? '<span class="subtle" style="color:' + (old > 30 ? 'var(--red)' : 'var(--amber)') + '">' + old + ' din purana</span>' : '') + '</td>' +
+                    '<td class="t-right amount">' + U.money(t.totalAmount) + '</td>' +
+                    '<td class="t-right amount green">' + U.money(t.amountReceived) + '</td>' +
+                    '<td class="t-right amount red">' + U.money(d) + '</td>' +
+                    '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
+                    '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" title="WhatsApp reminder" href="' +
+                    U.waLink(t.mobile, 'Namaste ' + t.customerName + ', aapka ' + U.money(d) + ' payment pending hai (' + (t.receiptNumber || '') + '). Kripya shop par aa kar payment karein. — ' + cfg.shopName) +
+                    '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
+                    '<a class="btn btn-ghost btn-sm btn-icon" title="Collect" href="/shop/admin/payments.html"><i class="fas fa-hand-holding-dollar"></i></a>' +
+                    '</div></td></tr>';
+            }).join('') : '<tr><td colspan="8" class="empty-row">Koi pending payment nahi 🎉</td></tr>';
+
+            document.getElementById('foot').innerHTML = list.length ?
+                '<tr style="background:#f8fafc"><td colspan="4" style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL (' + list.length + ')</td>' +
+                '<td class="t-right amount">' + U.money(U.sum(list, 'totalAmount')) + '</td>' +
+                '<td class="t-right amount green">' + U.money(U.sum(list, 'amountReceived')) + '</td>' +
+                '<td class="t-right amount red">' + U.money(total) + '</td><td></td></tr>' : '';
+        }
+
+        function exportCsv() {
+            var data = [['Receipt', 'Customer', 'Mobile', 'Service', 'Date', 'Total', 'Received', 'Due', 'Days Old']];
+            rows.forEach(function (t) {
+                data.push([t.receiptNumber, t.customerName, t.mobile, t.service, t.transactionDate,
+                    U.num(t.totalAmount), U.num(t.amountReceived), due(t), daysOld(t.transactionDate)]);
+            });
+            U.csv('pending-payments.csv', data);
+        }
+    })();
+    </script>
+</body>
+</html>

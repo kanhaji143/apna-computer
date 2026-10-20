@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Export — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="reports" data-title="Reports & Export">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Reports &amp; Export</h2><p id="rangeLabel">—</p></div>
+                <div class="actions">
+                    <input type="date" id="from" class="btn btn-ghost" style="font-weight:600">
+                    <input type="date" id="to" class="btn btn-ghost" style="font-weight:600">
+                    <button class="btn btn-primary btn-sm" id="applyBtn"><i class="fas fa-filter"></i> Apply</button>
+                </div>
+            </div>
+
+            <div class="kpis">
+                <div class="kpi green"><div class="kpi-label">Collection</div><div class="kpi-value" id="kIn">₹0</div></div>
+                <div class="kpi red"><div class="kpi-label">Expenses</div><div class="kpi-value" id="kOut">₹0</div></div>
+                <div class="kpi"><div class="kpi-label">Net</div><div class="kpi-value" id="kNet">₹0</div></div>
+                <div class="kpi amber"><div class="kpi-label">Pending Due</div><div class="kpi-value" id="kDue">₹0</div></div>
+            </div>
+
+            <div class="grid-2" style="align-items:start">
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-chart-pie" style="color:var(--brand-2)"></i> Service-wise</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Service</th><th class="t-right">Jobs</th><th class="t-right">Billed</th><th class="t-right">Collected</th></tr></thead>
+                            <tbody id="svcBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-tags" style="color:var(--accent)"></i> Expense Categories</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Category</th><th class="t-right">Count</th><th class="t-right">Amount</th></tr></thead>
+                            <tbody id="catBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:16px">
+                <div class="card-head"><h3><i class="fas fa-download" style="color:var(--green)"></i> Download Data</h3></div>
+                <div class="card-body">
+                    <div class="grid-3">
+                        <div class="value-card" style="border:1px solid var(--border);border-radius:10px;padding:14px">
+                            <b style="font-size:13px;display:block;margin-bottom:4px">Transactions</b>
+                            <p class="small muted" style="margin-bottom:10px">Selected range ki sabhi transactions.</p>
+                            <button class="btn btn-ghost btn-sm" id="exTx"><i class="fas fa-file-csv"></i> Export</button>
+                        </div>
+                        <div class="value-card" style="border:1px solid var(--border);border-radius:10px;padding:14px">
+                            <b style="font-size:13px;display:block;margin-bottom:4px">Expenses</b>
+                            <p class="small muted" style="margin-bottom:10px">Selected range ke expenses.</p>
+                            <button class="btn btn-ghost btn-sm" id="exEx"><i class="fas fa-file-csv"></i> Export</button>
+                        </div>
+                        <div class="value-card" style="border:1px solid var(--border);border-radius:10px;padding:14px">
+                            <b style="font-size:13px;display:block;margin-bottom:4px">Full Summary</b>
+                            <p class="small muted" style="margin-bottom:10px">Service + category + totals.</p>
+                            <button class="btn btn-ghost btn-sm" id="exAll"><i class="fas fa-file-csv"></i> Export</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, TX = [], EX = [], last = null;
+
+        S.ready(function () {
+            var today = U.todayISO();
+            document.getElementById('from').value = today.slice(0, 7) + '-01';
+            document.getElementById('to').value = today;
+            document.getElementById('applyBtn').addEventListener('click', load);
+            document.getElementById('exTx').addEventListener('click', exportTx);
+            document.getElementById('exEx').addEventListener('click', exportEx);
+            document.getElementById('exAll').addEventListener('click', exportAll);
+            load();
+        });
+
+        function load() {
+            Promise.all([S.all(S.coll.transactions), S.all(S.coll.expenses)])
+                .then(function (r) { TX = r[0]; EX = r[1]; render(); })
+                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
+
+        function calc() {
+            var from = document.getElementById('from').value, to = document.getElementById('to').value;
+            var tx = TX.filter(function (t) { return t.transactionDate >= from && t.transactionDate <= to; });
+            var ex = EX.filter(function (e) { return e.expenseDate >= from && e.expenseDate <= to; });
+            var inc = U.sum(tx, 'amountReceived'), out = U.sum(ex, 'amount');
+            var pending = tx.reduce(function (s, t) { return s + due(t); }, 0);
+            return { from: from, to: to, tx: tx, ex: ex, inc: inc, out: out, net: inc - out, pending: pending };
+        }
+
+        function render() {
+            var o = calc(); last = o;
+            document.getElementById('rangeLabel').textContent = U.fmtDate(o.from) + ' — ' + U.fmtDate(o.to);
+            document.getElementById('kIn').textContent = U.money(o.inc);
+            document.getElementById('kOut').textContent = U.money(o.out);
+            document.getElementById('kNet').textContent = U.money(o.net);
+            document.getElementById('kDue').textContent = U.money(o.pending);
+
+            var svc = {};
+            o.tx.forEach(function (t) {
+                var k = t.service || 'Other';
+                if (!svc[k]) svc[k] = { jobs: 0, billed: 0, collected: 0 };
+                svc[k].jobs++; svc[k].billed += U.num(t.totalAmount); svc[k].collected += U.num(t.amountReceived);
+            });
+            var sk = Object.keys(svc).sort(function (a, b) { return svc[b].collected - svc[a].collected; });
+            document.getElementById('svcBody').innerHTML = sk.length ? sk.map(function (k) {
+                return '<tr><td class="small">' + U.esc(k) + '</td><td class="t-right">' + svc[k].jobs + '</td>' +
+                    '<td class="t-right">' + U.money(svc[k].billed) + '</td>' +
+                    '<td class="t-right amount green">' + U.money(svc[k].collected) + '</td></tr>';
+            }).join('') : '<tr><td colspan="4" class="empty-row">Koi data nahi.</td></tr>';
+
+            var cat = {};
+            o.ex.forEach(function (e) {
+                var k = e.category || 'other';
+                if (!cat[k]) cat[k] = { n: 0, amt: 0 };
+                cat[k].n++; cat[k].amt += U.num(e.amount);
+            });
+            var ck = Object.keys(cat).sort(function (a, b) { return cat[b].amt - cat[a].amt; });
+            document.getElementById('catBody').innerHTML = ck.length ? ck.map(function (k) {
+                return '<tr><td class="small"><span class="badge grey">' + U.esc(k) + '</span></td>' +
+                    '<td class="t-right">' + cat[k].n + '</td>' +
+                    '<td class="t-right amount red">' + U.money(cat[k].amt) + '</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">Koi expense nahi.</td></tr>';
+        }
+
+        function exportTx() {
+            var o = last || calc();
+            var rows = [['Receipt', 'Date', 'Customer', 'Mobile', 'Service', 'Total', 'Received', 'Due', 'Status', 'Method']];
+            o.tx.forEach(function (t) {
+                rows.push([t.receiptNumber, t.transactionDate, t.customerName, t.mobile, t.service,
+                    U.num(t.totalAmount), U.num(t.amountReceived), due(t), t.paymentStatus, t.paymentMethod || '']);
+            });
+            U.csv('transactions-' + o.from + '-to-' + o.to + '.csv', rows);
+        }
+
+        function exportEx() {
+            var o = last || calc();
+            var rows = [['Title', 'Category', 'Date', 'Method', 'Amount', 'Notes']];
+            o.ex.forEach(function (e) {
+                rows.push([e.title, e.category, e.expenseDate, e.paymentMethod || '', U.num(e.amount), e.notes || '']);
+            });
+            U.csv('expenses-' + o.from + '-to-' + o.to + '.csv', rows);
+        }
+
+        function exportAll() {
+            var o = last || calc();
+            var rows = [['SUMMARY', o.from + ' to ' + o.to], [],
+                ['Collection', U.num(o.inc)], ['Expenses', U.num(o.out)], ['Net', U.num(o.net)], ['Pending Due', U.num(o.pending)], [],
+                ['SERVICE', 'JOBS', 'BILLED', 'COLLECTED']];
+            var svc = {};
+            o.tx.forEach(function (t) {
+                var k = t.service || 'Other';
+                if (!svc[k]) svc[k] = [0, 0, 0];
+                svc[k][0]++; svc[k][1] += U.num(t.totalAmount); svc[k][2] += U.num(t.amountReceived);
+            });
+            Object.keys(svc).forEach(function (k) { rows.push([k].concat(svc[k])); });
+            rows.push([], ['EXPENSE CATEGORY', 'COUNT', 'AMOUNT']);
+            var cat = {};
+            o.ex.forEach(function (e) {
+                var k = e.category || 'other';
+                if (!cat[k]) cat[k] = [0, 0];
+                cat[k][0]++; cat[k][1] += U.num(e.amount);
+            });
+            Object.keys(cat).forEach(function (k) { rows.push([k].concat(cat[k])); });
+            U.csv('full-report-' + o.from + '-to-' + o.to + '.csv', rows);
+        }
+    })();
+    </script>
+</body>
+</html>

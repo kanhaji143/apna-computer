@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apna Online Center — आपकी हर डिजिटल ज़रूरत, एक ही जगह</title>
+    <meta name="description" content="आधार, पैन कार्ड, ऑनलाइन फॉर्म, टिकट बुकिंग, मनी ट्रांसफर, प्रिंट और बिल पेमेंट — सभी डिजिटल सेवाएं एक ही सेंटर पर।">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+    <link rel="stylesheet" href="/shop/assets/shop-decor.css">
+</head>
+<body>
+
+    <!-- ================= TOP BAR ================= -->
+    <div class="topbar-site">
+        <div class="topbar-inner">
+            <span class="tb"><i class="fas fa-phone"></i> <a href="tel:+918504985149" class="js-phone">+91 85049 85149</a></span>
+            <span class="tb tb-hours"><i class="fas fa-clock"></i> <span class="js-hours">Mon – Sat · 9:00 AM – 7:00 PM</span></span>
+            <span class="sp"></span>
+            <span class="tb"><i class="fas fa-location-dot"></i> <span class="js-address">Amethi, Uttar Pradesh</span></span>
+            <span class="tb-social">
+                <a href="#" class="js-wa" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="mailto:kanhadigimkt@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+            </span>
+            <a href="/shop/admin/" class="tb-admin"><i class="fas fa-lock"></i> Admin Login</a>
+        </div>
+    </div>
+
+    <!-- ================= HEADER ================= -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a href="/shop/" class="site-brand">
+                <span class="logo">A</span>
+                <span><b id="brandName">Apna Online Center</b><small>Digital Seva Kendra</small></span>
+            </a>
+            <nav class="site-nav">
+                <a href="#services">सेवाएं</a>
+                <a href="#tools">टूल्स</a>
+                <a href="#request">आवेदन</a>
+                <a href="#notices">सूचनाएं</a>
+                <a href="#contact">संपर्क</a>
+                <a href="tel:+918504985149" class="nav-call js-phone-link" style="font-weight:700;color:#0f172a"><i class="fas fa-phone" style="color:var(--green)"></i> <span class="js-phone-num">+91 85049 85149</span></a>
+                <a href="/shop/login.html" class="nav-login"><i class="fas fa-user-lock"></i> Staff Login</a>
+                <a href="#" class="nav-wa js-wa" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= HERO BANNER ================= -->
+    <section class="hero-v2">
+        <span class="hero-orb o1"></span>
+        <span class="hero-orb o2"></span>
+        <div class="hero-watermark">APNA</div>
+        <div class="hero-wrap">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <span class="hero-badge"><i class="fas fa-star"></i> अमेठी का भरोसेमंद डिजिटल सेंटर</span>
+                    <h1 class="hero-title">अपना <span class="hi">ऑनलाइन सेंटर</span></h1>
+                    <div class="hero-subtitle">हर ज़रूरत का हल, <span>अब सिर्फ़ एक क्लिक दूर</span></div>
+                    <p class="hero-tagline">
+                        आधार-पैन से लेकर टिकट बुकिंग और बिल पेमेंट तक — हर छोटा-बड़ा काम एक ही छत के नीचे।
+                        <b style="color:#fff">घर बैठे आवेदन भेजिए, बाकी सब हम संभालेंगे</b> — भरोसे के साथ, सही समय पर।
+                    </p>
+
+                    <div class="hero-search">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input id="heroSearch" placeholder="क्या करना है? जैसे PAN, टिकट, फॉर्म...">
+                        <button type="button" id="heroSearchBtn">खोजें</button>
+                    </div>
+
+                    <div class="hero-cta">
+                        <a href="#services" class="btn btn-orange" style="padding:11px 20px"><i class="fas fa-grip"></i> सेवाएं देखें</a>
+                        <a href="#" class="btn js-wa" target="_blank" rel="noopener" style="padding:11px 20px;background:#25D366;color:#fff"><i class="fab fa-whatsapp" style="font-size:16px"></i> WhatsApp पर बात करें</a>
+                        <a href="#tools" class="btn btn-light" style="padding:11px 20px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3)"><i class="fas fa-toolbox"></i> मुफ़्त टूल्स</a>
+                    </div>
+
+                    <div class="hero-trust">
+                        <span><i class="fas fa-circle-check"></i> 100% सुरक्षित</span>
+                        <span><i class="fas fa-circle-check"></i> उसी दिन काम</span>
+                        <span><i class="fas fa-circle-check"></i> साफ़-सुथरे रेट</span>
+                        <span><i class="fas fa-circle-check"></i> पूरा सहयोग</span>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-ring"><div class="core">A</div></div>
+                    <div class="float-chip c1"><i class="fas fa-id-card"></i> आधार सेवा <b>✓</b></div>
+                    <div class="float-chip c2"><i class="fas fa-address-card"></i> PAN कार्ड</div>
+                    <div class="float-chip c3"><i class="fas fa-bus"></i> टिकट बुकिंग</div>
+                    <div class="float-chip c4"><i class="fas fa-money-bill-transfer"></i> मनी ट्रांसफर <b>✓</b></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-strip">
+            <div class="hero-strip-inner">
+                <a href="#services" class="strip-item"><i class="fas fa-id-card"></i> आधार सेवा</a>
+                <a href="#services" class="strip-item"><i class="fas fa-address-card"></i> पैन कार्ड</a>
+                <a href="#services" class="strip-item"><i class="fas fa-train"></i> टिकट बुकिंग</a>
+                <a href="#services" class="strip-item"><i class="fas fa-money-bill-transfer"></i> मनी ट्रांसफर</a>
+                <a href="#services" class="strip-item"><i class="fas fa-file-lines"></i> ऑनलाइन फॉर्म</a>
+                <a href="#services" class="strip-item"><i class="fas fa-print"></i> प्रिंट / ज़ेरॉक्स</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= HIGHLIGHTS ================= -->
+    <section class="stats-band-wrap" aria-label="Center highlights">
+        <div class="stats-band">
+            <div class="stat"><span class="si"><i class="fas fa-layer-group"></i></span><span><b>20+</b><small>डिजिटल सेवाएं एक जगह</small></span></div>
+            <div class="stat"><span class="si"><i class="fas fa-toolbox"></i></span><span><b>6</b><small>मुफ़्त ऑनलाइन टूल्स</small></span></div>
+            <div class="stat"><span class="si"><i class="fas fa-clock"></i></span><span><b>9–7</b><small>सोम से शनि खुला</small></span></div>
+            <div class="stat"><span class="si"><i class="fas fa-shield-halved"></i></span><span><b>100%</b><small>दस्तावेज़ सुरक्षित</small></span></div>
+        </div>
+    </section>
+
+    <!-- ================= ONLINE TOOLS ================= -->
+    <section class="section-v2" id="tools">
+        <div class="shop-wrap">
+            <div class="section-head-v2">
+                <span class="eyebrow2"><i class="fas fa-wand-magic-sparkles"></i> Free Online Tools</span>
+                <h2>फ्री ऑनलाइन टूल्स</h2>
+                <p>फोटो, PDF और टेक्स्ट के छोटे-मोटे काम — बिना सॉफ्टवेयर, बिना इंतज़ार, बिल्कुल मुफ़्त।</p>
+            </div>
+
+            <div class="tools-grid">
+                <button class="tool-card" data-tool="resize">
+                    <span class="ti"><i class="fas fa-crop-simple"></i></span>
+                    <span><b>फोटो रीसाइज़ <span class="en" style="font-size:10px;color:var(--light)">Photo Height &amp; Width</span></b>
+                    <span>फॉर्म फोटो का साइज़ और पिक्सल सेट करें</span></span>
+                </button>
+                <button class="tool-card" data-tool="compress">
+                    <span class="ti"><i class="fas fa-compress"></i></span>
+                    <span><b>फोटो कंप्रेस <span class="en" style="font-size:10px;color:var(--light)">Photo Compress</span></b>
+                    <span>साइज़ घटाएं, क्वालिटी बनाए रखें</span></span>
+                </button>
+                <button class="tool-card" data-tool="img2pdf">
+                    <span class="ti"><i class="fas fa-file-pdf"></i></span>
+                    <span><b>JPG से PDF <span class="en" style="font-size:10px;color:var(--light)">JPG to PDF</span></b>
+                    <span>कई फोटो को एक PDF में बदलें</span></span>
+                </button>
+                <button class="tool-card" data-tool="pdf2jpg">
+                    <span class="ti"><i class="fas fa-file-image"></i></span>
+                    <span><b>PDF से JPG <span class="en" style="font-size:10px;color:var(--light)">PDF to JPG</span></b>
+                    <span>PDF के हर पेज की साफ़ JPG इमेज</span></span>
+                </button>
+                <button class="tool-card" data-tool="txt2pdf">
+                    <span class="ti"><i class="fas fa-file-lines"></i></span>
+                    <span><b>टेक्स्ट से PDF <span class="en" style="font-size:10px;color:var(--light)">Text to PDF</span></b>
+                    <span>लिखिए और सीधे PDF बनाकर सेव करें</span></span>
+                </button>
+                <button class="tool-card" data-tool="convert">
+                    <span class="ti"><i class="fas fa-arrows-rotate"></i></span>
+                    <span><b>इमेज कन्वर्टर <span class="en" style="font-size:10px;color:var(--light)">PNG / JPG / WebP</span></b>
+                    <span>JPG, PNG और WebP में तुरंत बदलें</span></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section class="section-v2 alt" id="services">
+        <div class="shop-wrap">
+            <div class="section-head-v2">
+                <span class="eyebrow2"><i class="fas fa-hand-holding-heart"></i> Our Services</span>
+                <h2>आपकी रोज़मर्रा की सेवाएं</h2>
+                <p>सरकारी काम हों या रोज़ की ज़रूरत — सब कुछ एक ही छत के नीचे, बिना भागदौड़।</p>
+            </div>
+
+            <div class="svc-grid" id="svcGrid">
+                <a href="#request" class="svc-card" data-svc="Aadhaar Services" data-name="आधार सेवा aadhaar">
+                    <em class="tag hot">सबसे लोकप्रिय</em>
+                    <span class="si"><i class="fas fa-id-card"></i></span>
+                    <span><b>आधार सेवा <span class="en">Aadhaar Services</span></b><span>अपडेट, सुधार, प्रिंट और डाउनलोड — सब एक जगह</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="PAN Card" data-name="पैन कार्ड pan">
+                    <span class="si"><i class="fas fa-address-card"></i></span>
+                    <span><b>पैन कार्ड <span class="en">PAN Card</span></b><span>नया बनवाएं, सुधार करवाएं, प्रिंट निकलवाएं</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Voter ID" data-name="वोटर आईडी voter">
+                    <span class="si"><i class="fas fa-check-to-slot"></i></span>
+                    <span><b>वोटर आईडी <span class="en">Voter ID</span></b><span>नया वोटर कार्ड, सुधार और डिजिटल कॉपी</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Money Transfer" data-name="मनी ट्रांसफर money transfer">
+                    <span class="si"><i class="fas fa-money-bill-transfer"></i></span>
+                    <span><b>मनी ट्रांसफर <span class="en">Money Transfer</span></b><span>बैंक खाते और वॉलेट में तुरंत पैसे भेजें</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#ticket" class="svc-card" data-svc="Ticket Booking" data-name="टिकट बुकिंग ticket bus train flight">
+                    <em class="tag fast">तेज़ बुकिंग</em>
+                    <span class="si"><i class="fas fa-bus"></i></span>
+                    <span><b>टिकट बुकिंग <span class="en">Ticket Booking</span></b><span>बस, ट्रेन, फ्लाइट — सीट चुनकर बुक करवाएं</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Online Form" data-name="ऑनलाइन फॉर्म online form">
+                    <span class="si"><i class="fas fa-file-lines"></i></span>
+                    <span><b>ऑनलाइन फॉर्म <span class="en">Online Forms</span></b><span>सरकारी-प्राइवेट फॉर्म, आवेदन से प्रिंट तक</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Photo Print" data-name="प्रिंट ज़ेरॉक्स print xerox scan">
+                    <span class="si"><i class="fas fa-print"></i></span>
+                    <span><b>प्रिंट &amp; ज़ेरॉक्स <span class="en">Print &amp; Xerox</span></b><span>कलर प्रिंट, कॉपी और स्कैन — मिनटों में</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Bill Payment" data-name="बिल पेमेंट bill payment">
+                    <span class="si"><i class="fas fa-file-invoice-dollar"></i></span>
+                    <span><b>बिल पेमेंट <span class="en">Bill Payments</span></b><span>बिजली, पानी, मोबाइल और DTH — एक क्लिक</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Lamination" data-name="फोटो लेमिनेशन photo lamination">
+                    <span class="si"><i class="fas fa-image"></i></span>
+                    <span><b>फोटो &amp; लेमिनेशन <span class="en">Photo &amp; Lamination</span></b><span>पासपोर्ट फोटो और टिकाऊ लेमिनेशन</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <a href="#request" class="svc-card" data-svc="Other" data-name="छात्रवृत्ति scholarship form">
+                    <span class="si"><i class="fas fa-graduation-cap"></i></span>
+                    <span><b>छात्रवृत्ति फॉर्म <span class="en">Scholarship</span></b><span>ऑनलाइन आवेदन और स्टेटस — पूरा सहयोग</span></span>
+                    <span class="go"><i class="fas fa-arrow-right"></i></span>
+                </a>
+            </div>
+
+            <div class="svc-more">
+                <a href="#request" class="btn btn-primary" style="padding:11px 22px"><i class="fas fa-list"></i> मुझे अपनी सेवा चुननी है →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= REQUEST + TICKET ================= -->
+    <section class="section-v2 alt" id="request">
+        <div class="shop-wrap">
+            <div class="section-head-v2">
+                <span class="eyebrow2"><i class="fas fa-paper-plane"></i> Apply Online</span>
+                <h2>फॉर्म भरिए, बाकी हम देख लेंगे</h2>
+                <p>2 मिनट में आवेदन — हम कॉल करके अगला स्टेप और ज़रूरी कागज़ात बता देंगे।</p>
+            </div>
+
+            <div class="grid-2" style="gap:20px;align-items:start">
+                <div class="card" id="requestCard">
+                    <div class="card-head"><h3><i class="fas fa-paper-plane" style="color:var(--brand-2)"></i> सेवा आवेदन · Service Request</h3></div>
+                    <div class="card-body">
+                        <form id="reqForm">
+                            <div class="form-grid">
+                                <div class="field"><label>आपका नाम / Your Name *</label><input name="customerName" required placeholder="पूरा नाम"></div>
+                                <div class="field"><label>मोबाइल नंबर / Mobile *</label><input name="mobile" required type="tel" placeholder="10-digit mobile"></div>
+                                <div class="field full"><label>सेवा चुनें / Select Service *</label>
+                                    <select name="serviceName" required id="reqService">
+                                        <option value="">सेवा चुनें...</option>
+                                        <option>Aadhaar Services</option><option>PAN Card</option><option>Voter ID</option>
+                                        <option>Money Transfer</option><option>Online Form</option>
+                                        <option>Photo Print</option><option>Lamination</option><option>Bill Payment</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="field full"><label>अपना काम लिखें / Message *</label><textarea name="message" required placeholder="क्या काम है, थोड़ा विस्तार से लिखें..."></textarea></div>
+                            </div>
+                            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i> आवेदन भेजें</button></div>
+                            <p class="small" id="reqStatus" style="margin-top:10px;display:none"></p>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card" id="ticket">
+                    <div class="card-head"><h3><i class="fas fa-bus" style="color:var(--accent)"></i> टिकट पूछताछ · Ticket Enquiry</h3></div>
+                    <div class="card-body">
+                        <form id="ticketForm">
+                            <div class="form-grid">
+                                <div class="field"><label>नाम / Name *</label><input name="customerName" required placeholder="पूरा नाम"></div>
+                                <div class="field"><label>मोबाइल / Mobile *</label><input name="mobile" required type="tel" placeholder="10-digit mobile"></div>
+                                <div class="field"><label>कहाँ से / From *</label><input name="journeyFrom" required placeholder="जैसे: Amethi"></div>
+                                <div class="field"><label>कहाँ तक / To *</label><input name="journeyTo" required placeholder="जैसे: Delhi"></div>
+                                <div class="field"><label>यात्रा तिथि / Date *</label><input name="journeyDate" type="date" required></div>
+                                <div class="field"><label>यात्री / Passengers</label><input name="passengers" type="number" min="1" value="1"></div>
+                                <div class="field full"><label>मैसेज / Message</label><textarea name="message" placeholder="बस / ट्रेन / फ्लाइट की पसंद..."></textarea></div>
+                            </div>
+                            <div class="form-actions"><button class="btn btn-orange" type="submit"><i class="fas fa-paper-plane"></i> पूछताछ भेजें</button></div>
+                            <p class="small" id="ticketStatus" style="margin-top:10px;display:none"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= WHY US ================= -->
+    <section class="section-v2">
+        <div class="shop-wrap">
+            <div class="section-head-v2">
+                <span class="eyebrow2"><i class="fas fa-heart"></i> Why Choose Us</span>
+                <h2>हमें क्यों चुनें?</h2>
+                <p>भरोसा, तेज़ी और साफ़ बात — यही हमारी पहचान है।</p>
+            </div>
+            <div class="why-grid">
+                <div class="why-card"><div class="wi"><i class="fas fa-shield-halved"></i></div><b>आपके दस्तावेज़, पूरी तरह सुरक्षित</b><p>आधार-पैन जैसे कागज़ात गोपनीय तरीके से संभाले जाते हैं।</p></div>
+                <div class="why-card"><div class="wi"><i class="fas fa-bolt"></i></div><b>काम उसी दिन, बिना लाइन</b><p>ज़्यादातर सेवाएं उसी दिन पूरी — लंबा इंतज़ार नहीं।</p></div>
+                <div class="why-card"><div class="wi"><i class="fas fa-indian-rupee-sign"></i></div><b>रेट साफ़, छिपा चार्ज नहीं</b><p>काम शुरू होने से पहले पूरा खर्च बता देते हैं।</p></div>
+                <div class="why-card"><div class="wi"><i class="fas fa-headset"></i></div><b>फोन और WhatsApp, साथ में</b><p>सोम–शनि, 9 से 7 — जब भी ज़रूरत हो, हम मिलेंगे।</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="section-v2 alt">
+        <div class="shop-wrap">
+            <div class="section-head-v2">
+                <span class="eyebrow2"><i class="fas fa-route"></i> How It Works</span>
+                <h2>सिर्फ़ 4 कदम में काम पूरा</h2>
+                <p>ना फॉर्म की उलझन, ना लाइन की परेशानी — बस 4 आसान स्टेप।</p>
+            </div>
+            <div class="steps-v2">
+                <div class="step-v2"><div class="num">1</div><b>बात करें</b><p>WhatsApp, फोन या वेबसाइट से अपना काम बताएं।</p></div>
+                <div class="step-v2"><div class="num">2</div><b>कागज़ दें</b><p>ज़रूरी दस्तावेज़ की फोटो या कॉपी भेज दें।</p></div>
+                <div class="step-v2"><div class="num">3</div><b>हम काम करें</b><p>प्रक्रिया शुरू — हर अपडेट आपको मिलता रहेगा।</p></div>
+                <div class="step-v2"><div class="num">4</div><b>काम मुकम्मल</b><p>तैयार दस्तावेज़ लेकर घर जाएं — बस!</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= NOTICES ================= -->
+    <section class="section-v2" id="notices">
+        <div class="shop-wrap">
+            <div class="section-head-v2">
+                <span class="eyebrow2"><i class="fas fa-bullhorn"></i> Updates</span>
+                <h2>सूचनाएं और अपडेट</h2>
+                <p>नई सेवा, समय में बदलाव या ज़रूरी जानकारी — सब यहीं मिलेगी।</p>
+            </div>
+            <div class="notice-list" id="noticeList" style="max-width:840px;margin:0 auto">
+                <div class="notice-item"><b>Loading...</b><p>सूचनाएं आ रहे हैं।</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CONTACT BAND ================= -->
+    <section class="contact-band" id="contact">
+        <div class="contact-band-inner">
+            <div>
+                <h2>बात कीजिए, देर किस बात की?</h2>
+                <p>कोई सवाल, कोई उलझन — एक कॉल या WhatsApp, और हम हाज़िर हैं।</p>
+                <div class="cb-info">
+                    <span><i class="fas fa-phone"></i> <a href="tel:+918504985149" class="js-phone" style="color:#fff">+91 85049 85149</a></span>
+                    <span><i class="fas fa-clock"></i> <span class="js-hours">Mon – Sat · 9:00 AM – 7:00 PM</span></span>
+                    <span><i class="fas fa-location-dot"></i> <span class="js-address">Amethi, Uttar Pradesh</span></span>
+                </div>
+            </div>
+            <div class="cb-actions">
+                <a href="tel:+918504985149" class="btn" style="background:#fff;color:#0f172a;padding:11px 20px"><i class="fas fa-phone"></i> अभी कॉल करें</a>
+                <a href="#" class="btn js-wa" target="_blank" rel="noopener" style="background:#25D366;color:#fff;padding:11px 20px"><i class="fab fa-whatsapp" style="font-size:16px"></i> WhatsApp पर बात करें</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer-v2">
+        <div class="f-inner">
+            <div class="f-grid">
+                <div>
+                    <div class="f-brand"><span class="logo">A</span><span><b id="footName">Apna Online Center</b><small>Digital Seva Kendra</small></span></div>
+                    <p>आधार, पैन, फॉर्म, टिकट, बिल पेमेंट और मुफ़्त ऑनलाइन टूल्स — आपके अपने शहर में, आपके अपने सेंटर पर।</p>
+                    <div class="f-social">
+                        <a href="#" class="js-wa" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="tel:+918504985149" title="Call"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:kanhadigimkt@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4>लोकप्रिय सेवाएं</h4>
+                    <a href="#services">आधार सेवा</a>
+                    <a href="#services">पैन कार्ड</a>
+                    <a href="#ticket">टिकट बुकिंग</a>
+                    <a href="#services">मनी ट्रांसफर</a>
+                    <a href="#services">ऑनलाइन फॉर्म</a>
+                </div>
+                <div>
+                    <h4>ज़रूरी लिंक</h4>
+                    <a href="#tools">मुफ़्त टूल्स</a>
+                    <a href="#request">आवेदन भेजें</a>
+                    <a href="#notices">सूचनाएं</a>
+                    <a href="/shop/login.html">Staff Login</a>
+                    <a href="/">Apna Computer Hub</a>
+                </div>
+                <div>
+                    <h4>संपर्क</h4>
+                    <a href="tel:+918504985149" class="js-phone">+91 85049 85149</a>
+                    <a href="mailto:kanhadigimkt@gmail.com">kanhadigimkt@gmail.com</a>
+                    <a href="#contact" class="js-address">Amethi, Uttar Pradesh</a>
+                    <div class="wa-box">
+                        <div style="font-size:11px;margin-bottom:5px">WhatsApp पर तुरंत जवाब</div>
+                        <a href="#" class="js-wa" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> चैट शुरू करें →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="f-bottom">
+                <span>© <span id="year"></span> <span id="footName2">Apna Online Center</span> · All rights reserved.</span>
+                <span>Powered by <a href="/" style="display:inline;color:#94a3b8">Apna Computer</a></span>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#" class="float-wa js-wa" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+
+    <!-- ================= TOOL MODAL ================= -->
+    <div class="modal-backdrop" id="toolModal">
+        <div class="modal">
+            <div class="modal-head"><h3 id="toolTitle">Tool</h3><button class="x" data-tclose><i class="fas fa-xmark"></i></button></div>
+            <div class="modal-body" id="toolBody"></div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" data-tclose>बंद करें</button>
+                <button class="btn btn-primary" id="toolRun"><i class="fas fa-download"></i> डाउनलोड</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui;
+        var cfg = {};
+        var toolState = { type: null, file: null, img: null };
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        function show(el, msg, ok) {
+            el.style.display = 'block';
+            el.textContent = msg;
+            el.style.color = ok ? '#16a34a' : '#dc2626';
+            el.style.fontWeight = '600';
+        }
+        function val(form, name) {
+            var f = form.querySelector('[name="' + name + '"]');
+            return f ? f.value.trim() : '';
+        }
+
+        /* ---------- config + notices ---------- */
+        S.ready(function (ctx) {
+            cfg = ctx.config;
+            var phoneClean = String(cfg.phone || '').replace(/[^0-9]/g, '');
+            var phoneTel = '+' + phoneClean;
+            document.getElementById('brandName').textContent = cfg.shopName;
+            document.getElementById('footName').textContent = cfg.shopName;
+            document.getElementById('footName2').textContent = cfg.shopName;
+            document.title = cfg.shopName + ' — आपकी हर डिजिटल ज़रूरत, एक ही जगह';
+
+            document.querySelectorAll('.js-phone').forEach(function (el) {
+                el.textContent = cfg.phone;
+                if (el.tagName === 'A') el.href = 'tel:' + phoneTel;
+            });
+            document.querySelectorAll('.js-phone-link').forEach(function (el) { el.href = 'tel:' + phoneTel; });
+            document.querySelectorAll('.js-phone-num').forEach(function (el) { el.textContent = cfg.phone; });
+            document.querySelectorAll('.js-hours').forEach(function (el) { el.textContent = cfg.hours; });
+            document.querySelectorAll('.js-address').forEach(function (el) { el.textContent = cfg.address; });
+            document.querySelectorAll('.js-wa').forEach(function (el) {
+                el.href = 'https://wa.me/' + phoneClean + '?text=' + encodeURIComponent('नमस्ते! मुझे आपकी सेवाओं के बारे में जानकारी चाहिए।');
+                el.target = '_blank';
+            });
+
+            S.all(S.coll.notices).then(function (rows) {
+                rows = rows.filter(function (n) { return n.isActive !== false; }).sort(U.byDateDesc('createdAt'));
+                var box = document.getElementById('noticeList');
+                if (!rows.length) { box.innerHTML = '<div class="notice-item"><b>अभी कोई सूचनाएं नहीं</b><p>नई अपडेट जल्द आ रही हैं।</p></div>'; return; }
+                box.innerHTML = rows.map(function (n) {
+                    var imgHtml = n.imageUrl ? '<div class="notice-img"><img src="' + U.esc(n.imageUrl) + '" alt="" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>' : '';
+                    return '<div class="notice-item' + (n.imageUrl ? ' has-img' : '') + '">' + imgHtml + '<b>' + U.esc(n.title) + '</b><p>' + U.esc(n.body) + '</p>' +
+                        '<small style="color:var(--light);font-size:11px">' + U.fmtDate(n.createdAt) + '</small></div>';
+                }).join('');
+            }).catch(function () {
+                document.getElementById('noticeList').innerHTML = '<div class="notice-item"><b>सूचनाएं लोड नहीं हुए</b><p>थोड़ी देर बाद कोशिश करें।</p></div>';
+            });
+        });
+
+        /* ---------- hero search + service cards ---------- */
+        var heroSearch = document.getElementById('heroSearch');
+        function filterServices() {
+            var q = heroSearch.value.trim().toLowerCase();
+            document.querySelectorAll('#svcGrid .svc-card').forEach(function (c) {
+                c.style.display = (!q || (c.getAttribute('data-name') + ' ' + c.getAttribute('data-svc')).toLowerCase().indexOf(q) > -1) ? '' : 'none';
+            });
+        }
+        heroSearch.addEventListener('input', function () {
+            filterServices();
+            if (heroSearch.value.trim()) document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+        });
+        document.getElementById('heroSearchBtn').addEventListener('click', function () {
+            var q = heroSearch.value.trim();
+            if (q) { filterServices(); document.getElementById('services').scrollIntoView({ behavior: 'smooth' }); }
+            else heroSearch.focus();
+        });
+
+        var ticketCardEl = document.getElementById('ticket');
+        var requestCardEl = document.getElementById('requestCard');
+        if (ticketCardEl) ticketCardEl.style.display = 'none';
+
+        document.querySelectorAll('#svcGrid .svc-card').forEach(function (card) {
+            card.addEventListener('click', function () {
+                var svc = card.getAttribute('data-svc');
+                var tc = document.getElementById('ticket');
+                var rc = document.getElementById('requestCard');
+                if (svc === 'Ticket Booking') {
+                    if (rc) rc.style.display = 'none';
+                    if (tc) { tc.style.display = ''; tc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                    return;
+                }
+                if (tc) tc.style.display = 'none';
+                if (rc) rc.style.display = '';
+                if (svc && document.getElementById('reqService')) {
+                    document.getElementById('reqService').value = svc;
+                    setTimeout(function () { document.getElementById('reqService').focus(); }, 400);
+                    var reqSec = document.getElementById('request');
+                    if (reqSec) reqSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        /* ---------- request + ticket forms ---------- */
+        var rf = document.getElementById('reqForm');
+        rf.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var st = document.getElementById('reqStatus');
+            var btn = rf.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            S.add(S.coll.requests, {
+                requestId: U.uid('MOC'), customerName: val(rf, 'customerName'), mobile: val(rf, 'mobile'),
+                serviceName: val(rf, 'serviceName'), message: val(rf, 'message'),
+                status: 'new', adminNotes: '', source: 'website'
+            }).then(function () {
+                rf.reset();
+                show(st, '✅ आपका आवेदन मिल गया! हम जल्द ही आपसे संपर्क करेंगे।', true);
+            }).catch(function () {
+                show(st, 'आवेदन नहीं भेजा जा सका — कृपया WhatsApp पर लिखें।', false);
+            }).then(function () { btn.disabled = false; });
+        });
+
+        var tf = document.getElementById('ticketForm');
+        tf.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var st = document.getElementById('ticketStatus');
+            var btn = tf.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            S.add(S.coll.enquiries, {
+                enquiryId: U.uid('TKE'), customerName: val(tf, 'customerName'), mobile: val(tf, 'mobile'),
+                journeyFrom: val(tf, 'journeyFrom'), journeyTo: val(tf, 'journeyTo'),
+                journeyDate: val(tf, 'journeyDate'), passengers: Number(val(tf, 'passengers') || 1),
+                message: val(tf, 'message'), status: 'new', source: 'website'
+            }).then(function () {
+                tf.reset();
+                tf.querySelector('[name="passengers"]').value = 1;
+                show(st, '✅ आपकी पूछताछ मिल गई! टिकट के लिए हम कॉल करेंगे।', true);
+            }).catch(function () {
+                show(st, 'पूछताछ नहीं भेजी जा सकी — कृपया WhatsApp पर लिखें।', false);
+            }).then(function () { btn.disabled = false; });
+        });
+
+        /* ---------- tools ---------- */
+        var modal = document.getElementById('toolModal');
+        document.querySelectorAll('[data-tclose]').forEach(function (b) {
+            b.addEventListener('click', function () { modal.classList.remove('open'); });
+        });
+        modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('open'); });
+
+        function openTool(type) {
+            toolState = { type: type, file: null, img: null, files: [] };
+            var title = document.getElementById('toolTitle');
+            var body = document.getElementById('toolBody');
+            var run = document.getElementById('toolRun');
+            run.style.display = '';
+            run.disabled = false;
+            run.innerHTML = '<i class="fas fa-download"></i> डाउनलोड';
+
+            if (type === 'resize') {
+                title.textContent = 'फोटो रीसाइज़ · Photo Height & Width';
+                body.innerHTML =
+                    '<div class="field" style="margin-bottom:10px"><label>फोटो चुनें (JPG/PNG) *</label><input type="file" id="tFile" accept="image/*"></div>' +
+                    '<div class="form-grid"><div class="field"><label>चौड़ाई / Width (px)</label><input type="number" id="tW" value="600" min="20" max="5000"></div>' +
+                    '<div class="field"><label>ऊंचाई / Height (px)</label><input type="number" id="tH" value="800" min="20" max="5000"></div>' +
+                    '<div class="field full"><label>फॉर्मेट</label><select id="tFmt"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></div></div>' +
+                    '<p class="small muted" style="margin-top:8px">फोटो का साइज़ बदलकर डाउनलोड हो जाएगी।</p>';
+                document.getElementById('tFile').addEventListener('change', loadImage);
+            } else if (type === 'compress') {
+                title.textContent = 'फोटो कंप्रेस · Photo Compress';
+                body.innerHTML =
+                    '<div class="field" style="margin-bottom:10px"><label>फोटो चुनें *</label><input type="file" id="tFile" accept="image/*"></div>' +
+                    '<div class="field" style="margin-bottom:10px"><label>क्वालिटी: <b id="qVal">60%</b></label><input type="range" id="tQ" min="10" max="90" value="60" style="width:100%"></div>' +
+                    '<p class="small muted">क्वालिटी कम = साइज़ छोटा, लेकिन फोटो थोड़ी धुंधली।</p>';
+                document.getElementById('tFile').addEventListener('change', loadImage);
+                document.getElementById('tQ').addEventListener('input', function () { document.getElementById('qVal').textContent = this.value + '%'; });
+            } else if (type === 'img2pdf') {
+                title.textContent = 'JPG से PDF · Image to PDF';
+                body.innerHTML =
+                    '<div class="field" style="margin-bottom:10px"><label>फोटो चुनें (एक से ज़्यादा भी चुन सकते हैं) *</label><input type="file" id="tFile" accept="image/*" multiple></div>' +
+                    '<p class="small muted">चुनी गई हर फोटो PDF के अलग पेज पर आएगी और फाइल सीधे डाउनलोड होगी।</p>';
+                document.getElementById('tFile').addEventListener('change', loadImages);
+                run.innerHTML = '<i class="fas fa-file-pdf"></i> PDF डाउनलोड करें';
+            } else if (type === 'txt2pdf') {
+                title.textContent = 'टेक्स्ट से PDF · Text to PDF';
+                body.innerHTML =
+                    '<div class="field"><label>अपना टेक्स्ट लिखें *</label><textarea id="tText" style="min-height:160px" placeholder="यहां लिखें..."></textarea></div>' +
+                    '<p class="small muted" style="margin-top:8px">हिंदी टेक्स्ट के लिए प्रिंट विंडो खुलेगी — वहां <b>“Save as PDF”</b> चुनकर सेव करें।</p>';
+                run.innerHTML = '<i class="fas fa-file-pdf"></i> PDF बनाएं';
+            } else if (type === 'convert') {
+                title.textContent = 'इमेज कन्वर्टर · Format Converter';
+                body.innerHTML =
+                    '<div class="field" style="margin-bottom:10px"><label>इमेज चुनें *</label><input type="file" id="tFile" accept="image/*"></div>' +
+                    '<div class="field"><label>नया फॉर्मेट</label><select id="tFmt"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></div>' +
+                    '<p class="small muted" style="margin-top:8px">इमेज का फॉर्मेट बदलकर डाउनलोड करें।</p>';
+                document.getElementById('tFile').addEventListener('change', loadImage);
+            } else if (type === 'pdf2jpg') {
+                title.textContent = 'PDF से JPG · PDF to JPG';
+                body.innerHTML =
+                    '<div class="field" style="margin-bottom:10px"><label>PDF फाइल चुनें *</label><input type="file" id="tPdf" accept="application/pdf"></div>' +
+                    '<div class="field" style="margin-bottom:10px"><label>कौन से पेज? (जैसे <b>1</b>, <b>1-3</b> या <b>all</b>)</label>' +
+                    '<input id="tPages" value="1" placeholder="1 / 1-3 / all"></div>' +
+                    '<p class="small muted">हर पेज अलग JPG इमेज बनेगा और डाउनलोड हो जाएगा।</p>';
+                run.innerHTML = '<i class="fas fa-images"></i> JPG बनाएं';
+            } else {
+                title.textContent = 'Tool';
+                body.innerHTML = '<p class="muted">यह टूल उपलब्ध नहीं है।</p>';
+                run.style.display = 'none';
+            }
+            modal.classList.add('open');
+        }
+
+        document.querySelectorAll('.tool-card').forEach(function (c) {
+            c.addEventListener('click', function () { openTool(c.getAttribute('data-tool')); });
+        });
+
+        function loadImage(e) {
+            var f = e.target.files && e.target.files[0];
+            if (!f) return;
+            toolState.file = f;
+            var img = new Image();
+            img.onload = function () { toolState.img = img; };
+            img.src = URL.createObjectURL(f);
+        }
+
+        function loadImages(e) {
+            toolState.files = Array.prototype.slice.call(e.target.files || []);
+            toolState.file = toolState.files[0] || null;
+        }
+
+        function fileToImage(file) {
+            return new Promise(function (resolve, reject) {
+                var url = URL.createObjectURL(file);
+                var img = new Image();
+                img.onload = function () { resolve({ img: img, url: url }); };
+                img.onerror = function () { reject(new Error('image load failed')); };
+                img.src = url;
+            });
+        }
+
+        function imgToJpegDataUrl(img, quality) {
+            var canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            return canvas.toDataURL('image/jpeg', quality || 0.92);
+        }
+
+        function imagesToPdf() {
+            var files = toolState.files || [];
+            if (!files.length) { U.toast('पहले फोटो चुनें।'); return; }
+            if (!window.jspdf || !window.jspdf.jsPDF) { U.toast('PDF लाइब्रेरी लोड नहीं हुई — इंटरनेट चेक करें।'); return; }
+
+            var run = document.getElementById('toolRun');
+            run.disabled = true;
+            run.innerHTML = '<i class="fas fa-spinner fa-spin"></i> बन रही है...';
+
+            var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            var pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight(), m = 10;
+
+            var chain = Promise.resolve();
+            files.forEach(function (file, i) {
+                chain = chain.then(function () {
+                    return fileToImage(file).then(function (r) {
+                        if (i > 0) doc.addPage();
+                        var dataUrl = imgToJpegDataUrl(r.img, 0.92);
+                        var ratio = Math.min((pw - 2 * m) / r.img.naturalWidth, (ph - 2 * m) / r.img.naturalHeight);
+                        var w = r.img.naturalWidth * ratio, h = r.img.naturalHeight * ratio;
+                        doc.addImage(dataUrl, 'JPEG', (pw - w) / 2, (ph - h) / 2, w, h, undefined, 'FAST');
+                        URL.revokeObjectURL(r.url);
+                    });
+                });
+            });
+
+            chain.then(function () {
+                doc.save('apna-images-' + Date.now() + '.pdf');
+                U.toast('✅ PDF डाउनलोड हो गई (' + files.length + ' पेज)।');
+            }).catch(function (err) {
+                console.error(err);
+                U.toast('PDF नहीं बन पाई — दोबारा कोशिश करें।');
+            }).then(function () {
+                run.disabled = false;
+                run.innerHTML = '<i class="fas fa-file-pdf"></i> PDF डाउनलोड करें';
+            });
+        }
+
+        function parsePageSpec(spec, total) {
+            spec = String(spec || '1').trim().toLowerCase();
+            if (spec === 'all' || spec === '*') {
+                var all = []; for (var i = 1; i <= total; i++) all.push(i); return all;
+            }
+            var out = [];
+            spec.split(',').forEach(function (part) {
+                var r = part.trim().split('-');
+                if (r.length === 2) {
+                    var a = parseInt(r[0], 10), b = parseInt(r[1], 10);
+                    if (!isNaN(a) && !isNaN(b)) for (var i = a; i <= b; i++) if (i >= 1 && i <= total) out.push(i);
+                } else {
+                    var n = parseInt(r[0], 10);
+                    if (!isNaN(n) && n >= 1 && n <= total) out.push(n);
+                }
+            });
+            return out.length ? out.filter(function (v, i, arr) { return arr.indexOf(v) === i; }) : [1];
+        }
+
+        function pdfToJpg() {
+            var input = document.getElementById('tPdf');
+            var file = input && input.files && input.files[0];
+            if (!file) { U.toast('पहले PDF फाइल चुनें।'); return; }
+            if (!window.pdfjsLib) { U.toast('PDF लाइब्रेरी लोड नहीं हुई — इंटरनेट चेक करें।'); return; }
+
+            var run = document.getElementById('toolRun');
+            run.disabled = true;
+            run.innerHTML = '<i class="fas fa-spinner fa-spin"></i> बन रहा है...';
+
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            var reader = new FileReader();
+            reader.onload = function () {
+                pdfjsLib.getDocument({ data: new Uint8Array(reader.result) }).promise.then(function (pdf) {
+                    var pages = parsePageSpec(document.getElementById('tPages').value, pdf.numPages);
+                    var seq = Promise.resolve();
+                    pages.forEach(function (num) {
+                        seq = seq.then(function () {
+                            return pdf.getPage(num).then(function (page) {
+                                var viewport = page.getViewport({ scale: 2 });
+                                var canvas = document.createElement('canvas');
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+                                var ctx = canvas.getContext('2d');
+                                ctx.fillStyle = '#fff';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                return page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function () {
+                                    return new Promise(function (res) {
+                                        canvas.toBlob(function (blob) {
+                                            if (blob) downloadBlob(blob, 'page-' + num + '.jpg');
+                                            setTimeout(res, 500);
+                                        }, 'image/jpeg', 0.92);
+                                    });
+                                });
+                            });
+                        });
+                    });
+                    return seq.then(function () {
+                        U.toast('✅ ' + pages.length + ' इमेज डाउनलोड हो गईं (पेज ' + pages.join(', ') + ')');
+                    });
+                }).catch(function (err) {
+                    console.error(err);
+                    U.toast('PDF पढ़ी नहीं जा सकी — फाइल सही है?');
+                }).then(function () {
+                    run.disabled = false;
+                    run.innerHTML = '<i class="fas fa-images"></i> JPG बनाएं';
+                });
+            };
+            reader.onerror = function () {
+                U.toast('फाइल पढ़ी नहीं जा सकी।');
+                run.disabled = false;
+                run.innerHTML = '<i class="fas fa-images"></i> JPG बनाएं';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function downloadBlob(blob, name) {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = name;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        }
+
+        function printWindow(html) {
+            var w = window.open('', '_blank');
+            if (!w) { U.toast('Popup blocked — browser me popup allow karein.'); return; }
+            w.document.write('<html><head><title>Print</title><style>body{font-family:Arial,sans-serif;padding:20px;color:#111}img{max-width:100%}pre{white-space:pre-wrap;font-family:Arial;font-size:14px;line-height:1.6}</style></head><body>' + html + '</body></html>');
+            w.document.close();
+            setTimeout(function () { w.focus(); w.print(); }, 400);
+        }
+
+        document.getElementById('toolRun').addEventListener('click', function () {
+            var type = toolState.type;
+            if (!type) return;
+
+            if (type === 'pdf2jpg') { pdfToJpg(); return; }
+
+            if (type === 'txt2pdf') {
+                var text = document.getElementById('tText').value.trim();
+                if (!text) { U.toast('पहले टेक्स्ट लिखें।'); return; }
+                var esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                printWindow('<h2 style="margin-bottom:12px">' + U.esc(cfg.shopName) + '</h2><pre>' + esc + '</pre>');
+                return;
+            }
+
+            if (type === 'img2pdf') { imagesToPdf(); return; }
+
+            if (!toolState.file || !toolState.img) { U.toast('पहले फोटो चुनें।'); return; }
+
+            var img = toolState.img;
+            var fmt = (document.getElementById('tFmt') || {}).value || 'image/jpeg';
+
+            var w = img.naturalWidth, h = img.naturalHeight;
+            if (type === 'resize') {
+                w = Math.min(5000, Math.max(20, Number(document.getElementById('tW').value) || w));
+                h = Math.min(5000, Math.max(20, Number(document.getElementById('tH').value) || h));
+            }
+
+            var canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            if (fmt === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+            ctx.drawImage(img, 0, 0, w, h);
+
+            var quality = type === 'compress' ? Number(document.getElementById('tQ').value) / 100 : 0.92;
+            var ext = fmt === 'image/png' ? 'png' : (fmt === 'image/webp' ? 'webp' : 'jpg');
+            canvas.toBlob(function (blob) {
+                if (!blob) { U.toast('फोटो प्रोसेस नहीं हुई।'); return; }
+                downloadBlob(blob, 'apna-' + type + '-' + Date.now() + '.' + ext);
+                U.toast('✅ फाइल डाउनलोड हो गई।');
+            }, fmt, quality);
+        });
+    })();
+    </script>
+</body>
+</html>

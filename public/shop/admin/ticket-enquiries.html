@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Enquiries — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="ticket-enquiries" data-title="Ticket Enquiries">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Ticket Enquiries</h2><p id="info">—</p></div>
+                <div class="actions"><button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button></div>
+            </div>
+
+            <div class="filters">
+                <input class="grow" id="search" placeholder="🔍 Enquiry ID, naam, mobile, route...">
+                <select id="status">
+                    <option value="">All enquiries</option>
+                    <option value="new">New</option><option value="in_progress">In Progress</option>
+                    <option value="booked">Booked</option><option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Enquiry</th><th>Customer</th><th>Route</th><th>Journey</th><th>Status</th><th class="t-right">Actions</th></tr></thead>
+                        <tbody id="body"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal">
+        <div class="modal">
+            <div class="modal-head"><h3>Enquiry Details</h3><button class="x" data-close><i class="fas fa-xmark"></i></button></div>
+            <div class="modal-body" id="detail"></div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" data-close>Close</button>
+                <button class="btn btn-primary" id="saveBtn"><i class="fas fa-check"></i> Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, rows = [], current = null;
+
+        ['search', 'status'].forEach(function (id) { document.getElementById(id).addEventListener('input', render); });
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { U.closeModal('modal'); });
+        });
+        document.getElementById('modal').addEventListener('click', function (e) { if (e.target === this) U.closeModal('modal'); });
+
+        S.ready(function () {
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            document.getElementById('saveBtn').addEventListener('click', save);
+            load();
+        });
+
+        function badge(s) {
+            var m = { new: 'badge blue', in_progress: 'badge amber', booked: 'badge green', cancelled: 'badge grey' };
+            return '<span class="badge ' + (m[s] || 'badge grey') + '">' + U.esc(String(s || '').replace(/_/g, ' ')) + '</span>';
+        }
+
+        function load() {
+            S.all(S.coll.enquiries).then(function (r) {
+                rows = r.sort(U.byDateDesc('createdAt'));
+                render();
+            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function render() {
+            var q = document.getElementById('search').value.trim().toLowerCase();
+            var st = document.getElementById('status').value;
+            var list = rows.filter(function (r) {
+                if (st && r.status !== st) return false;
+                if (q && [r.enquiryId, r.customerName, r.mobile, r.journeyFrom, r.journeyTo].join(' ').toLowerCase().indexOf(q) < 0) return false;
+                return true;
+            });
+            document.getElementById('info').textContent = rows.length + ' enquiries';
+
+            var b = document.getElementById('body');
+            b.innerHTML = list.length ? list.map(function (r) {
+                return '<tr data-id="' + r.id + '">' +
+                    '<td class="t-nowrap"><b style="font-size:11.5px">' + U.esc(r.enquiryId || '—') + '</b><span class="subtle">' + U.fmtDate(r.createdAt) + '</span></td>' +
+                    '<td><b>' + U.esc(r.customerName) + '</b><span class="subtle">' + U.esc(r.mobile || '') + '</span></td>' +
+                    '<td class="small"><b>' + U.esc(r.journeyFrom) + '</b> → ' + U.esc(r.journeyTo) + '<span class="subtle">' + U.esc(r.passengers || 1) + ' passenger(s)</span></td>' +
+                    '<td class="t-nowrap small">' + U.fmtDate(r.journeyDate) + '</td>' +
+                    '<td>' + badge(r.status) + '</td>' +
+                    '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
+                    '<button class="view" title="Details"><i class="fas fa-eye"></i></button>' +
+                    '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" title="WhatsApp" href="' + U.waLink(r.mobile, 'Namaste ' + r.customerName + ', aapki ticket enquiry (' + (r.enquiryId || '') + ') mil gayi hai. — Apna Online Center') + '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
+                    '<button class="del" title="Delete"><i class="fas fa-trash"></i></button></div></td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">Koi enquiry nahi mili.</td></tr>';
+
+            b.querySelectorAll('tr[data-id]').forEach(function (tr) {
+                var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
+                tr.querySelector('.view').addEventListener('click', function () { openDetail(rec); });
+                tr.querySelector('.del').addEventListener('click', function () {
+                    if (!confirm('Enquiry delete karein?')) return;
+                    S.remove(S.coll.enquiries, rec.id).then(function () { U.toast('Enquiry delete ho gayi.'); load(); });
+                });
+            });
+        }
+
+        function openDetail(r) {
+            current = r;
+            document.getElementById('detail').innerHTML =
+                '<div class="form-grid">' +
+                '<div class="field"><label>Enquiry ID</label><input disabled value="' + U.esc(r.enquiryId) + '"></div>' +
+                '<div class="field"><label>Customer</label><input disabled value="' + U.esc(r.customerName) + '"></div>' +
+                '<div class="field"><label>Mobile</label><input disabled value="' + U.esc(r.mobile) + '"></div>' +
+                '<div class="field"><label>Passengers</label><input disabled value="' + U.esc(r.passengers || 1) + '"></div>' +
+                '<div class="field"><label>From</label><input disabled value="' + U.esc(r.journeyFrom) + '"></div>' +
+                '<div class="field"><label>To</label><input disabled value="' + U.esc(r.journeyTo) + '"></div>' +
+                '<div class="field"><label>Journey Date</label><input disabled value="' + U.fmtDate(r.journeyDate) + '"></div>' +
+                '<div class="field"><label>Status</label><select id="newStatus">' +
+                ['new', 'in_progress', 'booked', 'cancelled'].map(function (s) {
+                    return '<option value="' + s + '"' + (r.status === s ? ' selected' : '') + '>' + s.replace(/_/g, ' ') + '</option>';
+                }).join('') + '</select></div>' +
+                '<div class="field full"><label>Message</label><textarea disabled>' + U.esc(r.message || '') + '</textarea></div>' +
+                '<div class="field full"><label>Admin Notes</label><input id="adminNotes" value="' + U.esc(r.adminNotes || '') + '"></div>' +
+                '</div>';
+            U.openModal('modal');
+        }
+
+        function save() {
+            if (!current) return;
+            S.set(S.coll.enquiries, current.id, {
+                status: document.getElementById('newStatus').value,
+                adminNotes: document.getElementById('adminNotes').value.trim(),
+                updatedAt: new Date().toISOString()
+            }).then(function () { U.closeModal('modal'); U.toast('Enquiry update ho gayi.'); load(); })
+              .catch(function (err) { console.error(err); U.toast('Update nahi hua.'); });
+        }
+
+        function exportCsv() {
+            var data = [['Enquiry ID', 'Customer', 'Mobile', 'From', 'To', 'Journey Date', 'Passengers', 'Status', 'Message']];
+            rows.forEach(function (r) {
+                data.push([r.enquiryId, r.customerName, r.mobile, r.journeyFrom, r.journeyTo, r.journeyDate, r.passengers, r.status, r.message || '']);
+            });
+            U.csv('ticket-enquiries.csv', data);
+        }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance · Apna School CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/crm.css?v=11">
+<style>
+  .att-toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+  .att-toolbar select, .att-toolbar input { padding:8px 10px; border:1px solid var(--border,#e2e8f0); border-radius:8px; font-size:13px; }
+  .att-summary { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  .att-chip { padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600; }
+  .att-chip.p { background:#e8f7ee; color:#16a34a; }
+  .att-chip.a { background:#feecec; color:#dc2626; }
+  .att-chip.l { background:#fff7e6; color:#d97706; }
+  .status-btns { display:flex; gap:6px; }
+  .status-btns button { padding:4px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; cursor:pointer; background:#fff; }
+  .status-btns button.active.P { background:#16a34a; color:#fff; border-color:#16a34a; }
+  .status-btns button.active.A { background:#dc2626; color:#fff; border-color:#dc2626; }
+  .status-btns button.active.L { background:#d97706; color:#fff; border-color:#d97706; }
+</style>
+</head>
+<body data-page="attendance">
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div><h2>Attendance</h2><p>Student daily attendance (sc_attendance)</p></div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-primary" onclick="ATT.save()"><i class="fas fa-floppy-disk"></i> Save Attendance</button>
+                </div>
+            </div>
+
+            <div class="att-toolbar">
+                <label style="font-size:13px;font-weight:600">Date:</label>
+                <input type="date" id="attDate">
+                <label style="font-size:13px;font-weight:600">Class:</label>
+                <select id="attClass"><option value="">All</option></select>
+                <label style="font-size:13px;font-weight:600">Section:</label>
+                <select id="attSection"><option value="">All</option></select>
+                <button class="btn btn-light btn-sm" onclick="ATT.load()"><i class="fas fa-rotate"></i> Load</button>
+                <button class="btn btn-light btn-sm" onclick="ATT.markAll('P')">All Present</button>
+            </div>
+
+            <div class="att-summary" id="attSummary"></div>
+
+            <div class="card">
+                <div class="card-head"><h3 id="attTitle">Students</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Admission</th><th>Name</th><th>Class-Sec</th><th>Status</th></tr></thead>
+                        <tbody id="attBody"><tr><td colspan="4" class="empty-row">Load students first.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalHost"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/school-fb.js?v=1"></script>
+<script src="assets/crm.js?v=12"></script>
+<script>
+(function () {
+    'use strict';
+    var SFB = window.SFB;
+    var db = null;
+    var store = null;
+    var att = {}; // admissionNo -> 'P'/'A'/'L'
+    var currentStudents = [];
+    var ATT = {};
+
+    function init() {
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) firebase.initializeApp(SFB.config);
+        db = firebase.firestore();
+    }
+
+    function toast(m) { if (window.CRM) CRM.toast(m); else alert(m); }
+
+    function todayISO() {
+        var d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    function classes() {
+        var set = {};
+        (store.students || []).forEach(function (s) {
+            var c = String(s['Class'] || '').trim();
+            var sec = (s['Section'] || '').trim();
+            if (c) set[c + (sec ? '|' + sec : '')] = { c: c, sec: sec };
+        });
+        return Object.keys(set).map(function (k) { return set[k]; });
+    }
+
+    function populateFilters() {
+        var cls = document.getElementById('attClass');
+        var sec = document.getElementById('attSection');
+        var classesSet = {};
+        var sectionsSet = {};
+        (store.students || []).forEach(function (s) {
+            var c = String(s['Class'] || '').trim();
+            var s2 = String(s['Section'] || '').trim();
+            if (c) classesSet[c] = true;
+            if (s2) sectionsSet[s2] = true;
+        });
+        cls.innerHTML = '<option value="">All Classes</option>' + Object.keys(classesSet).sort().map(function (c) { return '<option value="' + c + '">' + c + '</option>'; }).join('');
+        sec.innerHTML = '<option value="">All Sections</option>' + Object.keys(sectionsSet).sort().map(function (s) { return '<option value="' + s + '">' + s + '</option>'; }).join('');
+    }
+
+    function load() {
+        var date = document.getElementById('attDate').value;
+        var cls = document.getElementById('attClass').value;
+        var sec = document.getElementById('attSection').value;
+        var list = (store.students || []).filter(function (s) {
+            if (s['Status'] && s['Status'] !== 'Active') return false;
+            if (cls && String(s['Class'] || '').trim() !== cls) return false;
+            if (sec && String(s['Section'] || '').trim() !== sec) return false;
+            return true;
+        }).sort(function (a, b) { return String(a['Student Name'] || '').localeCompare(String(b['Student Name'] || '')); });
+
+        currentStudents = list;
+        att = {};
+
+        // load existing attendance for this date
+        if (!db) { toast('Firestore not ready'); return; }
+        var ids = list.map(function (s) { return String(s['Admission No']); });
+        // fetch existing
+        var promises = list.map(function (s) {
+            var adm = String(s['Admission No']);
+            return db.collection('sc_attendance').doc(adm + '_' + date).get().then(function (d) {
+                if (d.exists) att[adm] = d.data().status || 'P';
+                else att[adm] = 'P';
+            }).catch(function () { att[adm] = 'P'; });
+        });
+        Promise.all(promises).then(function () {
+            render();
+        });
+    }
+
+    function render() {
+        var date = document.getElementById('attDate').value;
+        var body = document.getElementById('attBody');
+        if (!currentStudents.length) {
+            body.innerHTML = '<tr><td colspan="4" class="empty-row">No students found.</td></tr>';
+            document.getElementById('attTitle').textContent = 'Students (0)';
+            document.getElementById('attSummary').innerHTML = '';
+            return;
+        }
+        document.getElementById('attTitle').textContent = 'Students (' + currentStudents.length + ') — ' + date;
+        var p = 0, a = 0, l = 0;
+        currentStudents.forEach(function (s) { var st = att[String(s['Admission No'])] || 'P'; if (st === 'P') p++; else if (st === 'A') a++; else if (st === 'L') l++; });
+        document.getElementById('attSummary').innerHTML =
+            '<span class="att-chip p">Present: ' + p + '</span>' +
+            '<span class="att-chip a">Absent: ' + a + '</span>' +
+            '<span class="att-chip l">Late: ' + l + '</span>';
+
+        body.innerHTML = currentStudents.map(function (s) {
+            var adm = String(s['Admission No']);
+            var st = att[adm] || 'P';
+            return '<tr>' +
+                '<td><b>' + esc(adm) + '</b></td>' +
+                '<td>' + esc(s['Student Name'] || '') + '</td>' +
+                '<td class="small muted">' + esc(s['Class'] || '') + (s['Section'] ? '-' + esc(s['Section']) : '') + '</td>' +
+                '<td><div class="status-btns">' +
+                    '<button class="' + (st === 'P' ? 'active P' : '') + '" onclick="ATT.mark(\'' + adm + '\',\'P\')">P</button>' +
+                    '<button class="' + (st === 'A' ? 'active A' : '') + '" onclick="ATT.mark(\'' + adm + '\',\'A\')">A</button>' +
+                    '<button class="' + (st === 'L' ? 'active L' : '') + '" onclick="ATT.mark(\'' + adm + '\',\'L\')">L</button>' +
+                '</div></td></tr>';
+        }).join('');
+    }
+
+    function mark(adm, st) { att[adm] = st; render(); }
+
+    function markAll(st) {
+        currentStudents.forEach(function (s) { att[String(s['Admission No'])] = st; });
+        render();
+    }
+
+    function save() {
+        if (!currentStudents.length) { toast('No students loaded.'); return; }
+        var date = document.getElementById('attDate').value;
+        var writes = currentStudents.map(function (s) {
+            var adm = String(s['Admission No']);
+            return db.collection('sc_attendance').doc(adm + '_' + date).set({
+                admissionNo: adm,
+                studentName: s['Student Name'] || '',
+                className: s['Class'] || '',
+                section: s['Section'] || '',
+                date: date,
+                status: att[adm] || 'P',
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+        });
+        Promise.all(writes).then(function () {
+            console.log('attendance saved', writes.length);
+            toast('Attendance saved for ' + currentStudents.length + ' students.');
+        }).catch(function (e) { console.error('save failed', e); toast('Save failed: ' + e.message); });
+    }
+
+    ATT.load = load;
+    ATT.mark = mark;
+    ATT.markAll = markAll;
+    ATT.save = save;
+    window.ATT = ATT;
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    /* boot */
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!window.CRM) return;
+        var u = CRM.user();
+        if (!u) { location.replace('login.html'); return; }
+        SFB.init();
+        // wait for SFB ready
+        var tries = 0;
+        var iv = setInterval(function () {
+            tries++;
+            if (SFB.ready) {
+                clearInterval(iv);
+                SFB.loadStore().then(function (data) {
+                    store = data;
+                    store.students = store.students || [];
+                    store.students.forEach(function (s) { s['Section'] = (typeof normSection === 'function') ? normSection(s['Section']) : s['Section']; });
+                    init();
+                    populateFilters();
+                    document.getElementById('attDate').value = todayISO();
+                    CRM.renderShell && CRM.renderShell();
+                }).catch(function (e) { console.error(e); toast('Data load failed: ' + e.message); });
+            } else if (tries > 50) {
+                clearInterval(iv);
+                toast('Firestore not ready');
+            }
+        }, 100);
+    });
+})();
+</script>
+</body>
+</html>

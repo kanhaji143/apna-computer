@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Account — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="daily-account" data-title="Daily Account">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Daily Account</h2><p id="dayLabel">—</p></div>
+                <div class="actions">
+                    <input type="date" id="date" class="btn btn-ghost" style="font-weight:600">
+                    <button class="btn btn-ghost btn-sm" id="printBtn"><i class="fas fa-print"></i> Print</button>
+                    <button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button>
+                </div>
+            </div>
+
+            <div class="kpis">
+                <div class="kpi green"><div class="kpi-label">Collection</div><div class="kpi-value" id="kIn">₹0</div></div>
+                <div class="kpi red"><div class="kpi-label">Expenses</div><div class="kpi-value" id="kOut">₹0</div></div>
+                <div class="kpi"><div class="kpi-label">Net Cash</div><div class="kpi-value" id="kNet">₹0</div></div>
+                <div class="kpi amber"><div class="kpi-label">Transactions</div><div class="kpi-value" id="kCount">0</div></div>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns:1.4fr 1fr;align-items:start">
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-receipt" style="color:var(--brand-2)"></i> Transactions</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Receipt</th><th>Customer</th><th>Service</th><th>Method</th><th class="t-right">Received</th><th class="t-right">Due</th></tr></thead>
+                            <tbody id="txBody"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-wallet" style="color:var(--red)"></i> Expenses</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Title</th><th>Category</th><th class="t-right">Amount</th></tr></thead>
+                            <tbody id="exBody"><tr><td colspan="3" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="printArea" class="hidden"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, TX = [], EX = [], cfg = {};
+
+        S.ready(function (ctx) {
+            cfg = ctx.config;
+            document.getElementById('date').value = U.todayISO();
+            document.getElementById('date').addEventListener('change', load);
+            document.getElementById('printBtn').addEventListener('click', printDay);
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            load();
+        });
+
+        function load() {
+            Promise.all([S.all(S.coll.transactions), S.all(S.coll.expenses)])
+                .then(function (r) { TX = r[0]; EX = r[1]; render(); })
+                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
+
+        function data() {
+            var d = document.getElementById('date').value || U.todayISO();
+            var tx = TX.filter(function (t) { return t.transactionDate === d; });
+            var ex = EX.filter(function (e) { return e.expenseDate === d; });
+            var inc = U.sum(tx, 'amountReceived');
+            var out = U.sum(ex, 'amount');
+            return { d: d, tx: tx, ex: ex, inc: inc, out: out, net: inc - out };
+        }
+
+        function render() {
+            var o = data();
+            document.getElementById('dayLabel').textContent = U.fmtDate(o.d);
+            document.getElementById('kIn').textContent = U.money(o.inc);
+            document.getElementById('kOut').textContent = U.money(o.out);
+            document.getElementById('kNet').textContent = U.money(o.net);
+            document.getElementById('kCount').textContent = o.tx.length;
+
+            document.getElementById('txBody').innerHTML = o.tx.length ? o.tx.map(function (t) {
+                return '<tr><td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b></td>' +
+                    '<td>' + U.esc(t.customerName) + '</td><td class="small muted">' + U.esc(t.service) + '</td>' +
+                    '<td><span class="badge grey">' + U.esc(t.paymentMethod || 'cash') + '</span></td>' +
+                    '<td class="t-right amount green">' + U.money(t.amountReceived) + '</td>' +
+                    '<td class="t-right amount ' + (due(t) > 0 ? 'red' : '') + '">' + U.money(due(t)) + '</td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">Is din koi transaction nahi.</td></tr>';
+
+            document.getElementById('exBody').innerHTML = o.ex.length ? o.ex.map(function (e) {
+                return '<tr><td><b>' + U.esc(e.title) + '</b></td><td class="small muted">' + U.esc(e.category) + '</td>' +
+                    '<td class="t-right amount red">' + U.money(e.amount) + '</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">Is din koi expense nahi.</td></tr>';
+        }
+
+        function printDay() {
+            var o = data();
+            var rows = o.tx.map(function (t) {
+                return '<tr><td style="padding:5px 0">' + U.esc(t.receiptNumber || '') + ' — ' + U.esc(t.customerName) + '</td>' +
+                    '<td style="text-align:right">' + U.money(t.amountReceived) + '</td></tr>';
+            }).join('');
+            var exRows = o.ex.map(function (e) {
+                return '<tr><td style="padding:5px 0">' + U.esc(e.title) + '</td><td style="text-align:right">' + U.money(e.amount) + '</td></tr>';
+            }).join('');
+
+            document.getElementById('printArea').innerHTML =
+                '<div style="font-family:Inter,Arial,sans-serif;max-width:420px;margin:0 auto;color:#111">' +
+                '<div style="text-align:center;border-bottom:2px dashed #999;padding-bottom:8px;margin-bottom:10px">' +
+                '<h2 style="margin:0;font-size:18px">' + U.esc(cfg.shopName) + '</h2>' +
+                '<div style="font-size:12px">Daily Account — ' + U.fmtDate(o.d) + '</div></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:13px;margin:4px 0"><span>Collection</span><b>' + U.money(o.inc) + '</b></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:13px;margin:4px 0"><span>Expenses</span><b>' + U.money(o.out) + '</b></div>' +
+                '<div style="display:flex;justify-content:space-between;font-size:14px;margin:6px 0;border-top:1px solid #999;padding-top:6px"><span><b>Net Cash</b></span><b>' + U.money(o.net) + '</b></div>' +
+                '<div style="font-size:12px;margin-top:10px;border-top:1px dashed #999;padding-top:6px"><b>Transactions (' + o.tx.length + ')</b></div>' +
+                '<table style="width:100%;font-size:11.5px;border-collapse:collapse">' + (rows || '<tr><td>Koi nahi</td></tr>') + '</table>' +
+                '<div style="font-size:12px;margin-top:8px;border-top:1px dashed #999;padding-top:6px"><b>Expenses (' + o.ex.length + ')</b></div>' +
+                '<table style="width:100%;font-size:11.5px;border-collapse:collapse">' + (exRows || '<tr><td>Koi nahi</td></tr>') + '</table></div>';
+            window.print();
+        }
+
+        function exportCsv() {
+            var o = data();
+            var rows = [['Type', 'Date', 'Particular', 'Method', 'Amount', 'Due']];
+            o.tx.forEach(function (t) {
+                rows.push(['Income', o.d, t.receiptNumber + ' ' + t.customerName + ' ' + t.service, t.paymentMethod || 'cash', U.num(t.amountReceived), due(t)]);
+            });
+            o.ex.forEach(function (e) { rows.push(['Expense', o.d, e.title + ' (' + e.category + ')', e.paymentMethod || 'cash', U.num(e.amount), 0]); });
+            U.csv('daily-account-' + o.d + '.csv', rows);
+        }
+    })();
+    </script>
+</body>
+</html>

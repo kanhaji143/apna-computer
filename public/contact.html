@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Apna Computer | Free Consultation</title>
+    <meta name="description" content="Website, CRM ya ERP ke liye free consultation. Form bharein ya email karein — 24 ghante me jawab.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/hub.css">
+</head>
+<body>
+    <header id="hubHeader"></header>
+
+    <section class="page-head">
+        <div class="container">
+            <div class="crumb"><a href="/">Home</a> <i class="fas fa-chevron-right" style="font-size:9px"></i> <span>Contact</span></div>
+            <h1>Baat karein — consultation free hai</h1>
+            <p>Project, pricing ya demo — jo bhi sawal ho, batayein.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="contact-grid">
+                <div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div><b>Email</b><a href="mailto:kanhadigimkt@gmail.com">kanhadigimkt@gmail.com</a></div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp" style="background:#e9f9ef;color:#25D366"></i>
+                        <div>
+                            <b>WhatsApp / Call</b>
+                            <a href="https://wa.me/918504985149?text=Namaste%21%20Mujhe%20website%20ya%20CRM%20ke%20baare%20me%20information%20chahiye." target="_blank" rel="noopener" style="color:#128C4A;font-weight:600">+91 85049 85149</a>
+                            <span style="display:block;font-size:11.5px;color:var(--text-light)">Chat karein — turant jawab</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-location-dot"></i>
+                        <div><b>Location</b><span>Amethi, Uttar Pradesh</span></div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div><b>Working Hours</b><span>Mon – Sat · 9:00 AM – 7:00 PM</span></div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-circle-info"></i>
+                        <div><b>Response Time</b><span>24 ghante ke andar</span></div>
+                    </div>
+
+                    <div class="value-card" style="margin-top:18px">
+                        <h3 style="margin-bottom:10px"><i class="fas fa-lightbulb" style="color:var(--secondary)"></i> Demo dekhna chahate hain?</h3>
+                        <p style="margin-bottom:12px">Live demos dekhein — school, clothing aur online centre ke.</p>
+                        <a class="btn btn-ghost btn-sm" href="/#products">Browse demos <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <h3 style="font-size:19px;margin-bottom:6px">Get in touch</h3>
+                    <p class="muted" style="font-size:13px;margin-bottom:20px">Form bharein — hum aapko call ya email karenge.</p>
+
+                    <form id="leadForm" novalidate>
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="name">Your Name *</label>
+                                <input id="name" name="name" type="text" placeholder="Aapka naam" required>
+                            </div>
+                            <div class="field">
+                                <label for="mobile">Mobile Number *</label>
+                                <input id="mobile" name="mobile" type="tel" placeholder="10-digit mobile" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="email">Email (optional)</label>
+                            <input id="email" name="email" type="email" placeholder="you@example.com">
+                        </div>
+                        <div class="field">
+                            <label for="module">Interested In *</label>
+                            <select id="module" name="module" required>
+                                <option value="">Select a solution</option>
+                                <option value="website">Website Design</option>
+                                <option value="school">School ERP + CRM</option>
+                                <option value="shop">Online Center / Shop CRM</option>
+                                <option value="ecommerce">Clothing Marketplace</option>
+                                <option value="courses">Online Courses (LMS)</option>
+                                <option value="coaching">Coaching ERP</option>
+                                <option value="security">Security Agency ERP</option>
+                                <option value="realestate">Real Estate Portal</option>
+                                <option value="custom">Custom / Other</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" placeholder="Apni requirement short me likhein..." required></textarea>
+                        </div>
+                        <!-- honeypot (spam protection) -->
+                        <input type="text" name="company_website" id="company_website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true">
+
+                        <button class="btn btn-primary" type="submit" id="submitBtn" style="width:100%"><i class="fas fa-paper-plane"></i> Send Enquiry</button>
+                        <p class="form-note">Aapka data sirf enquiry ke liye use hoga. Kabhi share nahi karenge.</p>
+                        <p class="form-status" id="formStatus"></p>
+                    </form>
+
+                    <a class="btn" href="https://wa.me/918504985149?text=Namaste%21%20Mujhe%20website%20ya%20CRM%20ke%20baare%20me%20information%20chahiye."
+                       target="_blank" rel="noopener"
+                       style="width:100%;margin-top:14px;background:#25D366;color:#fff;box-shadow:0 5px 16px rgba(37,211,102,.32)">
+                        <i class="fab fa-whatsapp" style="font-size:18px"></i> WhatsApp: +91 85049 85149
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="hubFooter"></footer>
+    <script src="/assets/js/hub.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var PROJECT = 'apna-computer-ltd';
+        var API_KEY = 'AIzaSyC_iVUneR8fu_haqWPm5UMc5eu8ATBX1Y';
+        var ENDPOINT = 'https://firestore.googleapis.com/v1/projects/' + PROJECT +
+            '/databases/(default)/documents/hub_leads?key=' + API_KEY;
+
+        // ?module= / ?plan= se auto-select
+        var params = new URLSearchParams(location.search);
+        var mod = params.get('module');
+        var plan = params.get('plan');
+        var sel = document.getElementById('module');
+        if (mod && sel) {
+            var opt = Array.prototype.find.call(sel.options, function (o) { return o.value === mod; });
+            if (opt) sel.value = mod;
+        }
+
+        var form = document.getElementById('leadForm');
+        var btn = document.getElementById('submitBtn');
+        var statusEl = document.getElementById('formStatus');
+
+        function show(msg, ok) {
+            statusEl.textContent = msg;
+            statusEl.className = 'form-status show ' + (ok ? 'ok' : 'err');
+        }
+
+        function val(id) { return (document.getElementById(id).value || '').trim(); }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var name = val('name'), mobile = val('mobile'), email = val('email'),
+                module = val('module'), message = val('message'), trap = val('company_website');
+
+            if (trap) return; // bot
+            if (!name) { show('Kripya apna naam likhein.', false); return; }
+            if (!/^[0-9+\-\s]{10,15}$/.test(mobile)) { show('Sahi mobile number likhein.', false); return; }
+            if (!module) { show('Solution select karein.', false); return; }
+            if (message.length < 5) { show('Apni requirement likhein.', false); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+            var body = {
+                fields: {
+                    name: { stringValue: name },
+                    mobile: { stringValue: mobile },
+                    email: { stringValue: email },
+                    module: { stringValue: module },
+                    plan: { stringValue: plan || '' },
+                    message: { stringValue: message },
+                    source: { stringValue: 'hub-contact' },
+                    status: { stringValue: 'new' },
+                    page: { stringValue: location.href },
+                    createdAt: { stringValue: new Date().toISOString() }
+                }
+            };
+
+            fetch(ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }).then(function (r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                form.reset();
+                show('✅ Dhanyavaad! Aapki enquiry mil gayi. Hum 24 ghante me contact karenge.', true);
+            }).catch(function (err) {
+                show('Enquiry send nahi hui. Kripya email karein: kanhadigimkt@gmail.com', false);
+                console.warn('[Lead]', err.message);
+            }).then(function () {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Enquiry';
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

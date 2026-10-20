@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ID Card · Apna School CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/crm.css?v=11">
+<style>
+  .idc-wrap { display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
+  .idc-form { flex:1; min-width:260px; }
+  .idc-preview { flex:0 0 340px; }
+  .id-card { width:320px; border:2px solid #1e40af; border-radius:14px; overflow:hidden; font-family:'Inter',sans-serif; background:#fff; box-shadow:0 8px 24px rgba(0,0,0,.12); }
+  .id-card .head { background:linear-gradient(135deg,#1e40af,#3b82f6); color:#fff; padding:10px; text-align:center; }
+  .id-card .head b { display:block; font-size:15px; letter-spacing:.5px; }
+  .id-card .head small { font-size:10px; opacity:.85; }
+  .id-card .body { padding:14px; display:flex; gap:12px; align-items:center; }
+  .id-card .photo { width:80px; height:96px; border:2px solid #e2e8f0; border-radius:8px; background:#f3f5f9; display:grid; place-items:center; color:#94a3b8; font-size:28px; overflow:hidden; }
+  .id-card .photo img { width:100%; height:100%; object-fit:cover; }
+  .id-card .info { flex:1; font-size:12px; line-height:1.7; }
+  .id-card .info .row { display:flex; gap:6px; }
+  .id-card .info .row .k { color:#64748b; min-width:78px; font-weight:600; }
+  .id-card .foot { background:#f8fafc; padding:8px; text-align:center; font-size:10px; color:#64748b; border-top:1px solid #e2e8f0; }
+  @media print { body * { visibility:hidden; } .id-card, .id-card * { visibility:visible; } .id-card { position:absolute; left:0; top:0; box-shadow:none; } }
+</style>
+</head>
+<body data-page="idcard">
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div><h2>ID Cards</h2><p>Student ID card generate & print</p></div>
+                <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            </div>
+
+            <div class="idc-wrap">
+                <div class="idc-form card" style="padding:16px">
+                    <div class="form-group"><label>Search Student (Admission No / Name)</label>
+                        <input class="form-control" id="q" placeholder="Type admission no or name..." oninput="IDC.filter()">
+                    </div>
+                    <div class="form-group"><label>Select Student</label>
+                        <select class="form-control" id="sel" size="8" style="height:200px" onchange="IDC.render()"></select>
+                    </div>
+                    <div class="form-group"><label>School Name (on card)</label>
+                        <input class="form-control" id="schoolName" value="Apna School">
+                    </div>
+                    <div class="form-group"><label>Academic Session</label>
+                        <input class="form-control" id="session" value="2026-27">
+                    </div>
+                </div>
+                <div class="idc-preview">
+                    <div class="id-card" id="card">
+                        <div class="head"><b id="cSchool">Apna School</b><small id="cSession">Session 2026-27</small></div>
+                        <div class="body">
+                            <div class="photo" id="cPhoto"><i class="fas fa-user"></i></div>
+                            <div class="info">
+                                <div class="row"><span class="k">Name:</span><span id="cName">—</span></div>
+                                <div class="row"><span class="k">Admission:</span><span id="cAdm">—</span></div>
+                                <div class="row"><span class="k">Class:</span><span id="cClass">—</span></div>
+                                <div class="row"><span class="k">Father:</span><span id="cFather">—</span></div>
+                                <div class="row"><span class="k">Mobile:</span><span id="cMobile">—</span></div>
+                            </div>
+                        </div>
+                        <div class="foot">This is an identity card. If found, please return to school.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalHost"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/school-fb.js?v=1"></script>
+<script src="assets/crm.js?v=12"></script>
+<script>
+(function () {
+    'use strict';
+    var store = null;
+    var IDC = {};
+    var filtered = [];
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function init() {
+        var sel = document.getElementById('sel');
+        var list = (store.students || []).slice().sort(function (a, b) { return String(a['Student Name'] || '').localeCompare(String(b['Student Name'] || '')); });
+        filtered = list;
+        renderSel();
+    }
+
+    function renderSel() {
+        var sel = document.getElementById('sel');
+        sel.innerHTML = filtered.map(function (s) {
+            return '<option value="' + esc(s['Admission No']) + '">' + esc(s['Admission No']) + ' — ' + esc(s['Student Name'] || '') + ' (' + esc(s['Class'] || '') + ')</option>';
+        }).join('');
+        if (filtered.length) { sel.selectedIndex = 0; IDC.render(); }
+    }
+
+    IDC.filter = function () {
+        var q = document.getElementById('q').value.trim().toLowerCase();
+        var list = (store.students || []).slice().sort(function (a, b) { return String(a['Student Name'] || '').localeCompare(String(b['Student Name'] || '')); });
+        if (q) list = list.filter(function (s) {
+            return (String(s['Admission No']) + ' ' + (s['Student Name'] || '') + ' ' + (s['Class'] || '')).toLowerCase().indexOf(q) > -1;
+        });
+        filtered = list;
+        renderSel();
+    };
+
+    IDC.render = function () {
+        var sel = document.getElementById('sel');
+        var adm = sel.value;
+        var s = null;
+        (store.students || []).forEach(function (x) { if (String(x['Admission No']) === String(adm)) s = x; });
+        if (!s) return;
+        document.getElementById('cSchool').textContent = document.getElementById('schoolName').value || 'Apna School';
+        document.getElementById('cSession').textContent = 'Session ' + (document.getElementById('session').value || '');
+        document.getElementById('cName').textContent = s['Student Name'] || '—';
+        document.getElementById('cAdm').textContent = s['Admission No'] || '—';
+        document.getElementById('cClass').textContent = (s['Class'] || '') + (s['Section'] ? '-' + s['Section'] : '');
+        document.getElementById('cFather').textContent = s['Father Name'] || '—';
+        document.getElementById('cMobile').textContent = s['Mobile'] || '—';
+        var photo = document.getElementById('cPhoto');
+        if (s['Photo'] || s['photo']) {
+            photo.innerHTML = '<img src="' + esc(s['Photo'] || s['photo']) + '" alt="">';
+        } else {
+            photo.innerHTML = '<i class="fas fa-user"></i>';
+        }
+    };
+
+    document.getElementById('schoolName').addEventListener('input', IDC.render);
+    document.getElementById('session').addEventListener('input', IDC.render);
+
+    window.IDC = IDC;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!window.CRM) return;
+        var u = CRM.user();
+        if (!u) { location.replace('login.html'); return; }
+        var SFB = window.SFB;
+        SFB.init();
+        var tries = 0;
+        var iv = setInterval(function () {
+            tries++;
+            if (SFB.ready) {
+                clearInterval(iv);
+                SFB.loadStore().then(function (data) {
+                    store = data;
+                    store.students = store.students || [];
+                    store.students.forEach(function (s) { s['Section'] = (typeof normSection === 'function') ? normSection(s['Section']) : s['Section']; });
+                    init();
+                    CRM.renderShell && CRM.renderShell();
+                }).catch(function (e) { console.error(e); });
+            } else if (tries > 50) { clearInterval(iv); }
+        }, 100);
+    });
+})();
+</script>
+</body>
+</html>

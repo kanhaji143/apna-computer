@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders · Apna Clothing</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/store.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner"><span>My Orders</span><span class="sp"></span><a href="index.html">Continue Shopping</a><a href="../panel/login.html">Seller Login</a></div></div>
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="brand"><span class="logo">A</span> Apna Clothing</a>
+    <nav class="nav"><a href="products.html">Shop</a><a href="wishlist.html" style="position:relative"><i class="fas fa-heart" style="font-size:18px;color:var(--red,#dc2626)"></i><span class="wish-badge" style="display:none">0</span></a><a href="cart.html" class="cart"><i class="fas fa-bag-shopping" style="font-size:18px"></i><span class="cart-badge" style="display:none">0</span></a></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 style="font-size:24px;font-weight:900;letter-spacing:-.5px;margin:24px 0 16px">My Orders</h1>
+  <div id="orders"></div>
+</div>
+
+<footer class="footer"><div class="wrap"><div class="bottom"><span>© 2026 Apna Clothing</span></div></div></footer>
+
+<script src="assets/store.js"></script>
+<script>
+function money(n) { return '₹' + Number(n || 0).toLocaleString('en-IN'); }
+function renderOrders() {
+  var orders = StoreAPI.getMyOrders();
+  var el = document.getElementById('orders');
+  if (!orders.length) { el.innerHTML = '<div style="text-align:center;padding:60px 20px"><i class="fas fa-receipt" style="font-size:48px;color:#cbd5e1"></i><h2 style="margin-top:12px;font-size:20px">No orders yet</h2><p class="small muted" style="margin:6px 0 16px">Your orders will appear here.</p><a href="products.html" class="btn btn-primary">Start Shopping</a></div>'; return; }
+  el.innerHTML = orders.map(function (o) {
+    var items = o.items.map(function (i) { return '<div>' + i.name + ' × ' + i.qty + ' <span style="float:right">' + money(i.price * i.qty) + '</span></div>'; }).join('');
+    return '<div class="order"><div class="head"><b>' + o.orderId + '</b><span class="status">' + o.status + '</span></div>' +
+      '<div style="font-size:12px;color:var(--light);margin-bottom:8px">' + new Date(o.createdAt).toLocaleString('en-IN') + ' · ' + o.paymentMode + '</div>' +
+      '<div class="items">' + items + '</div>' +
+      '<div class="foot"><span>Total</span><span>' + money(o.total) + '</span></div></div>';
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', function () {
+  StoreAPI.loadProducts().then(function () { StoreAPI.renderShell(); renderOrders(); });
+});
+</script>
+</body>
+</html>

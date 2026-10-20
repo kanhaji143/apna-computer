@@ -1,10 +1,12 @@
 /* ============================================================
    CLOTHING CRM — Shared App Logic
-   Path: public/clothing/assets/app.js
+   Path: public/clothing/panel/assets/app.js
    ============================================================ */
 
 (function () {
     'use strict';
+
+    var B = window.CL_BRAND || {};   // white-label brand config (brand.js)
 
     const NAV = [
         { id: 'dashboard', label: 'Dashboard',  icon: 'fa-gauge-high',        href: 'index.html' },
@@ -15,6 +17,7 @@
         { id: 'expenses',  label: 'Expenses',   icon: 'fa-receipt',           href: 'expenses.html' },
         { id: 'staff',     label: 'Staff',      icon: 'fa-users',             href: 'staff.html' },
         { id: 'reports',   label: 'Profit / Loss', icon: 'fa-chart-line',     href: 'reports.html' },
+        { id: 'orders',    label: 'Marketplace Orders', icon: 'fa-bag-shopping', href: 'orders.html' },
         { id: 'settings',  label: 'Settings',   icon: 'fa-gear',             href: 'settings.html' }
     ];
 
@@ -45,8 +48,8 @@
                 expenses: s.expenses.length, staff: s.staff.length
             };
             sb.innerHTML =
-                '<div class="sidebar-brand"><i class="fas fa-shirt"></i>' +
-                '<div class="bt">Clothing CRM<small>' + CL.esc(s.config.shopName || '') + '</small></div></div>' +
+                '<div class="sidebar-brand"><i class="fas ' + (B.logoIcon || 'fa-shirt') + '"></i>' +
+                '<div class="bt">' + CL.esc(B.name || 'Clothing CRM') + '<small>' + CL.esc(s.config.shopName || '') + '</small></div></div>' +
                 '<div class="sidebar-section">Main Menu</div>' +
                 '<nav class="sidebar-nav">' + NAV.map(function (n) {
                     return '<a href="' + n.href + '" class="' + (n.id === p ? 'active' : '') + '">' +
@@ -55,7 +58,7 @@
                 }).join('') + '</nav>' +
                 '<div class="sidebar-footer">' +
                     '<a href="#" onclick="App.resetData();return false;"><i class="fas fa-rotate-left"></i> Reset Data</a>' +
-                    '<a href="../index.html"><i class="fas fa-store"></i> Go to Shop</a>' +
+                    '<a href="../store/index.html"><i class="fas fa-store"></i> Go to Shop</a>' +
                     '<a href="#" onclick="CL.logout();return false;"><i class="fas fa-right-from-bracket"></i> Logout</a>' +
                 '</div>';
         }

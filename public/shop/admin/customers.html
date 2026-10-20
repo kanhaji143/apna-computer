@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="customers" data-title="Customers">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Customers</h2><p id="custCount">—</p></div>
+                <div class="actions">
+                    <button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export CSV</button>
+                    <button class="btn btn-primary btn-sm" id="addBtn"><i class="fas fa-plus"></i> Add Customer</button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <input class="grow" id="search" placeholder="🔍 Naam ya mobile se search karein...">
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Customer</th><th>Mobile</th><th>Address</th><th class="t-right">Total Business</th><th>Since</th><th class="t-right">Actions</th>
+                        </tr></thead>
+                        <tbody id="body"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- modal -->
+    <div class="modal-backdrop" id="modal">
+        <div class="modal">
+            <div class="modal-head"><h3 id="modalTitle">Add Customer</h3><button class="x" data-close><i class="fas fa-xmark"></i></button></div>
+            <form id="form">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="field"><label>Name *</label><input name="name" required placeholder="Customer ka naam"></div>
+                        <div class="field"><label>Mobile *</label><input name="mobile" required type="tel" placeholder="10-digit mobile"></div>
+                        <div class="field full"><label>Address</label><input name="address" placeholder="Gaon / mohalla / market"></div>
+                        <div class="field full"><label>Notes</label><textarea name="notes" placeholder="Koi khaas baat..."></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui;
+        var rows = [], tx = [], editing = null;
+
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { U.closeModal('modal'); });
+        });
+        document.getElementById('modal').addEventListener('click', function (e) {
+            if (e.target === this) U.closeModal('modal');
+        });
+        document.getElementById('search').addEventListener('input', render);
+
+        S.ready(function () {
+            document.getElementById('addBtn').addEventListener('click', function () { openForm(null); });
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            document.getElementById('form').addEventListener('submit', save);
+            load();
+        });
+
+        function load() {
+            Promise.all([S.all(S.coll.customers), S.all(S.coll.transactions)])
+                .then(function (r) { rows = r[0]; tx = r[1]; render(); })
+                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function business(mobile) {
+            return tx.filter(function (t) { return String(t.mobile) === String(mobile); })
+                .reduce(function (s, t) { return s + U.num(t.amountReceived); }, 0);
+        }
+
+        function render() {
+            var q = document.getElementById('search').value.trim().toLowerCase();
+            var list = rows.slice().sort(function (a, b) { return String(a.name || '').localeCompare(String(b.name || '')); });
+            if (q) list = list.filter(function (r) {
+                return (r.name || '').toLowerCase().indexOf(q) > -1 || String(r.mobile || '').indexOf(q) > -1;
+            });
+
+            document.getElementById('custCount').textContent = rows.length + ' customers';
+
+            var b = document.getElementById('body');
+            b.innerHTML = list.length ? list.map(function (r) {
+                return '<tr data-id="' + r.id + '">' +
+                    '<td><b>' + U.esc(r.name) + '</b><span class="subtle">' + U.esc(r.notes || '') + '</span></td>' +
+                    '<td class="t-nowrap">' + U.esc(r.mobile) + '</td>' +
+                    '<td class="small muted">' + U.esc(r.address || '—') + '</td>' +
+                    '<td class="t-right amount green">' + U.money(business(r.mobile)) + '</td>' +
+                    '<td class="small muted t-nowrap">' + U.fmtDate(r.createdAt) + '</td>' +
+                    '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
+                    '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" href="' + U.waLink(r.mobile) + '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
+                    '<button class="edit" title="Edit"><i class="fas fa-pen"></i></button>' +
+                    '<button class="del" title="Delete"><i class="fas fa-trash"></i></button>' +
+                    '</div></td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">Koi customer nahi mila.</td></tr>';
+
+            b.querySelectorAll('tr[data-id]').forEach(function (tr) {
+                var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
+                tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
+                tr.querySelector('.del').addEventListener('click', function () {
+                    if (!confirm('Customer delete karein: ' + rec.name + '?')) return;
+                    S.remove(S.coll.customers, rec.id).then(function () { U.toast('Customer delete ho gaya.'); load(); });
+                });
+            });
+        }
+
+        function openForm(rec) {
+            editing = rec;
+            document.getElementById('modalTitle').textContent = rec ? 'Edit Customer' : 'Add Customer';
+            var f = document.getElementById('form');
+            f.reset();
+            if (rec) {
+                ['name', 'mobile', 'address', 'notes'].forEach(function (k) { f.querySelector('[name="' + k + '"]').value = rec[k] || ''; });
+            }
+            U.openModal('modal');
+        }
+
+        function save(e) {
+            e.preventDefault();
+            var f = e.target;
+            var data = {};
+            ['name', 'mobile', 'address', 'notes'].forEach(function (k) { data[k] = f.querySelector('[name="' + k + '"]').value.trim(); });
+            var p = editing ? S.set(S.coll.customers, editing.id, data) : S.add(S.coll.customers, data);
+            p.then(function () {
+                U.closeModal('modal');
+                U.toast(editing ? 'Customer update ho gaya.' : 'Customer add ho gaya.');
+                load();
+            }).catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+        }
+
+        function exportCsv() {
+            var csvRows = [['Name', 'Mobile', 'Address', 'Notes', 'Total Business', 'Since']];
+            rows.forEach(function (r) {
+                csvRows.push([r.name, r.mobile, r.address || '', r.notes || '', business(r.mobile), r.createdAt || '']);
+            });
+            U.csv('customers.csv', csvRows);
+        }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="expenses" data-title="Expenses">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Expenses</h2><p id="info">—</p></div>
+                <div class="actions">
+                    <button class="btn btn-ghost btn-sm" id="exportBtn"><i class="fas fa-file-csv"></i> Export</button>
+                    <button class="btn btn-primary btn-sm" id="addBtn"><i class="fas fa-plus"></i> Add Expense</button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <input class="grow" id="search" placeholder="🔍 Expense title ya notes...">
+                <select id="cat">
+                    <option value="">All categories</option>
+                    <option value="rent">Rent</option><option value="electricity">Electricity</option>
+                    <option value="internet">Internet</option><option value="stationery">Stationery</option>
+                    <option value="salary">Salary</option><option value="travel">Travel</option>
+                    <option value="maintenance">Maintenance</option><option value="other">Other</option>
+                </select>
+                <input type="month" id="month">
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Expense</th><th>Category</th><th>Date</th><th>Method</th><th class="t-right">Amount</th><th class="t-right">Actions</th></tr></thead>
+                        <tbody id="body"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+                        <tfoot id="foot"></tfoot>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal">
+        <div class="modal">
+            <div class="modal-head"><h3 id="modalTitle">Add Expense</h3><button class="x" data-close><i class="fas fa-xmark"></i></button></div>
+            <form id="form">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="field full"><label>Title *</label><input name="title" required placeholder="e.g. Shop rent"></div>
+                        <div class="field"><label>Category *</label>
+                            <select name="category" required>
+                                <option value="rent">Rent</option><option value="electricity">Electricity</option>
+                                <option value="internet">Internet</option><option value="stationery">Stationery</option>
+                                <option value="salary">Salary</option><option value="travel">Travel</option>
+                                <option value="maintenance">Maintenance</option><option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="field"><label>Amount (₹) *</label><input name="amount" type="number" min="0" step="0.01" required></div>
+                        <div class="field"><label>Date *</label><input name="expenseDate" type="date" required></div>
+                        <div class="field"><label>Method</label>
+                            <select name="paymentMethod"><option value="cash">Cash</option><option value="upi">UPI</option><option value="bank">Bank</option><option value="card">Card</option></select>
+                        </div>
+                        <div class="field full"><label>Notes</label><textarea name="notes"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, rows = [], editing = null;
+
+        ['search', 'cat', 'month'].forEach(function (id) { document.getElementById(id).addEventListener('input', render); });
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { U.closeModal('modal'); });
+        });
+        document.getElementById('modal').addEventListener('click', function (e) { if (e.target === this) U.closeModal('modal'); });
+
+        S.ready(function () {
+            document.getElementById('addBtn').addEventListener('click', function () { openForm(null); });
+            document.getElementById('exportBtn').addEventListener('click', exportCsv);
+            document.getElementById('form').addEventListener('submit', save);
+            load();
+        });
+
+        function load() {
+            S.all(S.coll.expenses).then(function (r) {
+                rows = r.sort(U.byDateDesc('expenseDate'));
+                render();
+            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function filtered() {
+            var q = document.getElementById('search').value.trim().toLowerCase();
+            var c = document.getElementById('cat').value;
+            var m = document.getElementById('month').value;
+            return rows.filter(function (r) {
+                if (c && r.category !== c) return false;
+                if (m && String(r.expenseDate || '').slice(0, 7) !== m) return false;
+                if (q && (r.title + ' ' + (r.notes || '')).toLowerCase().indexOf(q) < 0) return false;
+                return true;
+            });
+        }
+
+        function render() {
+            var list = filtered();
+            document.getElementById('info').textContent = list.length + ' expenses · ' + U.money(U.sum(list, 'amount'));
+            var b = document.getElementById('body');
+            b.innerHTML = list.length ? list.map(function (r) {
+                return '<tr data-id="' + r.id + '"><td><b>' + U.esc(r.title) + '</b><span class="subtle">' + U.esc(r.notes || '') + '</span></td>' +
+                    '<td><span class="badge grey">' + U.esc(r.category) + '</span></td>' +
+                    '<td class="t-nowrap small">' + U.fmtDate(r.expenseDate) + '</td>' +
+                    '<td class="small muted">' + U.esc(r.paymentMethod || 'cash') + '</td>' +
+                    '<td class="t-right amount red">' + U.money(r.amount) + '</td>' +
+                    '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
+                    '<button class="edit"><i class="fas fa-pen"></i></button><button class="del"><i class="fas fa-trash"></i></button></div></td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">Koi expense nahi mila.</td></tr>';
+
+            b.querySelectorAll('tr[data-id]').forEach(function (tr) {
+                var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
+                tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
+                tr.querySelector('.del').addEventListener('click', function () {
+                    if (!confirm('Expense delete karein: ' + rec.title + '?')) return;
+                    S.remove(S.coll.expenses, rec.id).then(function () { U.toast('Expense delete ho gaya.'); load(); });
+                });
+            });
+
+            document.getElementById('foot').innerHTML = list.length ?
+                '<tr style="background:#f8fafc"><td colspan="4" style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL (' + list.length + ')</td>' +
+                '<td class="t-right amount red">' + U.money(U.sum(list, 'amount')) + '</td><td></td></tr>' : '';
+        }
+
+        function openForm(rec) {
+            editing = rec;
+            document.getElementById('modalTitle').textContent = rec ? 'Edit Expense' : 'Add Expense';
+            var f = document.getElementById('form');
+            f.reset();
+            f.querySelector('[name="expenseDate"]').value = U.todayISO();
+            if (rec) {
+                ['title', 'category', 'amount', 'expenseDate', 'paymentMethod', 'notes'].forEach(function (k) {
+                    var el = f.querySelector('[name="' + k + '"]');
+                    if (el) el.value = rec[k] === undefined ? '' : rec[k];
+                });
+            }
+            U.openModal('modal');
+        }
+
+        function save(e) {
+            e.preventDefault();
+            var f = e.target;
+            var g = function (n) { return f.querySelector('[name="' + n + '"]').value; };
+            var data = {
+                title: g('title').trim(), category: g('category'), amount: U.num(g('amount')),
+                expenseDate: g('expenseDate'), paymentMethod: g('paymentMethod'), notes: g('notes').trim()
+            };
+            var p = editing ? S.set(S.coll.expenses, editing.id, data) : S.add(S.coll.expenses, data);
+            p.then(function () {
+                U.closeModal('modal'); U.toast(editing ? 'Expense update ho gaya.' : 'Expense add ho gaya.'); load();
+            }).catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+        }
+
+        function exportCsv() {
+            var data = [['Title', 'Category', 'Amount', 'Date', 'Method', 'Notes']];
+            filtered().forEach(function (r) { data.push([r.title, r.category, U.num(r.amount), r.expenseDate, r.paymentMethod || '', r.notes || '']); });
+            U.csv('expenses.csv', data);
+        }
+    })();
+    </script>
+</body>
+</html>

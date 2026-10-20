@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments — Apna Online Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body class="admin-body" data-page="payments" data-title="Payments">
+
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <main class="content">
+
+            <div class="page-head">
+                <div><h2>Payments</h2><p>Collection overview aur quick payment entry.</p></div>
+                <div class="actions">
+                    <a class="btn btn-ghost btn-sm" href="/shop/admin/payments-pending.html"><i class="fas fa-clock"></i> Pending</a>
+                    <a class="btn btn-ghost btn-sm" href="/shop/admin/payments-history.html"><i class="fas fa-clock-rotate-left"></i> History</a>
+                    <button class="btn btn-primary btn-sm" id="collectBtn"><i class="fas fa-hand-holding-dollar"></i> Collect Payment</button>
+                </div>
+            </div>
+
+            <div class="kpis">
+                <div class="kpi green"><div class="kpi-label">Today</div><div class="kpi-value" id="kToday">₹0</div><div class="kpi-sub" id="kTodayN">—</div></div>
+                <div class="kpi"><div class="kpi-label">This Month</div><div class="kpi-value" id="kMonth">₹0</div><div class="kpi-sub">total collected</div></div>
+                <div class="kpi amber"><div class="kpi-label">Cash (Month)</div><div class="kpi-value" id="kCash">₹0</div></div>
+                <div class="kpi"><div class="kpi-label">UPI / Online (Month)</div><div class="kpi-value" id="kUpi">₹0</div></div>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns:1.4fr 1fr;align-items:start">
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-clock-rotate-left" style="color:var(--brand-2)"></i> Recent Payments</h3>
+                        <div class="actions"><a href="/shop/admin/payments-history.html" class="btn btn-ghost btn-sm">View all</a></div></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Receipt</th><th>Customer</th><th>Method</th><th>Date</th><th class="t-right">Received</th></tr></thead>
+                            <tbody id="recentBody"><tr><td colspan="5" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head"><h3><i class="fas fa-circle-exclamation" style="color:var(--red)"></i> Top Dues</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Customer</th><th class="t-right">Due</th><th></th></tr></thead>
+                            <tbody id="dueBody"><tr><td colspan="3" class="empty-row">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- collect modal -->
+    <div class="modal-backdrop" id="modal">
+        <div class="modal">
+            <div class="modal-head"><h3>Collect Payment</h3><button class="x" data-close><i class="fas fa-xmark"></i></button></div>
+            <form id="form">
+                <div class="modal-body">
+                    <div class="field" style="margin-bottom:12px">
+                        <label>Pending Transaction *</label>
+                        <select id="txSelect" name="txId" required></select>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field"><label>Due Amount</label><input id="dueShow" disabled value="₹0"></div>
+                        <div class="field"><label>Amount Receiving (₹) *</label><input id="amount" name="amount" type="number" min="1" step="0.01" required></div>
+                        <div class="field"><label>Method</label>
+                            <select id="method" name="method"><option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank">Bank Transfer</option></select>
+                        </div>
+                        <div class="field"><label>Date</label><input id="date" name="date" type="date"></div>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Receive Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="/shop/assets/shop.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var S = window.SHOP, U = S.ui, rows = [];
+
+        document.querySelectorAll('[data-close]').forEach(function (b) {
+            b.addEventListener('click', function () { U.closeModal('modal'); });
+        });
+        document.getElementById('modal').addEventListener('click', function (e) {
+            if (e.target === this) U.closeModal('modal');
+        });
+
+        S.ready(function () {
+            document.getElementById('collectBtn').addEventListener('click', openCollect);
+            document.getElementById('txSelect').addEventListener('change', showDue);
+            document.getElementById('form').addEventListener('submit', submit);
+            load();
+        });
+
+        function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
+
+        function load() {
+            S.all(S.coll.transactions).then(function (r) {
+                rows = r.sort(U.byDateDesc('transactionDate'));
+                render();
+            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+        }
+
+        function render() {
+            var month = U.todayISO().slice(0, 7);
+            var paidRows = rows.filter(function (t) { return U.num(t.amountReceived) > 0; });
+            var today = rows.filter(function (t) { return t.transactionDate === U.todayISO(); });
+            var mRows = rows.filter(function (t) { return String(t.transactionDate || '').slice(0, 7) === month; });
+
+            document.getElementById('kToday').textContent = U.money(U.sum(today, 'amountReceived'));
+            document.getElementById('kTodayN').textContent = today.length + ' transactions';
+            document.getElementById('kMonth').textContent = U.money(U.sum(mRows, 'amountReceived'));
+
+            var cash = mRows.filter(function (t) { return (t.paymentMethod || 'cash') === 'cash'; });
+            var online = mRows.filter(function (t) { return (t.paymentMethod || 'cash') !== 'cash'; });
+            document.getElementById('kCash').textContent = U.money(U.sum(cash, 'amountReceived'));
+            document.getElementById('kUpi').textContent = U.money(U.sum(online, 'amountReceived'));
+
+            document.getElementById('recentBody').innerHTML = paidRows.length ? paidRows.slice(0, 8).map(function (t) {
+                return '<tr><td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b></td>' +
+                    '<td>' + U.esc(t.customerName) + '</td>' +
+                    '<td><span class="badge grey">' + U.esc(t.paymentMethod || 'cash') + '</span></td>' +
+                    '<td class="small muted t-nowrap">' + U.fmtDate(t.transactionDate) + '</td>' +
+                    '<td class="t-right amount green">' + U.money(t.amountReceived) + '</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">Abhi koi payment nahi.</td></tr>';
+
+            var dues = rows.filter(function (t) { return due(t) > 0; })
+                .sort(function (a, b) { return due(b) - due(a); }).slice(0, 7);
+            document.getElementById('dueBody').innerHTML = dues.length ? dues.map(function (t) {
+                return '<tr><td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.service) + '</span></td>' +
+                    '<td class="t-right amount red">' + U.money(due(t)) + '</td>' +
+                    '<td class="t-right"><button class="btn btn-ghost btn-sm btn-icon collect" data-id="' + t.id + '" title="Collect"><i class="fas fa-hand-holding-dollar"></i></button></td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">Koi due nahi 🎉</td></tr>';
+
+            document.querySelectorAll('.collect').forEach(function (b) {
+                b.addEventListener('click', function () { openCollect(b.getAttribute('data-id')); });
+            });
+        }
+
+        function openCollect(txId) {
+            var pending = rows.filter(function (t) { return due(t) > 0; });
+            if (!pending.length) { U.toast('Koi pending payment nahi hai 🎉'); return; }
+            var sel = document.getElementById('txSelect');
+            sel.innerHTML = pending.map(function (t) {
+                return '<option value="' + t.id + '">' + U.esc(t.customerName) + ' · ' + U.esc(t.receiptNumber || '') + ' · Due ' + U.money(due(t)) + '</option>';
+            }).join('');
+            if (txId) sel.value = txId;
+            document.getElementById('date').value = U.todayISO();
+            document.getElementById('amount').value = '';
+            showDue();
+            U.openModal('modal');
+        }
+
+        function showDue() {
+            var id = document.getElementById('txSelect').value;
+            var t = rows.filter(function (x) { return x.id === id; })[0];
+            document.getElementById('dueShow').value = t ? U.money(due(t)) : '₹0';
+            document.getElementById('amount').max = t ? due(t) : '';
+        }
+
+        function submit(e) {
+            e.preventDefault();
+            var id = document.getElementById('txSelect').value;
+            var t = rows.filter(function (x) { return x.id === id; })[0];
+            if (!t) return;
+            var amt = U.num(document.getElementById('amount').value);
+            var d = due(t);
+            if (amt <= 0) { U.toast('Amount bharein.'); return; }
+            if (amt > d) { U.toast('Due se zyada amount nahi le sakte.'); return; }
+
+            var received = U.num(t.amountReceived) + amt;
+            var remaining = Math.max(0, U.num(t.totalAmount) - received);
+            S.set(S.coll.transactions, t.id, {
+                amountReceived: received,
+                remainingAmount: remaining,
+                paymentStatus: remaining <= 0 ? 'paid' : (received > 0 ? 'partial' : 'pending'),
+                lastPaymentDate: document.getElementById('date').value || U.todayISO(),
+                lastPaymentMethod: document.getElementById('method').value
+            }).then(function () {
+                U.closeModal('modal');
+                U.toast('Payment receive ho gaya: ' + U.money(amt));
+                load();
+            }).catch(function (err) { console.error(err); U.toast('Payment save nahi hua.'); });
+        }
+    })();
+    </script>
+</body>
+</html>
