@@ -221,10 +221,236 @@
         }
     }
 
+    /* ============================================================
+       STUDENTS (STEP 2)
+       ============================================================ */
+    let STUDENT_Q = '';
+
+    function feeChip(s) {
+        const due = Number(s.feeTotal || 0) - Number(s.feePaid || 0);
+        if (due <= 0) return '<span class="chip chip-green">Paid</span>';
+        const pctPaid = s.feeTotal ? Math.round((s.feePaid || 0) * 100 / s.feeTotal) : 0;
+        if (pctPaid === 0) return '<span class="chip chip-red">' + money(due) + ' baaki</span>';
+        if (pctPaid >= 50) return '<span class="chip chip-amber">' + money(due) + ' baaki</span>';
+        return '<span class="chip chip-red">' + money(due) + ' baaki</span>';
+    }
+
+    function canCRUD(user) {
+        return user && ['Owner', 'Admin1', 'Admin2', 'Accountant'].indexOf(user.role) > -1;
+    }
+
+    function studentsRender() {
+        const s = CH.load();
+        const u = CH.getUser();
+
+        const active = s.students.filter(function (x) { return x.status === 'Active'; });
+        const dueStd = active.filter(function (x) { return Number(x.feeTotal || 0) - Number(x.feePaid || 0) > 0; });
+        const m = CH.today().slice(0, 7);
+        const newThisM = s.students.filter(function (x) { return (x.joinDate || 'x').slice(0, 7) === m; });
+        const collectedByStd = s.students.reduce(function (a, x) { return a + Number(x.feePaid || 0); }, 0);
+
+        const st = $('sStats');
+        if (st) {
+            function c(icon, col, val, label) {
+                return '<div class="stat-card"><div class="stat-icon ' + col + '"><i class="fas ' + icon + '"></i></div>' +
+                    '<div><div class="stat-value">' + esc(val) + '</div><div class="stat-label">' + label + '</div></div></div>';
+            }
+            st.innerHTML =
+                c('fa-user-graduate', 'teal', active.length, 'Active Students') +
+                c('fa-hourglass-half', 'red', dueStd.length, 'Fee Due Wale') +
+                c('fa-user-plus', 'blue', newThisM.length, 'New This Month') +
+                c('fa-indian-rupee-sign', 'green', money(collectedByStd), 'Fees Received');
+        }
+
+        const q = STUDENT_Q.trim().toLowerCase();
+        const rows = s.students
+            .filter(function (x) {
+                if (!q) return true;
+                return [x.name, x.adm, x.phone, x.parentPhone].some(function (v) {
+                    return String(v || '').toLowerCase().indexOf(q) > -1;
+                });
+            })
+            .map(function (x) {
+                const b = s.batches.filter(function (bb) { return bb.id === x.batchId; })[0];
+                const ph = x.parentPhone || x.phone || '';
+                const due = Number(x.feeTotal || 0) - Number(x.feePaid || 0);
+                const msg = encodeURIComponent('Namaste, ' + x.name + ' (' + (x.adm || '') + ') ki fees:\nTotal: Rs.' + x.feeTotal + '\nPaid: Rs.' + x.feePaid + '\nPending: Rs.' + due + '\nDue date: ' + fmtDate(x.dueDate) + '\nKripya payment jama karein. - ' + (s.config.shopName || 'Coaching'));
+                const actions = (canCRUD(u)
+                    ? '<button class="btn btn-light btn-sm" title="Edit" onclick="App.editStudent(\'' + x.id + '\')"><i class="fas fa-pen"></i></button> ' +
+                      '<button class="btn btn-light btn-sm" title="Delete" onclick="App.delStudent(\'' + x.id + '\')"><i class="fas fa-trash" style="color:var(--danger)"></i></button> '
+                    : '');
+                return '<tr>' +
+                    '<td><b>' + esc(x.name) + '</b><div class="small muted">' + esc(x.adm || '') + '</div></td>' +
+                    '<td>' + esc(b ? b.name : (x.batch || '—')) + '</td>' +
+                    '<td>' + esc(ph || '—') + '</td>' +
+                    '<td>' + feeChip(x) + '</td>' +
+                    '<td>' + esc(fmtDate(x.dueDate)) + '</td>' +
+                    '<td><span class="chip ' + (x.status === 'Active' ? 'chip-green' : '') + '">' + esc(x.status) + '</span></td>' +
+                    '<td style="text-align:right;white-space:nowrap">' + actions +
+                        (ph ? '<a class="btn btn-light btn-sm" target="_blank" href="https://wa.me/91' + esc(ph) + '?text=' + msg + '" title="WhatsApp Remind"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' : '') +
+                    '</td></tr>';
+            }).join('');
+        const body = $('sBody');
+        if (body) body.innerHTML = rows || '<tr><td colspan="7" class="muted">Students na mile (search clear karein ya Add karein)</td></tr>';
+    }
+
+    function recalcBatchCounts(s) {
+        s.batches.forEach(function (b) {
+            b.students = s.students.filter(function (x) { return x.batchId === b.id && x.status === 'Active'; }).length;
+            fbSet('batches', b);
+        });
+    }
+
+    function nextAdm(s) {
+        let max = 1000;
+        s.students.forEach(function (x) {
+            const m = String(x.adm || '').match(/CH\d+-(\d+)/);
+            if (m) max = Math.max(max, parseInt(m[1], 10));
+        });
+        return 'CH26-' + (max + 1);
+    }
+
+    function studentForm(s, stu) {
+        const batchOpts = s.batches.map(function (b) {
+            return '<option value="' + esc(b.id) + '"' + (stu && stu.batchId === b.id ? ' selected' : '') + '>' + esc(b.name) + ' — ' + esc(b.course) + '</option>';
+        }).join('');
+        return '<form id="stuForm">' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>Name *</label><input id="fName" class="form-control" value="' + esc(stu ? stu.name : '') + '"></div>' +
+                '<div class="form-group"><label>Admission No</label><input class="form-control" value="' + esc(stu ? stu.adm : nextAdm(s)) + '" disabled></div>' +
+            '</div>' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>Batch *</label><select id="fBatch" class="form-control">' + batchOpts + '</select></div>' +
+                '<div class="form-group"><label>Gender</label><select id="fGender" class="form-control">' +
+                    ['Male', 'Female', 'Other'].map(function (g) { return '<option' + (stu && stu.gender === g ? ' selected' : '') + '>' + g + '</option>'; }).join('') + '</select></div>' +
+            '</div>' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>Phone</label><input id="fPhone" class="form-control" value="' + esc(stu ? stu.phone : '') + '"></div>' +
+                '<div class="form-group"><label>Parent Phone</label><input id="fPParent" class="form-control" value="' + esc(stu ? stu.parentPhone : '') + '"></div>' +
+            '</div>' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>DOB</label><input type="date" id="fDob" class="form-control" value="' + esc(stu ? stu.dob : '') + '"></div>' +
+                '<div class="form-group"><label>Join Date</label><input type="date" id="fJoin" class="form-control" value="' + esc(stu ? stu.joinDate : CH.today()) + '"></div>' +
+            '</div>' +
+            '<div class="form-group"><label>Address</label><input id="fAddr" class="form-control" value="' + esc(stu ? stu.address : '') + '"></div>' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>Total Fee *</label><input type="number" id="fFeeT" class="form-control" value="' + esc(stu ? stu.feeTotal : '') + '"></div>' +
+                '<div class="form-group"><label>Fee Paid</label><input type="number" id="fFeeP" class="form-control" value="' + esc(stu ? stu.feePaid : 0) + '"></div>' +
+            '</div>' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>Fee Mode</label><select id="fMode" class="form-control">' +
+                    ['Monthly', 'Quarterly', 'Half-Yearly', 'Full'].map(function (o) { return '<option' + (stu && stu.feeMode === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></div>' +
+                '<div class="form-group"><label>Next Due Date</label><input type="date" id="fDue" class="form-control" value="' + esc(stu ? stu.dueDate : '') + '"></div>' +
+            '</div>' +
+            '<div class="form-row">' +
+                '<div class="form-group"><label>Status</label><select id="fStatus" class="form-control">' +
+                    ['Active', 'Left', 'Hold'].map(function (o) { return '<option' + (stu && stu.status === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></div>' +
+                '<div class="form-group"><label>Remark</label><input id="fRemark" class="form-control" value="' + esc(stu ? stu.remark : '') + '"></div>' +
+            '</div>' +
+            '<div id="stuErr" style="color:var(--danger);font-size:12.5px;margin:4px 0 8px"></div>' +
+        '</form>';
+    }
+
+    function validateStudent(s, d) {
+        const errs = [];
+        if (!d.name) errs.push('Name bharein');
+        if (!d.batchId) errs.push('Batch chunein');
+        if (d.feeTotal === '' || isNaN(Number(d.feeTotal))) errs.push('Total Fee sahi bharein');
+        [d.phone, d.parentPhone].forEach(function (p) {
+            if (p && !/^\d{10}$/.test(String(p))) errs.push('Phone 10 digit hona chahiye (' + p + ')');
+        });
+        if (d.feePaid !== '' && Number(d.feePaid) > Number(d.feeTotal || 0)) errs.push('Paid > Total nahi ho sakta');
+        return errs;
+    }
+
+    function addStudent() {
+        const s = CH.load();
+        modal('Add Student', studentForm(s, null),
+            '<button class="btn btn-primary" onclick="App.saveStudent(null)"><i class="fas fa-check"></i> Save Student</button>');
+    }
+
+    function editStudent(id) {
+        const s = CH.load();
+        const stu = s.students.filter(function (x) { return x.id === id; })[0];
+        if (!stu) return;
+        modal('Edit Student — ' + esc(stu.name), studentForm(s, stu),
+            '<button class="btn btn-primary" onclick="App.saveStudent(\'' + id + '\')"><i class="fas fa-check"></i> Update</button>');
+    }
+
+    function saveStudent(id) {
+        const s = CH.load();
+        const d = {
+            name: $('fName').value.trim(),
+            batchId: $('fBatch').value,
+            gender: $('fGender').value,
+            phone: $('fPhone').value.trim(),
+            parentPhone: $('fPParent').value.trim(),
+            dob: $('fDob').value,
+            joinDate: $('fJoin').value || CH.today(),
+            address: $('fAddr').value,
+            feeTotal: $('fFeeT').value,
+            feePaid: $('fFeeP').value || 0,
+            feeMode: $('fMode').value,
+            dueDate: $('fDue').value,
+            status: $('fStatus').value,
+            remark: $('fRemark').value
+        };
+        const errs = validateStudent(s, d);
+        if (errs.length) { $('stuErr').textContent = errs.join(' • '); return; }
+        const b = s.batches.filter(function (x) { return x.id === d.batchId; })[0];
+        let stu;
+        if (id) {
+            stu = s.students.filter(function (x) { return x.id === id; })[0];
+            Object.keys(d).forEach(function (k) { stu[k] = d[k]; });
+            stu.batch = b ? b.name : '';
+            stu.course = b ? b.course : '';
+        } else {
+            stu = Object.assign({ id: CH.nextId('STU', s.students), adm: nextAdm(s), batch: b ? b.name : '', course: b ? b.course : '', createdAt: Date.now() }, d);
+            s.students.push(stu);
+        }
+        recalcBatchCounts(s);
+        CH.save(s);
+        fbSet('students', stu);
+        closeModal();
+        toast('Student save ho gaya — ' + stu.adm);
+        studentsRender();
+    }
+
+    function delStudent(id) {
+        const s = CH.load();
+        const stu = s.students.filter(function (x) { return x.id === id; })[0];
+        if (!stu) return;
+        modal('Delete Student',
+            '<p><b>' + esc(stu.name) + '</b> (' + esc(stu.adm) + ') ko delete karne se records list se hata denge. Confirm?</p>',
+            '<button class="btn btn-danger" onclick="App.doDelete(\'' + id + '\')"><i class="fas fa-trash"></i> Delete</button> ' +
+            '<button class="btn btn-light" onclick="App.closeModal()">Cancel</button>');
+    }
+
+    function doDelete(id) {
+        const s = CH.load();
+        s.students = s.students.filter(function (x) { return x.id !== id; });
+        recalcBatchCounts(s);
+        CH.save(s);
+        fbDel('students', id);
+        closeModal();
+        toast('Student delete ho gaya');
+        studentsRender();
+    }
+
+    function studentsSearch(q) { STUDENT_Q = q || ''; studentsRender(); }
+
     /* ---------- public API ---------- */
     window.App = {
         renderShell: renderShell,
         dashboard: dashboard,
+        // students (step 2)
+        addStudent: addStudent,
+        editStudent: editStudent,
+        saveStudent: saveStudent,
+        delStudent: delStudent,
+        doDelete: doDelete,
+        studentsRender: studentsRender,
+        search: studentsSearch,
         toast: toast,
         openModal: modal,
         closeModal: closeModal,
@@ -256,6 +482,7 @@
         syncStart(function () {
             renderShell();
             if (page() === 'dashboard') App.dashboard();
+            if (page() === 'students') App.studentsRender();
             if (window.App.pageReady) window.App.pageReady();
         });
     });

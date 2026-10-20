@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Students · Coaching ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/coaching.css">
+</head>
+<body data-page="students">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2>Students</h2>
+                    <p>Admission, batch, fee aur parent contact — sab yahan se</p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button class="btn btn-primary" onclick="App.addStudent()"><i class="fas fa-user-plus"></i> Add Student</button>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="sStats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"></div>
+
+            <div class="card" style="margin-top:18px">
+                <div class="card-head">
+                    <h3>Student List</h3>
+                    <input type="text" class="form-control" style="width:240px" id="sSearch" placeholder="Search name / adm / phone..." oninput="App.search(this.value)">
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Student</th><th>Batch</th><th>Parent Phone</th><th>Fee Status</th><th>Due Date</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+                        <tbody id="sBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/brand.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

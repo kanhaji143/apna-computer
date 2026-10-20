@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// Apna Computer Ltd — Storage Rules
+// Demo mode: public read + write on app paths (same posture as Firestore rules)
+// NOTE: images uploaded by admin panel (demo login, no Firebase Auth token yet)
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Notice images + any app media
+    match /notices/{fileName} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    match /media/{fileName} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // keep a probe/test path locked
+    match /_probe/{fileName} {
+      allow read, write: if false;
+    }
+
+    // default: deny everything else
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

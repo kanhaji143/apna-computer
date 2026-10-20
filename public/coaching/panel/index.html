@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Coaching ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/coaching.css">
+</head>
+<body data-page="dashboard">
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+        <header class="topbar" id="topbar"></header>
+        <div class="content">
+            <div class="page-head">
+                <div>
+                    <h2 id="dWelcome">Dashboard</h2>
+                    <p id="dSub">Business ka poora overview — students, fees, batches aur staff</p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <span class="chip chip-teal" id="dDate"></span>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="dStats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"></div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-head">
+                        <h3><i class="fas fa-hourglass-half" style="color:var(--warn)"></i> Fee Dues (Pending)</h3>
+                        <a href="fees.html" class="btn btn-light btn-sm">All Invoices <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Student</th><th>Batch</th><th>Due</th><th>Amount</th><th></th></tr></thead>
+                            <tbody id="dDues"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <h3><i class="fas fa-indian-rupee-sign" style="color:var(--success)"></i> Recent Payments</h3>
+                        <a href="fees.html" class="btn btn-light btn-sm">All Payments <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Date</th><th>Student</th><th>Amount</th><th>Mode</th></tr></thead>
+                            <tbody id="dPayments"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:18px">
+                <div class="card-head">
+                    <h3><i class="fas fa-layer-group" style="color:var(--primary)"></i> Batches Overview</h3>
+                    <a href="batches.html" class="btn btn-light btn-sm">Manage Batches <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Batch</th><th>Time</th><th>Teacher</th><th>Capacity</th><th>Status</th></tr></thead>
+                        <tbody id="dBatches"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:18px">
+                <div class="card-head">
+                    <h3><i class="fas fa-clipboard-check" style="color:var(--info)"></i> Aaj ki Attendance</h3>
+                    <a href="attendance.html" class="btn btn-light btn-sm">Mark Attendance <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Batch</th><th>Present</th><th>Health</th></tr></thead>
+                        <tbody id="dAtt"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/brand.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var hello = ['Namaste', 'Good Day!', 'Shubh Din', 'Welcome'];
+    document.getElementById('dWelcome').textContent =
+        hello[new Date().getHours() % hello.length] + ' — ' + (CH.getUser() ? CH.getUser().name : '');
+    document.getElementById('dDate').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+});
+</script>
+</body>
+</html>

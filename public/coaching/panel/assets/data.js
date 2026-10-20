@@ -70,7 +70,7 @@
                 id: 'STU' + String(n).padStart(3, '0'),
                 name: full, adm: adm, batchId: b.id, batch: b.name, course: b.course,
                 phone: '98765' + String(10000 + n), parentPhone: '91234' + String(10000 + n),
-                gender: i % 2 ? 'Female' : 'Male', dob: '20' + (06 + (n % 8)) + '-0' + ((n % 8) + 1) + '-1' + (n % 9),
+                gender: i % 2 ? 'Female' : 'Male', dob: '20' + (6 + (n % 8)) + '-0' + ((n % 8) + 1) + '-1' + (n % 9),
                 address: 'Amethi, Gauriganj', joinDate: '2026-06-' + String((n % 27) + 1).padStart(2, '0'),
                 feeTotal: totalFee, feePaid: paid, feeMode: 'Monthly', dueDate: '2026-11-05',
                 status: 'Active', remark: ''
@@ -152,6 +152,7 @@
 
     /* ---------- SEED CONFIG ---------- */
     const SEED_CONFIG = {
+        id: 'app',
         shopName: 'Apna Coaching Classes',
         phone: '+918504985149',
         whatsapp: '918504985149',

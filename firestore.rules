@@ -40,6 +40,24 @@ service cloud.firestore {
     match /oc_notices/{id}           { allow read, write: if true; }
     match /oc_config/{id}            { allow read, write: if true; }
 
+    // ---- Coaching ERP (Phase 6 — demo: public read/write) ----
+    match /ch_students/{id}   { allow read, write: if true; }
+    match /ch_batches/{id}    { allow read, write: if true; }
+    match /ch_courses/{id}    { allow read, write: if true; }
+    match /ch_subjects/{id}   { allow read, write: if true; }
+    match /ch_teachers/{id}   { allow read, write: if true; }
+    match /ch_timetable/{id}  { allow read, write: if true; }
+    match /ch_attendance/{id} { allow read, write: if true; }
+    match /ch_invoices/{id}   { allow read, write: if true; }
+    match /ch_payments/{id}   { allow read, write: if true; }
+    match /ch_staff/{id}      { allow read, write: if true; }
+    match /ch_payroll/{id}    { allow read, write: if true; }
+    match /ch_expenses/{id}   { allow read, write: if true; }
+    match /ch_tests/{id}      { allow read, write: if true; }
+    match /ch_results/{id}    { allow read, write: if true; }
+    match /ch_users/{id}      { allow read, write: if true; }
+    match /ch_config/{id}     { allow read, write: if true; }
+
     // ---- Hub (website enquiries) ----
     match /hub_leads/{id} {
       allow create: if true;   // public form submit

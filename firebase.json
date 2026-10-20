@@ -23,5 +23,9 @@
   },
   "firestore": {
     "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules",
+    "bucket": "apna-computer-ltd.firebasestorage.app"
   }
 }

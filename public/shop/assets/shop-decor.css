@@ -177,13 +177,17 @@
 }
 .notice-item .notice-img {
     margin: -4px -4px 10px -4px; border-radius: 10px 10px 0 0; overflow: hidden;
-    max-height: 180px; background: #f1f5f9;
+    background: #f1f5f9;
 }
+/* Notice images — never cropped, whatever ratio is posted:
+   width:100% + height:auto keeps the natural ratio (landscape / square render
+   full-width, uncropped). max-height only caps unusually TALL (portrait) images,
+   and object-fit:contain then letterboxes them instead of cutting anything. */
 .notice-item .notice-img img {
-    width: 100%; height: 180px; object-fit: cover; display: block;
-    transition: transform .3s;
+    width: 100%; height: auto; max-height: 720px; object-fit: contain;
+    display: block; background: #f1f5f9; transition: filter .3s;
 }
-.notice-item:hover .notice-img img { transform: scale(1.04); }
+.notice-item:hover .notice-img img { filter: brightness(1.03); }
 .notice-item.has-img { padding-left: 16px; }
 .notice-item.has-img::before { display: none; }
 .notice-item.has-img::after { display: none; }
@@ -257,6 +261,7 @@
     .stats-band .stat:nth-child(-n+2) { border-bottom: 1px solid #eef2f7; }
 }
 @media (max-width: 640px) {
+    .notice-item .notice-img img { max-height: 420px; }
     .stats-band-wrap { margin-top: -22px; }
     .stats-band .stat { padding: 14px 15px; gap: 10px; }
     .stats-band .stat b { font-size: 18px; }
