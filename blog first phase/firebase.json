@@ -1,0 +1,43 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(html|js|css|json)",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/blog/read/**",
+        "destination": "/blog/templates/post.html"
+      },
+      {
+        "source": "/blog/category/**",
+        "destination": "/blog/templates/category.html"
+      },
+      {
+        "source": "/blog/tag/**",
+        "destination": "/blog/templates/tag.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules",
+    "bucket": "apna-computer-ltd.firebasestorage.app"
+  }
+}

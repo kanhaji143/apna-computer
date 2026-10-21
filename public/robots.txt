@@ -1,0 +1,18 @@
+# Apna Computer Blog — robots.txt
+# https://apna-computer-ltd.web.app/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /blog/admin/
+Disallow: /shop/admin/
+Disallow: /crm/
+Disallow: /clothing/panel/
+
+# Advertising crawlers must be able to verify the site
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+Sitemap: https://apna-computer-ltd.web.app/sitemap.xml

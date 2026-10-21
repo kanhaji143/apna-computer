@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Articles — Apna Computer Blog</title>
+    <meta name="description" content="Browse every tutorial published on Apna Computer Blog — AI tools, computer basics, Excel, Power BI and digital skills.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://apna-computer-ltd.web.app/blog/list.html">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>All Articles</span>
+            </nav>
+
+            <div class="b-sec-title">
+                <h2>All Articles</h2>
+                <span class="rule"></span>
+                <span id="postCount" style="font-size:13px;color:var(--light)"></span>
+            </div>
+
+            <div id="chips" class="b-chips"></div>
+
+            <div id="grid" class="b-grid">
+                <div class="b-skel" style="height:280px"></div>
+                <div class="b-skel" style="height:280px"></div>
+                <div class="b-skel" style="height:280px"></div>
+            </div>
+
+            <div id="empty" class="b-empty" hidden>
+                <i class="far fa-newspaper"></i>
+                <b>No articles here yet</b>
+                <a class="btn primary" href="/blog/" style="margin-top:14px"><i class="fas fa-home"></i> Back to Blog</a>
+            </div>
+
+            <div id="pager" class="b-pager"></div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT, ui = B.ui, esc = ui.esc;
+        var PER_PAGE = 9;
+        var allPosts = [];
+
+        function cardHtml(p) {
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="lazy">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            var badge = p.categoryName ? '<span class="b-cat-badge">' + esc(p.categoryName) + '</span>' : '';
+            return '<article class="b-card">' +
+                '<a class="b-card-img" href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + img + badge + '</a>' +
+                '<div class="b-card-body">' +
+                    '<h3><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h3>' +
+                    '<p class="excerpt">' + esc(p.excerpt || B.excerptFrom(p.content)) + '</p>' +
+                    '<div class="b-card-meta">' +
+                        '<span>' + ui.fmtDate(p.publishedAt) + '</span><span class="dot"></span>' +
+                        '<span class="rt"><i class="far fa-clock"></i> ' + (p.readingTime || B.readingTime(p.content)) + ' min</span>' +
+                    '</div>' +
+                '</div>' +
+            '</article>';
+        }
+
+        function render(page, catSlug) {
+            var filtered = catSlug
+                ? allPosts.filter(function (p) { return p.categorySlug === catSlug; })
+                : allPosts;
+
+            var pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+            if (page > pages) page = pages;
+            var slice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+            document.getElementById('postCount').textContent = filtered.length + ' article' + (filtered.length === 1 ? '' : 's');
+
+            var grid = document.getElementById('grid');
+            var empty = document.getElementById('empty');
+
+            if (!filtered.length) {
+                grid.hidden = true;
+                empty.hidden = false;
+                document.getElementById('pager').innerHTML = '';
+                return;
+            }
+            grid.hidden = false;
+            empty.hidden = true;
+            grid.innerHTML = slice.map(cardHtml).join('');
+
+            /* pager */
+            var pager = document.getElementById('pager');
+            if (pages <= 1) { pager.innerHTML = ''; return; }
+            var html = '<a class="' + (page === 1 ? 'dis' : '') + '" href="#" data-p="' + (page - 1) + '"><i class="fas fa-chevron-left"></i></a>';
+            for (var i = 1; i <= pages; i++) {
+                html += '<a class="' + (i === page ? 'cur' : '') + '" href="#" data-p="' + i + '">' + i + '</a>';
+            }
+            html += '<a class="' + (page === pages ? 'dis' : '') + '" href="#" data-p="' + (page + 1) + '"><i class="fas fa-chevron-right"></i></a>';
+            pager.innerHTML = html;
+
+            Array.prototype.forEach.call(pager.querySelectorAll('a[data-p]'), function (a) {
+                a.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var p = parseInt(a.getAttribute('data-p'), 10);
+                    if (p >= 1 && p <= pages) { render(p, catSlug); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                });
+            });
+        }
+
+        L.mount('list').then(function (site) {
+            B.seo.setMeta({
+                title: 'All Articles — ' + site.siteName,
+                description: 'Browse every tutorial published on ' + site.siteName + ' — AI tools, computer basics, Excel, Power BI and digital skills.',
+                siteName: site.siteName,
+                canonical: 'https://apna-computer-ltd.web.app/blog/list.html'
+            });
+
+            return Promise.all([B.posts.published(), B.cats.all('name', 'asc')]);
+        }).then(function (r) {
+            allPosts = r[0];
+            var cats = r[1];
+
+            allPosts.sort(function (a, b) { return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0); });
+
+            /* category chips */
+            var chips = document.getElementById('chips');
+            chips.innerHTML = '<a class="b-chip active" href="/blog/list.html">All</a>' +
+                cats.map(function (c) {
+                    return '<a class="b-chip" href="/blog/category/' + encodeURIComponent(c.slug) + '/">' + esc(c.name) + '</a>';
+                }).join('');
+
+            render(1, '');
+        }).catch(function (err) {
+            console.error(err);
+            document.getElementById('grid').innerHTML =
+                '<div class="b-empty" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i>' +
+                '<b>Could not load articles</b>Please refresh and try again.</div>';
+        });
+    })();
+    </script>
+</body>
+</html>

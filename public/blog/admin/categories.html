@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Categories</h1>
+                <p>Group your tutorials into topics for better SEO and navigation</p>
+            </div>
+            <span class="sp"></span>
+            <span id="catCount" style="font-size:13px;color:var(--light)"></span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start" class="cat-grid">
+            <!-- form -->
+            <div class="card">
+                <h3><i class="fas fa-folder-plus"></i> <span id="formTitle">Add Category</span></h3>
+                <form class="form" id="catForm">
+                    <div>
+                        <label for="cName">Name <span class="req">*</span></label>
+                        <input id="cName" type="text" placeholder="e.g. Excel Tutorials" required>
+                    </div>
+                    <div>
+                        <label for="cSlug">Slug</label>
+                        <input id="cSlug" type="text" placeholder="excel-tutorials">
+                    </div>
+                    <div>
+                        <label for="cDesc">Description <span class="hint">— helps SEO</span></label>
+                        <textarea id="cDesc" rows="3" placeholder="What this category covers…"></textarea>
+                    </div>
+                    <input type="hidden" id="editId">
+                    <div style="display:flex;gap:8px">
+                        <button class="btn primary" type="submit" id="saveBtn"><i class="fas fa-floppy-disk"></i> Save</button>
+                        <button class="btn" type="button" id="cancelBtn" hidden>Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- list -->
+            <div class="card">
+                <div class="toolbar" style="margin-bottom:14px">
+                    <div class="grow"><i class="fas fa-search"></i><input id="q" type="search" placeholder="Search categories…" aria-label="Search categories"></div>
+                </div>
+                <div class="tbl-wrap">
+                    <table class="tbl">
+                        <thead><tr><th>Name</th><th>Slug</th><th>Posts</th><th style="width:150px">Actions</th></tr></thead>
+                        <tbody id="rows"><tr><td colspan="4" style="text-align:center;color:var(--light);padding:30px">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui, esc = ui.esc;
+        var cats = [], counts = {};
+        var $ = function (id) { return document.getElementById(id); };
+        var slugTouched = false;
+
+        $('cName').addEventListener('input', function () { if (!slugTouched && !$('editId').value) $('cSlug').value = B.slugify(this.value); });
+        $('cSlug').addEventListener('input', function () { slugTouched = true; });
+
+        function render() {
+            var q = ($('q').value || '').toLowerCase().trim();
+            var list = cats.filter(function (c) {
+                return !q || (c.name + ' ' + c.slug).toLowerCase().indexOf(q) !== -1;
+            });
+            $('catCount').textContent = cats.length + ' categor' + (cats.length === 1 ? 'y' : 'ies');
+
+            var rows = $('rows');
+            if (!list.length) {
+                rows.innerHTML = '<tr><td colspan="4" style="padding:0">' +
+                    A.emptyState('fas fa-folder-tree', q ? 'No categories match' : 'No categories yet',
+                        q ? 'Try a different search.' : 'Add your first category using the form.') + '</td></tr>';
+                return;
+            }
+
+            rows.innerHTML = list.map(function (c) {
+                var n = counts[c.slug] || 0;
+                return '<tr>' +
+                    '<td><div class="t-title">' + A.highlight(c.name, q) + '</div>' +
+                        '<div class="t-sub">' + esc(c.description || '') + '</div></td>' +
+                    '<td style="color:var(--mid);font-size:12.5px">/' + esc(c.slug || '') + '</td>' +
+                    '<td><span class="pill cat">' + n + ' post' + (n === 1 ? '' : 's') + '</span></td>' +
+                    '<td><div class="acts">' +
+                        '<a class="btn sm" href="/blog/category/' + encodeURIComponent(c.slug) + '/" target="_blank" rel="noopener" title="View"><i class="fas fa-eye"></i></a>' +
+                        '<button class="btn sm ed" data-id="' + esc(c.id) + '" title="Edit"><i class="fas fa-pen"></i></button>' +
+                        '<button class="btn sm ghost-danger del" data-id="' + esc(c.id) + '" title="Delete"><i class="fas fa-trash"></i></button>' +
+                    '</div></td>' +
+                '</tr>';
+            }).join('');
+
+            Array.prototype.forEach.call(document.querySelectorAll('.ed'), function (b) {
+                b.addEventListener('click', function () {
+                    var c = null; cats.forEach(function (x) { if (x.id === b.getAttribute('data-id')) c = x; });
+                    if (!c) return;
+                    $('cName').value = c.name; $('cSlug').value = c.slug; $('cDesc').value = c.description || '';
+                    $('editId').value = c.id; slugTouched = true;
+                    $('formTitle').textContent = 'Edit Category';
+                    $('saveBtn').innerHTML = '<i class="fas fa-floppy-disk"></i> Update';
+                    $('cancelBtn').hidden = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            Array.prototype.forEach.call(document.querySelectorAll('.del'), function (b) {
+                b.addEventListener('click', function () {
+                    var c = null; cats.forEach(function (x) { if (x.id === b.getAttribute('data-id')) c = x; });
+                    if (!c) return;
+                    var n = counts[c.slug] || 0;
+                    var warn = n ? 'This category has ' + n + ' post(s). They will keep their content but lose the category link. Delete anyway?' : 'Delete "' + c.name + '"?';
+                    if (!A.askDelete(warn)) return;
+                    b.disabled = true;
+                    B.cats.remove(B.coll.categories, c.id).then(function () {
+                        cats = cats.filter(function (x) { return x.id !== c.id; });
+                        ui.toast('Category deleted.');
+                        render();
+                    }).catch(function (e) { ui.toast('Delete failed: ' + e.message, 'error'); b.disabled = false; });
+                });
+            });
+        }
+
+        function resetForm() {
+            $('catForm').reset(); $('editId').value = ''; slugTouched = false;
+            $('formTitle').textContent = 'Add Category';
+            $('saveBtn').innerHTML = '<i class="fas fa-floppy-disk"></i> Save';
+            $('cancelBtn').hidden = true;
+        }
+        $('cancelBtn').addEventListener('click', resetForm);
+
+        $('catForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var name = $('cName').value.trim();
+            if (!name) { ui.toast('Please enter a category name.', 'error'); return; }
+            var slug = $('cSlug').value.trim() || B.slugify(name);
+            var desc = $('cDesc').value.trim();
+            var editId = $('editId').value;
+
+            var dup = cats.some(function (c) { return c.slug === slug && c.id !== editId; });
+            if (dup) { ui.toast('A category with this slug already exists.', 'error'); return; }
+
+            $('saveBtn').disabled = true;
+            var op = editId
+                ? B.cats.set(B.coll.categories, editId, { name: name, slug: slug, description: desc })
+                : B.cats.add(B.coll.categories, { name: name, slug: slug, description: desc });
+
+            op.then(function (id) {
+                if (editId) {
+                    cats.forEach(function (c) { if (c.id === editId) { c.name = name; c.slug = slug; c.description = desc; } });
+                    ui.toast('Category updated.');
+                } else {
+                    cats.push({ id: id, name: name, slug: slug, description: desc });
+                    ui.toast('Category added.');
+                }
+                resetForm(); render();
+            }).catch(function (err) { ui.toast('Save failed: ' + err.message, 'error'); })
+              .then(function () { $('saveBtn').disabled = false; });
+        });
+
+        A.guard('categories', function () {
+            Promise.all([
+                B.cats.all('name', 'asc').catch(function () { return []; }),
+                B.posts.all('updatedAt', 'desc').catch(function () { return []; })
+            ]).then(function (r) {
+                cats = r[0];
+                var posts = r[1];
+                posts.forEach(function (p) { if (p.categorySlug) counts[p.categorySlug] = (counts[p.categorySlug] || 0) + 1; });
+                A.bindToolbar({ searchId: 'q', onChange: render });
+                render();
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

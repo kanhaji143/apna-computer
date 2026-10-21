@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1 id="headTitle">New Post</h1>
+                <p id="headSub">Write and publish a tutorial</p>
+            </div>
+            <span class="sp"></span>
+            <a class="btn" href="/blog/admin/posts.html"><i class="fas fa-arrow-left"></i> Back to Posts</a>
+        </div>
+
+        <div class="editor-grid">
+            <!-- MAIN COLUMN -->
+            <div>
+                <div class="card">
+                    <div class="form">
+                        <div>
+                            <label for="title">Post title <span class="req">*</span></label>
+                            <input id="title" type="text" placeholder="e.g. How to Use ChatGPT: A Beginner's Guide" maxlength="120">
+                            <div class="counter" id="titleCount">0 / 60 recommended</div>
+                        </div>
+                        <div>
+                            <label for="slug">URL slug <span class="hint">— auto from title, editable</span></label>
+                            <input id="slug" type="text" placeholder="how-to-use-chatgpt">
+                        </div>
+                        <div>
+                            <label for="excerpt">Excerpt <span class="hint">— short summary shown on cards</span></label>
+                            <textarea id="excerpt" rows="2" placeholder="A one or two sentence summary…"></textarea>
+                            <div class="counter" id="excerptCount">0 / 160 recommended</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-align-left"></i> Content <span class="req" style="color:var(--red)">*</span></h3>
+                    <div id="editor"></div>
+                    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+                        <button class="btn" id="insertImage"><i class="fas fa-image"></i> Insert image from library</button>
+                        <button class="btn" id="uploadInline"><i class="fas fa-upload"></i> Upload &amp; insert image</button>
+                        <input type="file" id="inlineFile" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> SEO</h3>
+                    <div class="form">
+                        <div>
+                            <label for="metaTitle">Meta title <span class="hint">— under 60 chars shows fully in Google</span></label>
+                            <input id="metaTitle" type="text" maxlength="70" placeholder="Defaults to post title">
+                            <div class="counter" id="metaTitleCount">0 / 60</div>
+                        </div>
+                        <div>
+                            <label for="metaDesc">Meta description <span class="hint">— 120–158 chars is the sweet spot</span></label>
+                            <textarea id="metaDesc" rows="3" maxlength="170" placeholder="Defaults to excerpt"></textarea>
+                            <div class="counter" id="metaDescCount">0 / 158</div>
+                        </div>
+                        <label class="check">
+                            <input type="checkbox" id="noindex">
+                            <span>Discourage search engines (noindex) — for posts you do not want Google to index</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div>
+                <div class="card">
+                    <h3><i class="fas fa-paper-plane"></i> Publish</h3>
+                    <div class="form">
+                        <div>
+                            <label for="status">Status</label>
+                            <select id="status">
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="publishedAt">Publish date <span class="hint">— future = scheduled</span></label>
+                            <input id="publishedAt" type="datetime-local">
+                        </div>
+                        <button class="btn primary" id="saveBtn"><i class="fas fa-floppy-disk"></i> Save Post</button>
+                        <button class="btn danger" id="deleteBtn" hidden><i class="fas fa-trash"></i> Delete Post</button>
+                        <div id="previewLink" hidden>
+                            <a class="btn green" id="previewA" href="#" target="_blank" rel="noopener" style="width:100%;justify-content:center">
+                                <i class="fas fa-eye"></i> View live post
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-folder-tree"></i> Category</h3>
+                    <div class="form">
+                        <select id="category"></select>
+                        <div style="display:flex;gap:8px">
+                            <input id="newCat" type="text" placeholder="New category name" style="flex:1">
+                            <button class="btn" id="addCat"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-tags"></i> Tags <span class="hint" style="font-weight:500">— comma separated</span></h3>
+                    <div class="form">
+                        <input id="tags" type="text" placeholder="excel, formulas, beginners">
+                        <div id="tagSuggest" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-image"></i> Featured Image</h3>
+                    <div id="featPreview" style="border:1px dashed var(--border);border-radius:10px;min-height:120px;display:flex;align-items:center;justify-content:center;color:var(--light);font-size:12px;margin-bottom:10px">
+                        No image selected
+                    </div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn" id="pickFeat"><i class="fas fa-images"></i> From library</button>
+                        <button class="btn" id="uploadFeat"><i class="fas fa-upload"></i> Upload</button>
+                        <button class="btn ghost-danger" id="clearFeat" title="Remove image"><i class="fas fa-xmark"></i></button>
+                        <input type="file" id="featFile" accept="image/*" hidden>
+                    </div>
+                    <div class="form" style="margin-top:12px">
+                        <div>
+                            <label for="featAlt">Image alt text <span class="hint">— for accessibility &amp; SEO</span></label>
+                            <input id="featAlt" type="text" placeholder="Describe the image">
+                        </div>
+                    </div>
+                    <div id="featProgress" hidden style="margin-top:8px">
+                        <div class="pbar"><div class="fill" id="featBar" style="width:0%"></div></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-user-pen"></i> Author</h3>
+                    <div class="form">
+                        <input id="author" type="text" placeholder="Krishna Ji">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- media library modal -->
+    <div id="mediaModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:200;padding:24px;overflow:auto">
+        <div style="max-width:720px;margin:0 auto;background:var(--card);border-radius:14px;padding:20px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+                <h3 style="font-size:16px;font-weight:700">Media Library</h3>
+                <span style="flex:1"></span>
+                <button class="btn" id="closeModal"><i class="fas fa-xmark"></i> Close</button>
+            </div>
+            <input type="file" id="libUpload" accept="image/*" style="margin-bottom:12px">
+            <div class="media-grid" id="mediaGrid"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui, esc = ui.esc;
+        var editingId = ui.qs('id');
+        var quill = null;
+        var cats = [], tags = [];
+        var featured = { url: '', alt: '' };
+        var modalMode = 'content'; /* 'content' | 'featured' */
+        var mediaCache = [];
+
+        var $ = function (id) { return document.getElementById(id); };
+
+        /* ---------------- counters ---------------- */
+        function counters() {
+            $('titleCount').textContent = $('title').value.length + ' / 60 recommended';
+            $('titleCount').style.color = $('title').value.length > 60 ? 'var(--amber)' : 'var(--light)';
+            $('excerptCount').textContent = $('excerpt').value.length + ' / 160 recommended';
+            $('metaTitleCount').textContent = $('metaTitle').value.length + ' / 60';
+            $('metaDescCount').textContent = $('metaDesc').value.length + ' / 158';
+        }
+        ['title', 'excerpt', 'metaTitle', 'metaDesc'].forEach(function (id) {
+            document.addEventListener('input', function (e) { if (e.target && e.target.id === id) counters(); });
+        });
+
+        /* ---------------- slug auto ---------------- */
+        var slugTouched = false;
+        $('slug').addEventListener('input', function () { slugTouched = true; });
+        $('title').addEventListener('input', function () {
+            if (!slugTouched && !editingId) $('slug').value = B.slugify($('title').value);
+        });
+
+        /* ---------------- category select ---------------- */
+        function fillCats(selectedSlug) {
+            $('category').innerHTML = '<option value="">— No category —</option>' +
+                cats.map(function (c) {
+                    return '<option value="' + esc(c.slug) + '"' + (c.slug === selectedSlug ? ' selected' : '') + '>' + esc(c.name) + '</option>';
+                }).join('');
+        }
+
+        $('addCat').addEventListener('click', function () {
+            var name = $('newCat').value.trim();
+            if (!name) { ui.toast('Enter a category name first.', 'error'); return; }
+            var slug = B.slugify(name);
+            if (cats.some(function (c) { return c.slug === slug; })) { ui.toast('That category already exists.', 'error'); return; }
+            this.disabled = true;
+            B.cats.add(B.coll.categories, { name: name, slug: slug, description: '' }).then(function (id) {
+                cats.push({ id: id, name: name, slug: slug });
+                $('newCat').value = '';
+                fillCats(slug);
+                ui.toast('Category added.');
+            }).catch(function (e) { ui.toast('Failed: ' + e.message, 'error'); })
+              .then(function () { $('addCat').disabled = false; });
+        });
+
+        /* ---------------- tags ---------------- */
+        function tagSuggest() {
+            $('tagSuggest').innerHTML = tags.slice(0, 14).map(function (t) {
+                return '<button class="btn sm tagAdd" data-name="' + esc(t.name) + '" type="button">#' + esc(t.name) + '</button>';
+            }).join('');
+            Array.prototype.forEach.call(document.querySelectorAll('.tagAdd'), function (b) {
+                b.addEventListener('click', function () {
+                    var name = b.getAttribute('data-name');
+                    var cur = $('tags').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+                    if (cur.indexOf(name) === -1) { cur.push(name); $('tags').value = cur.join(', '); }
+                });
+            });
+        }
+
+        /* ---------------- featured image ---------------- */
+        function setFeatured(url, alt) {
+            featured.url = url || '';
+            featured.alt = alt || $('featAlt').value || '';
+            var pv = $('featPreview');
+            if (featured.url) {
+                pv.innerHTML = '<img src="' + esc(featured.url) + '" style="width:100%;border-radius:10px;display:block" alt="">';
+            } else {
+                pv.innerHTML = 'No image selected';
+            }
+        }
+        $('clearFeat').addEventListener('click', function () { setFeatured(''); $('featAlt').value = ''; });
+        $('pickFeat').addEventListener('click', function () { modalMode = 'featured'; openModal(); });
+        $('uploadFeat').addEventListener('click', function () { $('featFile').click(); });
+        $('featFile').addEventListener('change', function () {
+            var f = this.files && this.files[0];
+            if (!f) return;
+            $('featProgress').hidden = false;
+            B.upload(f, 'blog/featured', function (p) { $('featBar').style.width = p + '%'; })
+                .then(function (url) { setFeatured(url, $('featAlt').value); ui.toast('Featured image uploaded.'); })
+                .catch(function (e) { ui.toast('Upload failed: ' + e.message, 'error'); })
+                .then(function () { $('featProgress').hidden = true; $('featBar').style.width = '0%'; $('featFile').value = ''; });
+        });
+
+        /* ---------------- inline images ---------------- */
+        $('insertImage').addEventListener('click', function () { modalMode = 'content'; openModal(); });
+        $('uploadInline').addEventListener('click', function () { $('inlineFile').click(); });
+        $('inlineFile').addEventListener('change', function () {
+            var f = this.files && this.files[0];
+            if (!f) return;
+            B.upload(f, 'blog/content', function () {}).then(function (url) {
+                var idx = (quill.getSelection() || {}).index || quill.getLength();
+                quill.insertEmbed(idx, 'image', url, 'user');
+                ui.toast('Image inserted.');
+            }).catch(function (e) { ui.toast('Upload failed: ' + e.message, 'error'); })
+              .then(function () { $('inlineFile').value = ''; });
+        });
+
+        /* ---------------- media modal ---------------- */
+        function openModal() {
+            $('mediaModal').style.display = 'block';
+            loadMedia();
+        }
+        $('closeModal').addEventListener('click', function () { $('mediaModal').style.display = 'none'; });
+        $('mediaModal').addEventListener('click', function (e) { if (e.target === $('mediaModal')) $('mediaModal').style.display = 'none'; });
+
+        $('libUpload').addEventListener('change', function () {
+            var f = this.files && this.files[0];
+            if (!f) return;
+            B.upload(f, 'blog/content', function () {}).then(function (url) {
+                return B.media.add(B.coll.media, { url: url, name: f.name, size: f.size, createdAt: new Date().toISOString() });
+            }).then(function () { ui.toast('Uploaded.'); loadMedia(); })
+              .catch(function (e) { ui.toast('Upload failed: ' + e.message, 'error'); })
+              .then(function () { $('libUpload').value = ''; });
+        });
+
+        function loadMedia() {
+            $('mediaGrid').innerHTML = '<div style="color:var(--light);font-size:12px">Loading…</div>';
+            B.media.all('createdAt', 'desc').then(function (rows) {
+                mediaCache = rows;
+                if (!rows.length) {
+                    $('mediaGrid').innerHTML = '<div style="color:var(--light);font-size:13px;grid-column:1/-1">No images yet — use the upload button above.</div>';
+                    return;
+                }
+                $('mediaGrid').innerHTML = rows.map(function (m) {
+                    return '<div class="media-cell" data-url="' + esc(m.url) + '"><img src="' + esc(m.url) + '" alt="" loading="lazy"><span class="ck"><i class="fas fa-check"></i></span></div>';
+                }).join('');
+                Array.prototype.forEach.call(document.querySelectorAll('.media-cell'), function (c) {
+                    c.addEventListener('click', function () {
+                        var url = c.getAttribute('data-url');
+                        if (modalMode === 'featured') {
+                            setFeatured(url, $('featAlt').value);
+                            $('mediaModal').style.display = 'none';
+                            ui.toast('Featured image set.');
+                        } else {
+                            var idx = (quill.getSelection() || {}).index || quill.getLength();
+                            quill.insertEmbed(idx, 'image', url, 'user');
+                            $('mediaModal').style.display = 'none';
+                            ui.toast('Image inserted.');
+                        }
+                    });
+                });
+            }).catch(function (e) {
+                $('mediaGrid').innerHTML = '<div style="color:var(--red);font-size:13px">Could not load media: ' + esc(e.message) + '</div>';
+            });
+        }
+
+        /* ---------------- save ---------------- */
+        function collect() {
+            var title = $('title').value.trim();
+            var content = quill.root.innerHTML;
+            var plain = quill.getText().trim();
+            var status = $('status').value;
+            var pubRaw = $('publishedAt').value;
+
+            var tagList = $('tags').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean)
+                .map(function (n) { return { name: n, slug: B.slugify(n) }; });
+
+            var catSlug = $('category').value;
+            var catName = '';
+            cats.forEach(function (c) { if (c.slug === catSlug) catName = c.name; });
+
+            /* publishAt = real Firestore Timestamp used by the security rules to hide
+               future-dated posts from the public. Only written when actually publishing. */
+            var publishAt = null;
+            if (status === 'published') {
+                var d = pubRaw ? new Date(pubRaw) : new Date();
+                if (isNaN(d.getTime())) d = new Date();
+                publishAt = firebase.firestore.Timestamp.fromDate(d);
+            }
+
+            return {
+                title: title,
+                slug: $('slug').value.trim() || B.slugify(title),
+                content: content,
+                excerpt: $('excerpt').value.trim() || B.excerptFrom(content, 160),
+                status: status,
+                publishedAt: pubRaw ? new Date(pubRaw).toISOString() : (status === 'published' ? new Date().toISOString() : null),
+                publishAt: publishAt,
+                categorySlug: catSlug,
+                categoryName: catName,
+                tagList: tagList,
+                featuredImage: featured.url,
+                featuredImageAlt: featured.alt || $('featAlt').value.trim(),
+                metaTitle: $('metaTitle').value.trim(),
+                metaDescription: $('metaDesc').value.trim() || $('excerpt').value.trim(),
+                noindex: $('noindex').checked,
+                author: $('author').value.trim() || 'Krishna Ji',
+                readingTime: B.readingTime(content),
+                wordCount: plain ? plain.split(/\s+/).length : 0,
+                statusCheck: plain.length > 0 && title ? 'ok' : 'incomplete'
+            };
+        }
+
+        function validate(d) {
+            if (!d.title) { ui.toast('Please enter a post title.', 'error'); return false; }
+            var plain = quill.getText().trim();
+            if (!plain) { ui.toast('Please write some content.', 'error'); return false; }
+            return true;
+        }
+
+        $('saveBtn').addEventListener('click', function () {
+            var d = collect();
+            if (!validate(d)) return;
+
+            this.disabled = true;
+            var btn = this;
+
+            var op = editingId
+                ? B.posts.set(B.coll.posts, editingId, d)
+                : B.posts.add(B.coll.posts, d).then(function (id) { editingId = id; });
+
+            op.then(function () {
+                ui.toast('Post saved' + (d.status === 'published' ? ' & published.' : ' as draft.'));
+                $('headTitle').textContent = 'Edit Post';
+                $('deleteBtn').hidden = false;
+                if (d.status === 'published' && d.slug) {
+                    $('previewA').href = '/blog/read/' + encodeURIComponent(d.slug) + '/';
+                    $('previewLink').hidden = false;
+                }
+            }).catch(function (e) {
+                ui.toast('Save failed: ' + e.message, 'error');
+            }).then(function () { btn.disabled = false; });
+        });
+
+        $('deleteBtn').addEventListener('click', function () {
+            if (!editingId) return;
+            if (!A.askDelete('Delete this post permanently?')) return;
+            this.disabled = true;
+            B.posts.remove(B.coll.posts, editingId).then(function () {
+                ui.toast('Post deleted.');
+                location.href = '/blog/admin/posts.html';
+            }).catch(function (e) { ui.toast('Delete failed: ' + e.message, 'error'); this.disabled = false; }.bind(this));
+        });
+
+        /* ---------------- boot ---------------- */
+        A.guard('editor', function (user, site) {
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                placeholder: 'Write your tutorial here… Use H2/H3 headings for the table of contents.',
+                modules: {
+                    toolbar: {
+                        container: [
+                            [{ header: [2, 3, 4, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ color: [] }, { background: [] }],
+                            [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+                            ['blockquote', 'code-block', 'link'],
+                            [{ align: [] }],
+                            ['clean']
+                        ]
+                    }
+                }
+            });
+
+            $('author').value = (site && site.author) || 'Krishna Ji';
+
+            Promise.all([
+                B.cats.all('name', 'asc').catch(function () { return []; }),
+                B.tags.all('name', 'asc').catch(function () { return []; })
+            ]).then(function (r) {
+                cats = r[0]; tags = r[1];
+                fillCats('');
+                tagSuggest();
+
+                if (!editingId) { counters(); return; }
+
+                /* editing existing post */
+                $('headTitle').textContent = 'Edit Post';
+                $('deleteBtn').hidden = false;
+                return B.posts.get(B.coll.posts, editingId).then(function (p) {
+                    if (!p) { ui.toast('Post not found.', 'error'); return; }
+                    $('title').value = p.title || '';
+                    $('slug').value = p.slug || '';
+                    slugTouched = true;
+                    $('excerpt').value = p.excerpt || '';
+                    quill.root.innerHTML = p.content || '';
+                    $('status').value = p.status === 'published' ? 'published' : 'draft';
+                    if (p.publishedAt) {
+                        var dt = new Date(p.publishedAt);
+                        if (!isNaN(dt.getTime())) $('publishedAt').value = dt.toISOString().slice(0, 16);
+                    }
+                    fillCats(p.categorySlug || '');
+                    $('tags').value = (p.tagList || []).map(function (t) { return typeof t === 'string' ? t : t.name; }).join(', ');
+                    $('metaTitle').value = p.metaTitle || '';
+                    $('metaDesc').value = p.metaDescription || '';
+                    $('noindex').checked = !!p.noindex;
+                    $('author').value = p.author || '';
+                    if (p.featuredImage) setFeatured(p.featuredImage, p.featuredImageAlt || '');
+                    $('featAlt').value = p.featuredImageAlt || '';
+                    if (p.status === 'published' && p.slug) {
+                        $('previewA').href = '/blog/read/' + encodeURIComponent(p.slug) + '/';
+                        $('previewLink').hidden = false;
+                    }
+                    counters();
+                });
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

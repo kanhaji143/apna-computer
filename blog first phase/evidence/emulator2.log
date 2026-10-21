@@ -1,0 +1,85 @@
+[36m[1mi  emulators:[22m[39m Starting emulators: hosting
+[36m[1mi  hosting[apna-computer-ltd]:[22m[39m Serving hosting files from: [1mpublic[22m
+[32m[1m+  hosting[apna-computer-ltd]:[22m[39m Local server: [4m[1mhttp://127.0.0.1:5000[22m[24m
+[33m[1m!  emulators:[22m[39m The Emulator UI is not starting because none of the running emulators have a UI component.
+
+[90m┌─────────────────────────────────────────────────────────────┐[39m
+[90m│[39m [32m✔[39m  [1mAll emulators ready! It is now safe to connect your app.[22m [90m│[39m
+[90m└─────────────────────────────────────────────────────────────┘[39m
+
+[90m┌──────────[39m[90m┬────────────────┐[39m
+[90m│[39m[33m Emulator [39m[90m│[39m[33m Host:Port      [39m[90m│[39m
+[90m├──────────[39m[90m┼────────────────┤[39m
+[90m│[39m Hosting  [90m│[39m 127.0.0.1:5000 [90m│[39m
+[90m└──────────[39m[90m┴────────────────┘[39m
+[90m  Emulator Hub host: 127.0.0.1 port: 4400[39m
+[90m  Other reserved ports:[39m 4500
+
+Issues? Report them at [4m[1mhttps://github.com/firebase/firebase-tools/issues[22m[24m and attach the *-debug.log files.
+ 
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/read/excel-formulas-cheat-sheet/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/read/excel-formulas-cheat-sheet HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/category/excel/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/tag/chatgpt/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/list.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/search.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/about.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/contact.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/privacy-policy.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/disclaimer.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/terms.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/login.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/index.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/posts.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/editor.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/categories.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/tags.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/media.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/messages.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/subscribers.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/ads.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/settings.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:25 +0000] "GET /blog/admin/login.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /blog/assets/blog.js HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /blog/assets/blog.css HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /blog/assets/layout.js HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /blog/assets/admin.js HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /blog/assets/admin.css HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /robots.txt HTTP/1.1" 200 386 "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /sitemap.xml HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:26 +0000] "GET /some/unknown/deep/path HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:29 +0000] "GET /blog/assets/blog.css HTTP/1.1" 200 25871 "-" "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.6456"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:29 +0000] "GET /blog/ HTTP/1.1" 200 13011 "-" "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.19041.6456"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/read/excel-formulas-cheat-sheet/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/read/excel-formulas-cheat-sheet HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/category/excel/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/tag/chatgpt/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/ HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/list.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/search.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/about.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/contact.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/privacy-policy.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/disclaimer.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/terms.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/login.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/index.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/posts.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/editor.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/categories.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/tags.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/media.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/messages.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/subscribers.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/ads.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/settings.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/admin/login.html HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/assets/blog.js HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/assets/blog.css HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/assets/layout.js HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/assets/admin.js HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /blog/assets/admin.css HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /robots.txt HTTP/1.1" 200 386 "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /sitemap.xml HTTP/1.1" 200 - "-" "node"
+[36m[1mi  hosting:[22m[39m 127.0.0.1 - - [21/Oct/2026:12:24:36 +0000] "GET /some/unknown/deep/path HTTP/1.1" 200 - "-" "node"

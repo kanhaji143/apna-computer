@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Slots — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Ad Slots</h1>
+                <p>Paste ad code (AdSense / other networks) into each slot</p>
+            </div>
+            <span class="sp"></span>
+            <button class="btn primary" id="saveAll"><i class="fas fa-floppy-disk"></i> Save All</button>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-circle-info"></i> Before you start</h3>
+            <p style="font-size:13px;color:var(--mid);line-height:1.7">
+                Paste the full ad snippet (e.g. the <code>&lt;ins class="adsbygoogle"&gt;</code> block) into the box for each slot.
+                A slot only renders on the site when its <b>toggle is ON</b> and the code box is <b>not empty</b> — otherwise it stays hidden, so no broken gaps appear.
+                Google AdSense requires a <b>Privacy Policy</b>, real content and site verification before ads go live; you already have the policy page.
+            </p>
+        </div>
+
+        <div id="slots"></div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui;
+        var cfg = null;
+        var $ = function (id) { return document.getElementById(id); };
+
+        var SLOTS = [
+            { key: 'header', name: 'Header — blog homepage top', icon: 'fas fa-heading', where: 'Above the latest articles on the homepage' },
+            { key: 'home', name: 'Home in-feed', icon: 'fas fa-table-cells', where: 'Below the hero on the homepage' },
+            { key: 'inArticle', name: 'In-article', icon: 'fas fa-paragraph', where: 'After the article body, before the CTA' },
+            { key: 'sidebar', name: 'Sidebar', icon: 'fas fa-arrows-left-right', where: 'Sidebar of homepage and posts' },
+            { key: 'footer', name: 'Footer', icon: 'fas fa-shoe-prints', where: 'Above the site footer' }
+        ];
+
+        function render() {
+            var ads = (cfg && cfg.ads) || {};
+            $('slots').innerHTML = SLOTS.map(function (s) {
+                var cur = ads[s.key] || { enabled: false, code: '' };
+                return '<div class="card">' +
+                    '<h3><i class="' + s.icon + '"></i> ' + s.name +
+                        '<label class="switch" style="margin-left:auto">' +
+                            '<input type="checkbox" class="slotOn" data-key="' + s.key + '"' + (cur.enabled ? ' checked' : '') + '>' +
+                            '<span class="track"></span>' +
+                        '</label>' +
+                    '</h3>' +
+                    '<p style="font-size:12.5px;color:var(--light);margin:-6px 0 12px"><b>Shown at:</b> ' + s.where + '</p>' +
+                    '<textarea class="slotCode" data-key="' + s.key + '" rows="5" placeholder="Paste your ad snippet here (e.g. AdSense &lt;ins&gt; code)…"' +
+                        ' style="width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:9px;font-family:monospace;font-size:12.5px">' +
+                        (cur.code ? cur.code.replace(/</g, '&lt;') : '') + '</textarea>' +
+                '</div>';
+            }).join('');
+        }
+
+        $('saveAll').addEventListener('click', function () {
+            this.disabled = true;
+            var ads = {};
+            SLOTS.forEach(function (s) {
+                var on = document.querySelector('.slotOn[data-key="' + s.key + '"]').checked;
+                var code = document.querySelector('.slotCode[data-key="' + s.key + '"]').value.trim();
+                ads[s.key] = { enabled: on, code: code };
+            });
+
+            cfg.ads = ads;
+            B.saveConfig(cfg).then(function () {
+                ui.toast('Ad slots saved.');
+            }).catch(function (e) {
+                ui.toast('Save failed: ' + e.message, 'error');
+            }).then(function () { $('saveAll').disabled = false; });
+        });
+
+        A.guard('ads', function (user, site) {
+            cfg = site;
+            render();
+        });
+    })();
+    </script>
+</body>
+</html>

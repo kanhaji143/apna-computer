@@ -16,6 +16,18 @@
     ],
     "rewrites": [
       {
+        "source": "/blog/read/**",
+        "destination": "/blog/templates/post.html"
+      },
+      {
+        "source": "/blog/category/**",
+        "destination": "/blog/templates/category.html"
+      },
+      {
+        "source": "/blog/tag/**",
+        "destination": "/blog/templates/tag.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

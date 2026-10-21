@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Messages</h1>
+                <p>Inbox from the blog contact form</p>
+            </div>
+            <span class="sp"></span>
+            <span id="msgCount" style="font-size:13px;color:var(--light)"></span>
+        </div>
+
+        <div class="toolbar">
+            <div class="grow"><i class="fas fa-search"></i><input id="q" type="search" placeholder="Search name, email or subject…" aria-label="Search messages"></div>
+            <select id="status" aria-label="Filter by status">
+                <option value="">All</option>
+                <option value="new">New</option>
+                <option value="read">Read</option>
+                <option value="replied">Replied</option>
+            </select>
+        </div>
+
+        <div id="list"><div class="card" style="color:var(--light);text-align:center;padding:36px">Loading…</div></div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui, esc = ui.esc;
+        var all = [];
+        var $ = function (id) { return document.getElementById(id); };
+
+        function statusPill(s) {
+            if (s === 'new') return '<span class="pill sched">New</span>';
+            if (s === 'replied') return '<span class="pill pub">Replied</span>';
+            return '<span class="pill tag">Read</span>';
+        }
+
+        function render() {
+            var q = ($('q').value || '').toLowerCase().trim();
+            var st = $('status').value;
+            var list = all.filter(function (m) {
+                var hay = ((m.name || '') + ' ' + (m.email || '') + ' ' + (m.subject || '') + ' ' + (m.message || '')).toLowerCase();
+                if (q && hay.indexOf(q) === -1) return false;
+                if (st && m.status !== st) return false;
+                return true;
+            });
+
+            var news = all.filter(function (m) { return m.status === 'new'; }).length;
+            $('msgCount').textContent = all.length + ' total' + (news ? ' · ' + news + ' new' : '');
+
+            if (!list.length) {
+                $('list').innerHTML = '<div class="card">' +
+                    A.emptyState('far fa-inbox', q || st ? 'No messages match' : 'Inbox is empty',
+                        q || st ? 'Try clearing the filters.' : 'Messages sent from the contact form will appear here.') + '</div>';
+                return;
+            }
+
+            $('list').innerHTML = list.map(function (m) {
+                return '<div class="card" data-id="' + esc(m.id) + '">' +
+                    '<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">' +
+                        '<div style="flex:1;min-width:220px">' +
+                            '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">' +
+                                '<b style="font-size:15px">' + esc(m.name || 'Anonymous') + '</b>' +
+                                statusPill(m.status || 'new') +
+                            '</div>' +
+                            '<div style="font-size:12.5px;color:var(--light);margin-top:3px">' +
+                                esc(m.email || '') + ' · ' + ui.fmtDate(m.createdAt) +
+                            '</div>' +
+                            '<div style="font-weight:600;margin-top:10px">' + esc(m.subject || '(no subject)') + '</div>' +
+                            '<p style="font-size:14px;color:var(--mid);margin-top:6px;white-space:pre-wrap;line-height:1.65">' + esc(m.message || '') + '</p>' +
+                        '</div>' +
+                        '<div style="display:flex;flex-direction:column;gap:8px;min-width:150px">' +
+                            (m.email ? '<a class="btn" href="mailto:' + esc(m.email) + '?subject=Re: ' + encodeURIComponent(m.subject || '') + '"><i class="fas fa-reply"></i> Reply by email</a>' : '') +
+                            (m.email ? '<a class="btn" href="https://wa.me/?text=' + encodeURIComponent('Hello ' + (m.name || '') + ', regarding your message on Apna Computer Blog.') + '" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>' : '') +
+                            '<button class="btn mark" data-id="' + esc(m.id) + '" data-to="read"><i class="fas fa-envelope-open"></i> Mark read</button>' +
+                            '<button class="btn mark" data-id="' + esc(m.id) + '" data-to="replied"><i class="fas fa-check"></i> Mark replied</button>' +
+                            '<button class="btn ghost-danger del" data-id="' + esc(m.id) + '"><i class="fas fa-trash"></i> Delete</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+
+            Array.prototype.forEach.call(document.querySelectorAll('.mark'), function (b) {
+                b.addEventListener('click', function () {
+                    var id = b.getAttribute('data-id'), to = b.getAttribute('data-to');
+                    b.disabled = true;
+                    B.db().collection(B.coll.messages).doc(id).update({ status: to }).then(function () {
+                        all.forEach(function (m) { if (m.id === id) m.status = to; });
+                        ui.toast('Marked as ' + to + '.');
+                        render();
+                    }).catch(function (e) { ui.toast('Update failed: ' + e.message, 'error'); b.disabled = false; });
+                });
+            });
+
+            Array.prototype.forEach.call(document.querySelectorAll('.del'), function (b) {
+                b.addEventListener('click', function () {
+                    if (!A.askDelete('Delete this message permanently?')) return;
+                    b.disabled = true;
+                    B.db().collection(B.coll.messages).doc(b.getAttribute('data-id')).delete().then(function () {
+                        var id = b.getAttribute('data-id');
+                        all = all.filter(function (m) { return m.id !== id; });
+                        ui.toast('Message deleted.');
+                        render();
+                    }).catch(function (e) { ui.toast('Delete failed: ' + e.message, 'error'); b.disabled = false; });
+                });
+            });
+        }
+
+        A.guard('messages', function () {
+            A.bindToolbar({ searchId: 'q', filterId: 'status', onChange: render });
+            B.messages.all('createdAt', 'desc').then(function (rows) { all = rows; render(); })
+                .catch(function (e) {
+                    $('list').innerHTML = '<div class="card">' + A.emptyState('fas fa-triangle-exclamation', 'Could not load messages', e.message) + '</div>';
+                });
+        });
+    })();
+    </script>
+</body>
+</html>

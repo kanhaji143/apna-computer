@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Settings — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Site Settings</h1>
+                <p>Branding, contact details, social links and default SEO</p>
+            </div>
+            <span class="sp"></span>
+            <button class="btn primary" id="saveBtn"><i class="fas fa-floppy-disk"></i> Save Settings</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start" class="set-grid">
+            <div>
+                <div class="card">
+                    <h3><i class="fas fa-palette"></i> Branding</h3>
+                    <div class="form">
+                        <div>
+                            <label for="siteName">Site name <span class="req">*</span></label>
+                            <input id="siteName" type="text" placeholder="Apna Computer Blog">
+                        </div>
+                        <div>
+                            <label for="tagline">Tagline</label>
+                            <input id="tagline" type="text" placeholder="Simplifying Technology for Everyone">
+                        </div>
+                        <div>
+                            <label for="about">About text <span class="hint">— used in footer + author box</span></label>
+                            <textarea id="about" rows="3"></textarea>
+                        </div>
+                        <div>
+                            <label for="breakingText">Breaking news ticker <span class="hint">— separate multiple items with |</span></label>
+                            <textarea id="breakingText" rows="2" placeholder="e.g. New Excel tutorial published | AI tools guide updated"></textarea>
+                        </div>
+                        <div>
+                            <label for="author">Default author name</label>
+                            <input id="author" type="text" placeholder="Krishna Ji">
+                        </div>
+                        <div class="row2">
+                            <div>
+                                <label>Logo</label>
+                                <div id="logoPrev" style="border:1px dashed var(--border);border-radius:10px;min-height:70px;display:flex;align-items:center;justify-content:center;color:var(--light);font-size:12px;margin-bottom:8px">No logo</div>
+                                <div style="display:flex;gap:8px">
+                                    <button class="btn" id="logoUpload" type="button"><i class="fas fa-upload"></i> Upload</button>
+                                    <button class="btn ghost-danger" id="logoClear" type="button"><i class="fas fa-xmark"></i></button>
+                                    <input type="file" id="logoFile" accept="image/*" hidden>
+                                </div>
+                            </div>
+                            <div>
+                                <label>Favicon</label>
+                                <div id="favPrev" style="border:1px dashed var(--border);border-radius:10px;min-height:70px;display:flex;align-items:center;justify-content:center;color:var(--light);font-size:12px;margin-bottom:8px">Default</div>
+                                <div style="display:flex;gap:8px">
+                                    <button class="btn" id="favUpload" type="button"><i class="fas fa-upload"></i> Upload</button>
+                                    <button class="btn ghost-danger" id="favClear" type="button"><i class="fas fa-xmark"></i></button>
+                                    <input type="file" id="favFile" accept="image/*" hidden>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-address-book"></i> Contact</h3>
+                    <div class="form">
+                        <div class="row2">
+                            <div>
+                                <label for="contactEmail">Contact email</label>
+                                <input id="contactEmail" type="email" placeholder="you@example.com">
+                            </div>
+                            <div>
+                                <label for="contactPhone">Phone / WhatsApp</label>
+                                <input id="contactPhone" type="text" placeholder="+91…">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="address">Address</label>
+                            <input id="address" type="text" placeholder="City, State">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h3><i class="fas fa-share-nodes"></i> Social Links <span style="font-weight:500;font-size:12px;color:var(--light)">— leave blank to hide</span></h3>
+                    <div class="form">
+                        <div><label for="sFacebook">Facebook</label><input id="sFacebook" type="url" placeholder="https://facebook.com/…"></div>
+                        <div><label for="sTwitter">X (Twitter)</label><input id="sTwitter" type="url" placeholder="https://x.com/…"></div>
+                        <div><label for="sYoutube">YouTube</label><input id="sYoutube" type="url" placeholder="https://youtube.com/…"></div>
+                        <div><label for="sInstagram">Instagram</label><input id="sInstagram" type="url" placeholder="https://instagram.com/…"></div>
+                        <div><label for="sTelegram">Telegram</label><input id="sTelegram" type="url" placeholder="https://t.me/…"></div>
+                        <div><label for="sWhatsapp">WhatsApp channel <span class="hint">— powers the "Join WhatsApp" share button</span></label><input id="sWhatsapp" type="url" placeholder="https://whatsapp.com/channel/…"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-magnifying-glass"></i> Default SEO</h3>
+                    <div class="form">
+                        <div>
+                            <label for="seoTitle">Default meta title</label>
+                            <input id="seoTitle" type="text" maxlength="70">
+                        </div>
+                        <div>
+                            <label for="seoDesc">Default meta description</label>
+                            <textarea id="seoDesc" rows="3" maxlength="170"></textarea>
+                        </div>
+                        <div>
+                            <label>Default share image <span class="hint">— used when a post has no featured image</span></label>
+                            <div id="seoImgPrev" style="border:1px dashed var(--border);border-radius:10px;min-height:70px;display:flex;align-items:center;justify-content:center;color:var(--light);font-size:12px;margin-bottom:8px">None</div>
+                            <div style="display:flex;gap:8px">
+                                <button class="btn" id="seoUpload" type="button"><i class="fas fa-upload"></i> Upload</button>
+                                <button class="btn ghost-danger" id="seoClear" type="button"><i class="fas fa-xmark"></i></button>
+                                <input type="file" id="seoFile" accept="image/*" hidden>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="analyticsId">Google Analytics ID <span class="hint">— e.g. G-XXXXXXXXXX</span></label>
+                            <input id="analyticsId" type="text" placeholder="G-XXXXXXXXXX">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui, esc = ui.esc;
+        var cfg = null;
+        var $ = function (id) { return document.getElementById(id); };
+
+        function prev(id, url, emptyText) {
+            var el = $(id);
+            el.innerHTML = url ? '<img src="' + esc(url) + '" style="max-height:56px;max-width:100%;border-radius:8px" alt="">' : emptyText;
+        }
+
+        function fill() {
+            $('siteName').value = cfg.siteName || '';
+            $('tagline').value = cfg.tagline || '';
+            $('about').value = cfg.about || '';
+            $('breakingText').value = cfg.breakingText || '';
+            $('author').value = cfg.author || '';
+            $('contactEmail').value = cfg.contactEmail || '';
+            $('contactPhone').value = cfg.contactPhone || '';
+            $('address').value = cfg.address || '';
+            var s = cfg.social || {};
+            $('sFacebook').value = s.facebook || '';
+            $('sTwitter').value = s.twitter || '';
+            $('sYoutube').value = s.youtube || '';
+            $('sInstagram').value = s.instagram || '';
+            $('sTelegram').value = s.telegram || '';
+            $('sWhatsapp').value = s.whatsapp || '';
+            var d = cfg.defaultSeo || {};
+            $('seoTitle').value = d.title || '';
+            $('seoDesc').value = d.description || '';
+            $('analyticsId').value = cfg.analyticsId || '';
+            prev('logoPrev', cfg.logoUrl, 'No logo');
+            prev('favPrev', cfg.faviconUrl, 'Default');
+            prev('seoImgPrev', d.image, 'None');
+        }
+
+        /* upload helpers */
+        function wire(btn, file, key) {
+            $(btn).addEventListener('click', function () { $(file).click(); });
+            $(file).addEventListener('change', function () {
+                var f = this.files && this.files[0];
+                if (!f) return;
+                $(btn).disabled = true;
+                B.upload(f, 'blog/brand', function () {}).then(function (url) {
+                    if (key === 'logo') { cfg.logoUrl = url; prev('logoPrev', url, 'No logo'); }
+                    if (key === 'fav') { cfg.faviconUrl = url; prev('favPrev', url, 'Default'); }
+                    if (key === 'seo') { cfg.defaultSeo = cfg.defaultSeo || {}; cfg.defaultSeo.image = url; prev('seoImgPrev', url, 'None'); }
+                    ui.toast('Uploaded — remember to Save Settings.');
+                }).catch(function (e) { ui.toast('Upload failed: ' + e.message, 'error'); })
+                  .then(function () { $(btn).disabled = false; $(file).value = ''; });
+            });
+        }
+        wire('logoUpload', 'logoFile', 'logo');
+        wire('favUpload', 'favFile', 'fav');
+        wire('seoUpload', 'seoFile', 'seo');
+
+        $('logoClear').addEventListener('click', function () { cfg.logoUrl = ''; prev('logoPrev', '', 'No logo'); });
+        $('favClear').addEventListener('click', function () { cfg.faviconUrl = ''; prev('favPrev', '', 'Default'); });
+        $('seoClear').addEventListener('click', function () { cfg.defaultSeo = cfg.defaultSeo || {}; cfg.defaultSeo.image = ''; prev('seoImgPrev', '', 'None'); });
+
+        $('saveBtn').addEventListener('click', function () {
+            var name = $('siteName').value.trim();
+            if (!name) { ui.toast('Site name is required.', 'error'); return; }
+            this.disabled = true;
+
+            var data = {
+                siteName: name,
+                tagline: $('tagline').value.trim(),
+                about: $('about').value.trim(),
+                breakingText: $('breakingText').value.trim(),
+                author: $('author').value.trim() || 'Krishna Ji',
+                contactEmail: $('contactEmail').value.trim(),
+                contactPhone: $('contactPhone').value.trim(),
+                address: $('address').value.trim(),
+                logoUrl: cfg.logoUrl || '',
+                faviconUrl: cfg.faviconUrl || '',
+                social: {
+                    facebook: $('sFacebook').value.trim(),
+                    twitter: $('sTwitter').value.trim(),
+                    youtube: $('sYoutube').value.trim(),
+                    instagram: $('sInstagram').value.trim(),
+                    telegram: $('sTelegram').value.trim(),
+                    whatsapp: $('sWhatsapp').value.trim()
+                },
+                defaultSeo: {
+                    title: $('seoTitle').value.trim() || name,
+                    description: $('seoDesc').value.trim(),
+                    image: (cfg.defaultSeo && cfg.defaultSeo.image) || ''
+                },
+                analyticsId: $('analyticsId').value.trim(),
+                /* preserve ad slots managed on the Ads page */
+                ads: cfg.ads || undefined
+            };
+
+            B.saveConfig(data).then(function () {
+                cfg = data;
+                ui.toast('Settings saved.');
+            }).catch(function (e) {
+                ui.toast('Save failed: ' + e.message, 'error');
+            }).then(function () { $('saveBtn').disabled = false; });
+        });
+
+        A.guard('settings', function (user, site) {
+            cfg = site;
+            fill();
+        });
+    })();
+    </script>
+</body>
+</html>

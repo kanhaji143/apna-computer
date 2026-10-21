@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribers — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Subscribers</h1>
+                <p>Newsletter list — GDPR double opt-in, consent recorded</p>
+            </div>
+            <span class="sp"></span>
+            <button class="btn" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button>
+        </div>
+
+        <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat"><span class="ic green"><i class="fas fa-user-check"></i></span><div><b id="sConfirmed">0</b><span>Confirmed</span></div></div>
+            <div class="stat"><span class="ic orange"><i class="fas fa-hourglass-half"></i></span><div><b id="sPending">0</b><span>Pending confirm</span></div></div>
+            <div class="stat"><span class="ic gray"><i class="fas fa-users"></i></span><div><b id="sTotal">0</b><span>Total</span></div></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-circle-info"></i> How confirmation works</h3>
+            <p style="font-size:13px;color:var(--mid);line-height:1.7">
+                When a visitor subscribes, their email is stored as <b>Pending</b> with a consent timestamp.
+                Connecting an email service (Brevo / Mailchimp / SendGrid) sends a confirmation link —
+                once clicked, the status becomes <b>Confirmed</b> and tutorials can be sent.
+                Every marketing email must include an unsubscribe link. Emails are never shared or sold.
+            </p>
+        </div>
+
+        <div class="toolbar">
+            <div class="grow"><i class="fas fa-search"></i><input id="q" type="search" placeholder="Search email…" aria-label="Search subscribers"></div>
+            <select id="status" aria-label="Filter by status">
+                <option value="">All</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+
+        <div class="card">
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <thead><tr><th>Email</th><th>Status</th><th>Consent date</th><th>Source</th><th style="width:120px">Actions</th></tr></thead>
+                    <tbody id="rows"><tr><td colspan="5" style="text-align:center;color:var(--light);padding:30px">Loading…</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui, esc = ui.esc;
+        var all = [];
+        var $ = function (id) { return document.getElementById(id); };
+
+        function render() {
+            var q = ($('q').value || '').toLowerCase().trim();
+            var st = $('status').value;
+            var list = all.filter(function (s) {
+                if (q && (s.email || '').toLowerCase().indexOf(q) === -1) return false;
+                if (st && (s.status || 'pending') !== st) return false;
+                return true;
+            });
+
+            $('sTotal').textContent = all.length;
+            $('sConfirmed').textContent = all.filter(function (s) { return s.status === 'confirmed'; }).length;
+            $('sPending').textContent = all.filter(function (s) { return s.status !== 'confirmed'; }).length;
+
+            var rows = $('rows');
+            if (!list.length) {
+                rows.innerHTML = '<tr><td colspan="5" style="padding:0">' +
+                    A.emptyState('fas fa-envelope-open-text', q || st ? 'No subscribers match' : 'No subscribers yet',
+                        'Subscribers appear here when the newsletter form is used.') + '</td></tr>';
+                return;
+            }
+
+            rows.innerHTML = list.map(function (s) {
+                var ok = s.status === 'confirmed';
+                return '<tr>' +
+                    '<td><div class="t-title">' + A.highlight(s.email || '', q) + '</div></td>' +
+                    '<td>' + (ok ? '<span class="pill pub">Confirmed</span>' : '<span class="pill draft">Pending</span>') + '</td>' +
+                    '<td style="color:var(--mid);font-size:12.5px">' + ui.fmtDateShort(s.consentAt || s.createdAt) + '</td>' +
+                    '<td style="color:var(--light);font-size:12.5px">' + esc(s.source || '—') + '</td>' +
+                    '<td><div class="acts">' +
+                        '<button class="btn sm conf" data-id="' + esc(s.id) + '" title="Mark confirmed"><i class="fas fa-check"></i></button>' +
+                        '<button class="btn sm ghost-danger del" data-id="' + esc(s.id) + '" title="Remove"><i class="fas fa-trash"></i></button>' +
+                    '</div></td>' +
+                '</tr>';
+            }).join('');
+
+            Array.prototype.forEach.call(rows.querySelectorAll('.conf'), function (b) {
+                b.addEventListener('click', function () {
+                    b.disabled = true;
+                    B.db().collection(B.coll.subs).doc(b.getAttribute('data-id')).update({ status: 'confirmed' }).then(function () {
+                        var id = b.getAttribute('data-id');
+                        all.forEach(function (s) { if (s.id === id) s.status = 'confirmed'; });
+                        ui.toast('Marked confirmed.');
+                        render();
+                    }).catch(function (e) { ui.toast('Update failed: ' + e.message, 'error'); b.disabled = false; });
+                });
+            });
+            Array.prototype.forEach.call(rows.querySelectorAll('.del'), function (b) {
+                b.addEventListener('click', function () {
+                    if (!A.askDelete('Remove this subscriber? (They should normally unsubscribe themselves.)')) return;
+                    b.disabled = true;
+                    B.db().collection(B.coll.subs).doc(b.getAttribute('data-id')).delete().then(function () {
+                        var id = b.getAttribute('data-id');
+                        all = all.filter(function (s) { return s.id !== id; });
+                        ui.toast('Subscriber removed.');
+                        render();
+                    }).catch(function (e) { ui.toast('Delete failed: ' + e.message, 'error'); b.disabled = false; });
+                });
+            });
+        }
+
+        $('exportBtn').addEventListener('click', function () {
+            if (!all.length) { ui.toast('Nothing to export.', 'error'); return; }
+            var csv = 'email,status,consent_at,source\n' +
+                all.map(function (s) {
+                    return '"' + String(s.email || '').replace(/"/g, '""') + '","' +
+                        (s.status || 'pending') + '","' + (s.consentAt || s.createdAt || '') + '","' + (s.source || '') + '"';
+                }).join('\n');
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'blog-subscribers-' + new Date().toISOString().slice(0, 10) + '.csv';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            ui.toast('CSV downloaded.');
+        });
+
+        A.guard('subscribers', function () {
+            A.bindToolbar({ searchId: 'q', filterId: 'status', onChange: render });
+            B.subs.all('createdAt', 'desc').then(function (rows) { all = rows; render(); })
+                .catch(function (e) {
+                    $('rows').innerHTML = '<tr><td colspan="5" style="padding:0">' +
+                        A.emptyState('fas fa-triangle-exclamation', 'Could not load subscribers', e.message) + '</td></tr>';
+                });
+        });
+    })();
+    </script>
+</body>
+</html>

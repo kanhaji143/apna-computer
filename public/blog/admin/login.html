@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — Apna Computer Blog</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-head">
+                <div class="login-logo">B</div>
+                <h1>Apna Computer Blog</h1>
+                <p>Admin Panel — sign in to manage posts</p>
+            </div>
+
+            <form id="loginForm" autocomplete="on">
+                <div>
+                    <label for="email">Email</label>
+                    <input id="email" type="email" required autocomplete="username" placeholder="you@example.com">
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input id="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+                </div>
+                <div class="login-msg" id="msg"></div>
+                <button class="login-btn" id="btn" type="submit">
+                    <i class="fas fa-right-to-bracket"></i> Sign In
+                </button>
+            </form>
+
+            <div class="login-hint">
+                <b>First time?</b> The admin account is created once via the Firebase Console
+                (Authentication → Users → Add user). After that, sign in here with that email and password.
+                Visitor data on the blog is public; only authenticated admins can edit.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG;
+
+        var msg = document.getElementById('msg');
+        var btn = document.getElementById('btn');
+        var form = document.getElementById('loginForm');
+
+        function showError(text) { msg.textContent = text; msg.classList.add('show'); }
+        function clearError() { msg.classList.remove('show'); }
+
+        /* friendly error mapping */
+        function human(err) {
+            var c = err && err.code;
+            if (c === 'auth/invalid-email') return 'That email address is not valid.';
+            if (c === 'auth/missing-password') return 'Please enter your password.';
+            if (c === 'auth/user-not-found' || c === 'auth/wrong-password' || c === 'auth/invalid-credential') {
+                return 'Incorrect email or password.';
+            }
+            if (c === 'auth/too-many-requests') return 'Too many attempts. Please wait a minute and try again.';
+            if (c === 'auth/network-request-failed') return 'Network error — check your connection.';
+            return (err && err.message) || 'Sign-in failed.';
+        }
+
+        /* if already signed in, skip the form */
+        B.initFirebase();
+        if (B.auth.user()) { location.replace('/blog/admin/'); return; }
+        B.auth.watch(function (u) { if (u) location.replace('/blog/admin/'); });
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearError();
+            var email = document.getElementById('email').value.trim();
+            var pass = document.getElementById('password').value;
+
+            if (!email || !pass) { showError('Please enter both email and password.'); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Signing in…';
+
+            B.auth.login(email, pass).then(function () {
+                var next = B.ui.qs('next');
+                location.href = next && next.charAt(0) === '/' ? next : '/blog/admin/';
+            }).catch(function (err) {
+                showError(human(err));
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Sign In';
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

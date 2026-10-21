@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — Apna Computer Blog</title>
+    <meta name="description" content="Apna Computer Blog publishes practical technology tutorials in simple English — AI tools, computer basics, Excel, Power BI and digital skills for students and beginners.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://apna-computer-ltd.web.app/blog/about.html">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="b-page-wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>About Us</span>
+            </nav>
+
+            <h1>About Us</h1>
+            <p class="lead" id="aboutLead">Technology tutorials written in plain, simple English.</p>
+
+            <div class="b-body">
+                <p><strong>Apna Computer Blog</strong> is a free learning resource run by <strong>Apna Computer Ltd</strong>. We publish practical, step-by-step tutorials that help students, job seekers and complete beginners get comfortable with technology — without confusing jargon.</p>
+
+                <h2>What we publish</h2>
+                <ul>
+                    <li><strong>AI Tools</strong> — practical guides to ChatGPT, Gemini, image generators and other AI tools you can use for study and work.</li>
+                    <li><strong>Computer Basics</strong> — from turning on a computer to file management, internet safety and everyday software.</li>
+                    <li><strong>Excel &amp; Power BI</strong> — spreadsheets, formulas, dashboards and data skills that employers actually ask for.</li>
+                    <li><strong>Digital Skills</strong> — typing, online forms, government portals, email and the everyday tools of digital India.</li>
+                </ul>
+
+                <h2>How we write</h2>
+                <p>Every article is written to be <strong>followed along step by step</strong>. We use short sentences, real examples and screenshots where they help. If a tutorial needs a tool, we tell you what it costs (or that it is free) before you start.</p>
+                <p>We do not publish copied content, and we do not make claims we cannot back up. If we make a mistake, we correct it and note the update date on the article.</p>
+
+                <h2>Who is behind it</h2>
+                <p>The blog is written and edited by <strong>Krishna Ji</strong>, with content reviewed by the Apna Computer Ltd team. Apna Computer Ltd builds websites, mobile apps and CRM systems for small businesses across India.</p>
+                <ul>
+                    <li><strong>Website:</strong> <a href="/">apna-computer-ltd.web.app</a></li>
+                    <li><strong>Online Centre:</strong> <a href="/shop/">Apna Online Center</a></li>
+                    <li><strong>Contact:</strong> <a href="/blog/contact.html">Get in touch</a></li>
+                </ul>
+
+                <h2>Our promise</h2>
+                <p>This blog is free and always will be. Some articles may contain affiliate links or advertisements — these never change the price you pay, and they never change what we recommend. You can read more in our <a href="/blog/disclaimer.html">Disclaimer</a> and <a href="/blog/privacy-policy.html">Privacy Policy</a>.</p>
+            </div>
+
+            <div class="b-cta-inline" style="margin-top:30px">
+                <i class="fas fa-envelope"></i>
+                <div class="t">
+                    <b>Have a question or a topic request?</b>
+                    <span>We read every message. Tell us what you want to learn next.</span>
+                </div>
+                <a href="/blog/contact.html">Contact us</a>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT;
+        L.mount('about').then(function (site) {
+            B.seo.setMeta({
+                title: 'About Us — ' + site.siteName,
+                description: site.about,
+                siteName: site.siteName,
+                canonical: 'https://apna-computer-ltd.web.app/blog/about.html'
+            });
+            document.getElementById('aboutLead').textContent = site.about;
+        });
+    })();
+    </script>
+</body>
+</html>

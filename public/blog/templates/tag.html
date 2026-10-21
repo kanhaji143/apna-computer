@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag — Apna Computer Blog</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span id="crumbTag">Tag</span>
+            </nav>
+
+            <div class="b-sec-title">
+                <h2 id="tagTitle">Tag</h2>
+                <span class="rule"></span>
+                <span id="postCount" style="font-size:13px;color:var(--light)"></span>
+            </div>
+
+            <div id="grid" class="b-grid">
+                <div class="b-skel" style="height:280px"></div>
+            </div>
+
+            <div id="empty" class="b-empty" hidden>
+                <i class="fas fa-tags"></i>
+                <b>No articles with this tag yet</b>
+                <a class="btn primary" href="/blog/" style="margin-top:14px"><i class="fas fa-home"></i> Back to Blog</a>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT, ui = B.ui, esc = ui.esc;
+        var slug = ui.qs('slug');
+        /* Clean URL (/blog/tag/<slug>/) — recover slug from path. */
+        if (!slug) {
+            var segs = location.pathname.split('/').filter(Boolean);
+            if (segs.length >= 3 && segs[0] === 'blog' && segs[1] === 'tag') slug = decodeURIComponent(segs[2]);
+        }
+
+        function cardHtml(p) {
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="lazy">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            return '<article class="b-card">' +
+                '<a class="b-card-img" href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + img + '</a>' +
+                '<div class="b-card-body">' +
+                    '<h3><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h3>' +
+                    '<p class="excerpt">' + esc(p.excerpt || B.excerptFrom(p.content)) + '</p>' +
+                    '<div class="b-card-meta"><span>' + ui.fmtDate(p.publishedAt) + '</span></div>' +
+                '</div>' +
+            '</article>';
+        }
+
+        L.mount('list').then(function (site) {
+            return Promise.all([B.posts.published(), B.tags.all('name', 'asc')]).then(function (r) {
+                var posts = r[0], tags = r[1];
+
+                var tag = null;
+                tags.forEach(function (t) { if (t.slug === slug) tag = t; });
+                var name = tag ? tag.name : slug.replace(/-/g, ' ');
+
+                var list = posts.filter(function (p) {
+                    if (!p.tagList) return false;
+                    return p.tagList.some(function (t) {
+                        var tslug = typeof t === 'string' ? B.slugify(t) : t.slug;
+                        return tslug === slug;
+                    });
+                });
+                list.sort(function (a, b) { return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0); });
+
+                document.getElementById('tagTitle').textContent = '#' + name;
+                document.getElementById('crumbTag').textContent = '#' + name;
+                document.getElementById('postCount').textContent = list.length + ' article' + (list.length === 1 ? '' : 's');
+
+                var url = 'https://apna-computer-ltd.web.app/blog/tag/' + slug + '/';
+                B.seo.setMeta({
+                    title: '#' + name + ' — ' + site.siteName,
+                    description: 'Articles tagged #' + name + ' on ' + site.siteName + '.',
+                    siteName: site.siteName,
+                    canonical: url
+                });
+
+                if (!list.length) {
+                    document.getElementById('grid').hidden = true;
+                    document.getElementById('empty').hidden = false;
+                    return;
+                }
+                document.getElementById('grid').innerHTML = list.map(cardHtml).join('');
+            });
+        }).catch(function (err) {
+            console.error(err);
+            document.getElementById('grid').innerHTML =
+                '<div class="b-empty" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><b>Could not load articles</b></div>';
+        });
+    })();
+    </script>
+</body>
+</html>

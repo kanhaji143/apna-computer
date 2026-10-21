@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading… — Apna Computer Blog</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="b-post-wrap">
+
+            <nav class="b-crumbs" id="crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>Loading…</span>
+            </nav>
+
+            <div id="notFound" class="b-empty" hidden style="margin-top:30px">
+                <i class="far fa-face-frown"></i>
+                <b>Article not found</b>
+                The article you are looking for may have been moved or unpublished.<br><br>
+                <a class="btn primary" href="/blog/"><i class="fas fa-home"></i> Back to Blog</a>
+            </div>
+
+            <article id="article" hidden>
+                <header class="b-post-head">
+                    <span class="pill cat" id="postCat"></span>
+                    <h1 id="postTitle"></h1>
+                    <div class="b-post-sub">
+                        <span class="author">
+                            <span class="av" id="authorAv">K</span>
+                            <span id="authorName"></span>
+                        </span>
+                        <span>·</span>
+                        <span><i class="far fa-calendar-alt"></i> <span id="postDate"></span></span>
+                        <span>·</span>
+                        <span><i class="far fa-clock"></i> <span id="postRead"></span> min read</span>
+                    </div>
+                    <div class="b-post-tags" id="postTags"></div>
+                </header>
+
+                <div class="b-post-hero" id="postHero" hidden></div>
+
+                <div id="adHeader" class="b-ad" style="margin:16px 0"></div>
+
+                <details class="b-toc" id="tocBox" hidden>
+                    <summary>
+                        <i class="fas fa-list"></i> Table of Contents
+                        <i class="fas fa-chevron-down chev"></i>
+                    </summary>
+                    <ol id="tocList"></ol>
+                </details>
+
+                <div class="b-content" id="postContent"></div>
+
+                <div id="adInArticle" class="b-ad" style="margin:26px 0"></div>
+
+                <div class="b-cta-inline">
+                    <i class="fas fa-rocket"></i>
+                    <div class="t">
+                        <b>Build your own website or software</b>
+                        <span>Apna Computer Ltd builds websites, apps and CRM systems for small businesses.</span>
+                    </div>
+                    <a href="/services.html">Learn more</a>
+                </div>
+
+                <div class="b-share">
+                    <h4><i class="fas fa-share-nodes"></i> Share this article</h4>
+                    <div class="b-share-row" id="shareRow"></div>
+                </div>
+
+                <div class="b-author-box" id="authorBox"></div>
+
+                <div class="b-related">
+                    <div class="b-sec-title" style="margin-top:0">
+                        <h2>Related Articles</h2>
+                        <span class="rule"></span>
+                    </div>
+                    <div class="b-grid two" id="relatedGrid"></div>
+                </div>
+
+                <div class="b-news" style="margin-top:26px">
+                    <h4>Enjoyed this article?</h4>
+                    <p>Get new tutorials by email when we publish them.</p>
+                    <form id="postNews" novalidate>
+                        <input type="email" placeholder="Your email address" aria-label="Email address" required>
+                        <label class="consent">
+                            <input type="checkbox">
+                            <span>I agree to receive tutorial emails and accept the <a href="/blog/privacy-policy.html">Privacy Policy</a>.</span>
+                        </label>
+                        <button type="submit">Subscribe</button>
+                        <div class="note" id="postNewsNote">Double opt-in — you confirm by email first.</div>
+                    </form>
+                </div>
+            </article>
+
+            <div class="b-loading" id="loading">
+                <div class="spin"></div>
+                Loading article…
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT, ui = B.ui, esc = ui.esc;
+        var slug = ui.qs('slug');
+        /* Clean URLs (/blog/read/<slug>/) carry no query string — recover the slug from the path. */
+        if (!slug) {
+            var segs = location.pathname.split('/').filter(Boolean);
+            if (segs.length >= 3 && segs[0] === 'blog' && segs[1] === 'read') slug = decodeURIComponent(segs[2]);
+        }
+
+        function relatedCard(p) {
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="lazy">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            var badge = p.categoryName ? '<span class="b-cat-badge">' + esc(p.categoryName) + '</span>' : '';
+            return '<article class="b-card">' +
+                '<a class="b-card-img" href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + img + badge + '</a>' +
+                '<div class="b-card-body">' +
+                    '<h3><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h3>' +
+                    '<p class="excerpt">' + esc(p.excerpt || B.excerptFrom(p.content)) + '</p>' +
+                    '<div class="b-card-meta"><span>' + ui.fmtDate(p.publishedAt) + '</span>' +
+                    '<span class="dot"></span>' +
+                    '<span class="rt"><i class="far fa-clock"></i> ' + (p.readingTime || B.readingTime(p.content)) + ' min</span></div>' +
+                '</div>' +
+            '</article>';
+        }
+
+        if (!slug) {
+            document.getElementById('loading').hidden = true;
+            document.getElementById('notFound').hidden = false;
+            L.mount('list');
+            return;
+        }
+
+        L.mount('list').then(function (site) {
+            L.wireNewsletter('postNews', 'postNewsNote');
+            B.renderAd(document.getElementById('adHeader'), 'header', site);
+            B.renderAd(document.getElementById('adInArticle'), 'inArticle', site);
+
+            return Promise.all([B.posts.published(), B.cats.all('name', 'asc')]).then(function (r) {
+                var posts = r[0], cats = r[1];
+                var post = null, idx = -1;
+                posts.forEach(function (p, i) { if (p.slug === slug) { post = p; idx = i; } });
+
+                document.getElementById('loading').hidden = true;
+
+                if (!post) {
+                    document.getElementById('notFound').hidden = false;
+                    B.seo.setMeta({ title: 'Article not found — ' + site.siteName, noindex: true });
+                    return;
+                }
+
+                var url = 'https://apna-computer-ltd.web.app/blog/read/' + post.slug + '/';
+                var desc = post.metaDescription || post.excerpt || B.excerptFrom(post.content, 155);
+                var author = post.author || site.author || 'Krishna Ji';
+                var readMin = post.readingTime || B.readingTime(post.content);
+
+                /* ---- SEO (critical: remove noindex, set full meta) ---- */
+                B.seo.setMeta({
+                    title: post.metaTitle || (post.title + ' — ' + site.siteName),
+                    description: desc,
+                    author: author,
+                    siteName: site.siteName,
+                    canonical: url,
+                    ogTitle: post.metaTitle || post.title,
+                    ogDescription: desc,
+                    ogImage: post.featuredImage || site.defaultSeo.image,
+                    ogType: 'article'
+                });
+
+                /* ---- JSON-LD structured data ---- */
+                B.seo.setJsonLd(B.articleJsonLd(post, site));
+                B.seo.setJsonLd(B.breadcrumbJsonLd([
+                    { name: 'Blog', url: 'https://apna-computer-ltd.web.app/blog/' },
+                    post.categoryName
+                        ? { name: post.categoryName, url: 'https://apna-computer-ltd.web.app/blog/category/' + post.categorySlug + '/' }
+                        : null,
+                    { name: post.title, url: url }
+                ].filter(Boolean)));
+
+                /* FAQ schema if the editor marked Q&A headings */
+                if (post.faq && post.faq.length) {
+                    B.seo.setJsonLd({
+                        '@context': 'https://schema.org',
+                        '@type': 'FAQPage',
+                        mainEntity: post.faq.map(function (f) {
+                            return {
+                                '@type': 'Question',
+                                name: f.q,
+                                acceptedAnswer: { '@type': 'Answer', text: f.a }
+                            };
+                        })
+                    });
+                }
+
+                /* ---- breadcrumb ---- */
+                var crumbHtml = '<a href="/blog/">Blog</a>';
+                if (post.categoryName) {
+                    crumbHtml += '<span class="sep">/</span><a href="/blog/category/' + encodeURIComponent(post.categorySlug) + '/">' + esc(post.categoryName) + '</a>';
+                }
+                crumbHtml += '<span class="sep">/</span><span>' + esc(post.title) + '</span>';
+                document.getElementById('crumbs').innerHTML = crumbHtml;
+
+                /* ---- head ---- */
+                var cat = document.getElementById('postCat');
+                if (post.categoryName) { cat.textContent = post.categoryName; cat.hidden = false; } else { cat.hidden = true; }
+
+                document.getElementById('postTitle').textContent = post.title;
+                document.getElementById('authorName').textContent = author;
+                document.getElementById('authorAv').textContent = author.charAt(0).toUpperCase();
+                document.getElementById('postDate').textContent = ui.fmtDate(post.publishedAt);
+                document.getElementById('postRead').textContent = readMin;
+
+                var tagEl = document.getElementById('postTags');
+                if (post.tagList && post.tagList.length) {
+                    tagEl.innerHTML = post.tagList.map(function (t) {
+                        var name = typeof t === 'string' ? t : t.name;
+                        var tslug = typeof t === 'string' ? B.slugify(t) : t.slug;
+                        return '<a href="/blog/tag/' + encodeURIComponent(tslug) + '/">#' + esc(name) + '</a>';
+                    }).join('');
+                }
+
+                /* ---- hero image ---- */
+                if (post.featuredImage) {
+                    var hero = document.getElementById('postHero');
+                    hero.innerHTML = '<img src="' + esc(post.featuredImage) + '" alt="' + esc(post.featuredImageAlt || post.title) + '" width="' + (post.featuredWidth || '') + '" height="' + (post.featuredHeight || '') + '">';
+                    hero.hidden = false;
+                }
+
+                /* ---- body + table of contents ---- */
+                var toc = B.buildToc(post.content || '');
+                document.getElementById('postContent').innerHTML = toc.html;
+
+                if (toc.toc.length >= 3) {
+                    var list = document.getElementById('tocList');
+                    list.innerHTML = toc.toc.map(function (t) {
+                        return '<li' + (t.level === 3 ? ' class="lvl3"' : '') + '><a href="#' + t.id + '">' + esc(t.text) + '</a></li>';
+                    }).join('');
+                    document.getElementById('tocBox').hidden = false;
+                }
+
+                /* ---- share buttons ---- */
+                var shareHtml =
+                    '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i> Facebook</a>' +
+                    '<a href="https://twitter.com/intent/tweet?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(post.title) + '" target="_blank" rel="noopener"><i class="fab fa-x-twitter"></i> X</a>' +
+                    '<a href="https://wa.me/?text=' + encodeURIComponent(post.title + ' ' + url) + '" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp</a>' +
+                    '<a href="https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(post.title) + '" target="_blank" rel="noopener"><i class="fab fa-telegram-plane"></i> Telegram</a>' +
+                    '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url) + '" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i> LinkedIn</a>' +
+                    '<button type="button" id="copyLink"><i class="fas fa-link"></i> Copy link</button>' +
+                    '<button type="button" id="waChannel"><i class="fab fa-whatsapp"></i> Join WhatsApp</button>';
+                document.getElementById('shareRow').innerHTML = shareHtml;
+
+                document.getElementById('copyLink').addEventListener('click', function () {
+                    B.ui.copy(url).then(function () { B.ui.toast('Link copied!'); });
+                });
+                var waBtn = document.getElementById('waChannel');
+                if (site.social && site.social.whatsapp) {
+                    waBtn.addEventListener('click', function () { window.open(site.social.whatsapp, '_blank', 'noopener'); });
+                } else {
+                    waBtn.remove();
+                }
+
+                /* ---- author box ---- */
+                document.getElementById('authorBox').innerHTML =
+                    '<span class="av">' + author.charAt(0).toUpperCase() + '</span>' +
+                    '<div class="info">' +
+                        '<span>Written by</span>' +
+                        '<b>' + esc(author) + '</b>' +
+                        '<p>' + esc(site.about) + '</p>' +
+                    '</div>';
+
+                /* ---- related articles (same category first, then fallback) ---- */
+                var same = posts.filter(function (p) { return p.id !== post.id && p.categorySlug === post.categorySlug; });
+                var others = posts.filter(function (p) { return p.id !== post.id && p.categorySlug !== post.categorySlug; });
+                var rel = same.concat(others).slice(0, 4);
+                document.getElementById('relatedGrid').innerHTML = rel.map(relatedCard).join('');
+
+                /* ---- increment view count (fire-and-forget, never blocks render) ---- */
+                if (post.id) {
+                    B.db().collection(B.coll.posts).doc(post.id).update({
+                        views: firebase.firestore.FieldValue.increment(1)
+                    }).catch(function () { /* rules may block; ignore */ });
+                }
+            });
+        }).catch(function (err) {
+            console.error(err);
+            document.getElementById('loading').hidden = true;
+            document.getElementById('notFound').hidden = false;
+        });
+    })();
+    </script>
+</body>
+</html>

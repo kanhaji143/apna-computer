@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — Apna Computer Blog</title>
+    <meta name="description" content="Contact Apna Computer Blog — ask a question, request a tutorial, or report an issue with an article.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://apna-computer-ltd.web.app/blog/contact.html">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="b-page-wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>Contact</span>
+            </nav>
+
+            <h1>Contact Us</h1>
+            <p class="lead">Question about a tutorial? Topic request? Found a mistake? We would love to hear from you.</p>
+
+            <div class="b-body">
+                <div class="b-cta-inline" style="margin-bottom:26px">
+                    <i class="fas fa-clock"></i>
+                    <div class="t">
+                        <b>Typical reply time: 24–48 hours</b>
+                        <span>We read every message. For the fastest help, include the article link you are asking about.</span>
+                    </div>
+                </div>
+
+                <form class="b-form" id="contactForm" novalidate>
+                    <div class="row">
+                        <div>
+                            <label for="cName">Your name <span style="color:var(--red)">*</span></label>
+                            <input id="cName" type="text" required autocomplete="name" placeholder="e.g. Rahul Kumar">
+                        </div>
+                        <div>
+                            <label for="cEmail">Email address <span style="color:var(--red)">*</span></label>
+                            <input id="cEmail" type="email" required autocomplete="email" placeholder="you@example.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="cSubject">Subject <span style="color:var(--red)">*</span></label>
+                        <input id="cSubject" type="text" required placeholder="e.g. Question about the Excel tutorial">
+                    </div>
+                    <div>
+                        <label for="cMsg">Message <span style="color:var(--red)">*</span></label>
+                        <textarea id="cMsg" required placeholder="Write your message here…"></textarea>
+                    </div>
+                    <label class="check">
+                        <input type="checkbox" id="cPrivacy">
+                        <span>I have read and accept the <a href="/blog/privacy-policy.html">Privacy Policy</a>.</span>
+                    </label>
+                    <button type="submit" id="cSubmit">Send Message</button>
+                    <p id="cResult" style="font-size:13.5px;display:none"></p>
+                </form>
+
+                <h2>Other ways to reach us</h2>
+                <ul>
+                    <li><strong>Email:</strong> <a href="mailto:kanhadigimkt@gmail.com" id="cMail">kanhadigimkt@gmail.com</a></li>
+                    <li><strong>Phone / WhatsApp:</strong> <a href="tel:+918504985149" id="cPhone">+91 85049 85149</a></li>
+                    <li><strong>Location:</strong> <span id="cAddr">Amethi, Uttar Pradesh</span></li>
+                    <li><strong>Company website:</strong> <a href="/">Apna Computer Ltd</a></li>
+                    <li><strong>Online services:</strong> <a href="/shop/">Apna Online Center</a></li>
+                </ul>
+
+                <h2>Before you write</h2>
+                <p>Many questions are already answered in our articles. Try the <a href="/blog/search.html">search page</a> first — it searches every tutorial on this blog.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT, ui = B.ui;
+
+        L.mount('contact').then(function (site) {
+            B.seo.setMeta({
+                title: 'Contact Us — ' + site.siteName,
+                description: 'Contact ' + site.siteName + ' — ask a question, request a tutorial, or report an issue with an article.',
+                siteName: site.siteName,
+                canonical: 'https://apna-computer-ltd.web.app/blog/contact.html'
+            });
+
+            /* fill direct-contact details from config */
+            if (site.contactEmail) { var m = document.getElementById('cMail'); m.textContent = site.contactEmail; m.href = 'mailto:' + site.contactEmail; }
+            if (site.contactPhone) { var p = document.getElementById('cPhone'); p.textContent = site.contactPhone; p.href = 'tel:' + site.contactPhone.replace(/\s/g, ''); }
+            if (site.address) document.getElementById('cAddr').textContent = site.address;
+
+            /* honeypot anti-spam: hidden field humans never fill */
+            var hp = document.createElement('input');
+            hp.type = 'text'; hp.name = 'website'; hp.autocomplete = 'off';
+            hp.style.cssText = 'position:absolute;left:-9999px;opacity:0;height:0;width:0';
+            document.getElementById('contactForm').appendChild(hp);
+
+            document.getElementById('contactForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                var btn = document.getElementById('cSubmit');
+                var res = document.getElementById('cResult');
+
+                var name = document.getElementById('cName').value.trim();
+                var email = document.getElementById('cEmail').value.trim();
+                var subject = document.getElementById('cSubject').value.trim();
+                var msg = document.getElementById('cMsg').value.trim();
+                var privacy = document.getElementById('cPrivacy').checked;
+
+                res.style.display = 'block';
+
+                if (!name || !email || !subject || !msg) { res.style.color = 'var(--red)'; res.textContent = 'Please fill in all required fields.'; return; }
+                if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { res.style.color = 'var(--red)'; res.textContent = 'Please enter a valid email address.'; return; }
+                if (!privacy) { res.style.color = 'var(--red)'; res.textContent = 'Please accept the Privacy Policy to continue.'; return; }
+                if (hp.value) { res.style.color = 'var(--green)'; res.textContent = 'Thanks! Your message has been sent.'; return; } /* silently drop bots */
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending…';
+
+                B.messages.add({
+                    name: name,
+                    email: email.toLowerCase(),
+                    subject: subject,
+                    message: msg,
+                    privacyAccepted: true,
+                    status: 'new',
+                    source: 'blog-contact'
+                }).then(function () {
+                    document.getElementById('contactForm').reset();
+                    res.style.color = 'var(--green)';
+                    res.innerHTML = '<b>Thank you!</b> Your message has been received. We will reply to <b>' + ui.esc(email) + '</b> within 24–48 hours.';
+                    btn.disabled = false;
+                    btn.textContent = 'Send Message';
+                }).catch(function (err) {
+                    res.style.color = 'var(--red)';
+                    res.textContent = 'Sorry, your message could not be sent (' + err.message + '). Please email us directly instead.';
+                    btn.disabled = false;
+                    btn.textContent = 'Send Message';
+                });
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

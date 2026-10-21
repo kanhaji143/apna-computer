@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms &amp; Conditions — Apna Computer Blog</title>
+    <meta name="description" content="Terms and Conditions for using Apna Computer Blog — acceptable use, intellectual property, limitations and governing law.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://apna-computer-ltd.web.app/blog/terms.html">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="b-page-wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>Terms &amp; Conditions</span>
+            </nav>
+
+            <h1>Terms &amp; Conditions</h1>
+            <p class="lead">Last updated: <span id="tDate"></span></p>
+
+            <div class="b-body">
+                <p>Welcome to <strong>Apna Computer Blog</strong>. These Terms and Conditions ("Terms") govern your use of <a href="/blog/">apna-computer-ltd.web.app/blog</a> (the "Site"), operated by <strong>Apna Computer Ltd</strong>. By accessing or using the Site you agree to be bound by these Terms. If you disagree with any part, please do not use the Site.</p>
+
+                <h2>1. Intellectual property</h2>
+                <p>Unless otherwise stated, all content on this Site — including articles, tutorials, text, images, logos and design — is the property of Apna Computer Ltd and is protected by copyright and intellectual property laws.</p>
+                <ul>
+                    <li>You may <strong>read, share and link to</strong> our articles freely for personal, non-commercial use.</li>
+                    <li>You may <strong>quote brief extracts</strong> with clear attribution and a link back to the original article.</li>
+                    <li>You may <strong>not</strong> copy, reproduce, republish, redistribute, sell or modify our full articles without prior written permission.</li>
+                    <li>You may <strong>not</strong> use our content for commercial purposes or train AI models on it without written consent.</li>
+                </ul>
+                <p>For permission requests, email <a href="mailto:kanhadigimkt@gmail.com">kanhadigimkt@gmail.com</a>.</p>
+
+                <h2>2. Acceptable use</h2>
+                <p>You agree <strong>not</strong> to use the Site to:</p>
+                <ul>
+                    <li>Violate any applicable law or regulation in India or elsewhere.</li>
+                    <li>Post or transmit spam, malware, phishing content or unsolicited advertising (including through our <a href="/blog/contact.html">contact form</a>).</li>
+                    <li>Attempt to gain unauthorised access to the Site, its database or any connected systems.</li>
+                    <li>Scrape, harvest or systematically extract content or personal data.</li>
+                    <li>Interfere with the Site's operation, security or performance (including denial-of-service attempts).</li>
+                </ul>
+                <p>We reserve the right to block access from any IP address or user that violates these rules.</p>
+
+                <h2>3. User-generated content</h2>
+                <p>If the Site enables comments or other submissions, you grant us a non-exclusive, royalty-free licence to use, display and moderate that content. You remain responsible for what you post. We may remove any content that is spammy, abusive, unlawful or off-topic, without notice.</p>
+
+                <h2>4. No warranty</h2>
+                <p>The Site is provided <strong>"as is" and "as available"</strong>, without warranties of any kind, whether express or implied. We do not warrant that the Site will be uninterrupted, error-free or free of harmful components. Please also read our <a href="/blog/disclaimer.html">Disclaimer</a>.</p>
+
+                <h2>5. Limitation of liability</h2>
+                <p>To the maximum extent permitted by law, Apna Computer Ltd shall not be liable for any indirect, incidental, special, consequential or punitive damages, or any loss of profits, data or goodwill, arising out of or in connection with your use of the Site. Your sole remedy is to stop using the Site.</p>
+
+                <h2>6. External links</h2>
+                <p>The Site contains links to third-party websites. We are not responsible for the content, policies or practices of any third-party sites. Accessing external links is at your own risk.</p>
+
+                <h2>7. Advertising</h2>
+                <p>The Site may display third-party advertisements (including Google AdSense) and affiliate links. Your interactions with advertisers are solely between you and them. See our <a href="/blog/disclaimer.html">Disclaimer</a> for the full advertising disclosure.</p>
+
+                <h2>8. Privacy</h2>
+                <p>Your use of the Site is also governed by our <a href="/blog/privacy-policy.html">Privacy Policy</a>, which explains how we collect and handle your information.</p>
+
+                <h2>9. Changes to these Terms</h2>
+                <p>We may revise these Terms at any time. The "Last updated" date at the top shows the latest revision. Your continued use of the Site after changes means you accept the revised Terms.</p>
+
+                <h2>10. Governing law</h2>
+                <p>These Terms are governed by the laws of <strong>India</strong>, and the courts of <strong>Uttar Pradesh</strong> shall have exclusive jurisdiction over any dispute arising from them, without regard to conflict-of-law principles.</p>
+
+                <h2>11. Contact</h2>
+                <p>Questions about these Terms? Email <a href="mailto:kanhadigimkt@gmail.com">kanhadigimkt@gmail.com</a> or use our <a href="/blog/contact.html">contact page</a>.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT;
+        L.mount('list').then(function (site) {
+            B.seo.setMeta({
+                title: 'Terms & Conditions — ' + site.siteName,
+                description: 'Terms and Conditions for using ' + site.siteName + ' — acceptable use, intellectual property, limitations and governing law.',
+                siteName: site.siteName,
+                canonical: 'https://apna-computer-ltd.web.app/blog/terms.html'
+            });
+            document.getElementById('tDate').textContent = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+        });
+    })();
+    </script>
+</body>
+</html>

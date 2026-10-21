@@ -23,6 +23,7 @@
             { label: 'School ERP + CRM', href: '/crm/', live: true },
             { label: 'Apnivo Business (Seller CRM)', href: '/clothing/panel/', live: true },
             { label: 'Apnivo Fashion (Store)', href: '/clothing/store/', live: true },
+            { label: 'Blog (Tutorials)', href: '/blog/', live: true },
             { label: 'Online Courses (LMS)', href: '/contact.html?module=courses', live: false },
             { label: 'Coaching ERP', href: '/contact.html?module=coaching', live: false },
             { label: 'Security ERP', href: '/contact.html?module=security', live: false },
@@ -72,7 +73,41 @@
             '<nav class="main-nav" id="mainNav">' + items +
                 '<a class="header-cta" href="/contact.html">Get Started</a>' +
             '</nav>' +
+            themeSwitchTemplate() +
         '</div>';
+    }
+
+    function themeSwitchTemplate() {
+        return '<div class="theme-switch" role="group" aria-label="Appearance">' +
+                '<span class="theme-switch-label">Appearance</span>' +
+                '<div class="theme-seg">' +
+                    '<button class="theme-seg-btn" type="button" data-theme-set="light" aria-pressed="false">' +
+                        '<i class="fas fa-sun"></i><span>Bright</span></button>' +
+                    '<button class="theme-seg-btn" type="button" data-theme-set="dark" aria-pressed="false">' +
+                        '<i class="fas fa-moon"></i><span>Dark</span></button>' +
+                '</div>' +
+            '</div>';
+    }
+
+    /* ---------- THEME (light / dark) ---------- */
+    var THEME_KEY = 'hubTheme';
+
+    function getTheme() {
+        try {
+            var t = localStorage.getItem(THEME_KEY);
+            if (t === 'dark' || t === 'light') return t;
+        } catch (e) {}
+        return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme, save) {
+        document.documentElement.setAttribute('data-theme', theme);
+        if (save) { try { localStorage.setItem(THEME_KEY, theme); } catch (e) {} }
+        document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+            var on = b.getAttribute('data-theme-set') === theme;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
     }
 
     function footerTemplate() {
@@ -89,6 +124,7 @@
                     '<a href="/crm/">School ERP + CRM</a>' +
                     '<a href="/clothing/panel/">Apnivo Business (Seller CRM)</a>' +
                     '<a href="/clothing/store/">Apnivo Fashion (Store)</a>' +
+                    '<a href="/blog/">Blog (Tutorials)</a>' +
                     '<a href="/contact.html?module=realestate">Real Estate Portal</a>' +
                 '</div>' +
                 '<div class="footer-col"><h4>Company</h4>' +
@@ -151,9 +187,21 @@
                 a.addEventListener('click', function () { nav.classList.remove('open'); });
             });
         }
+
+        // theme switch (top-right)
+        applyTheme(getTheme(), false);
+        document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                applyTheme(b.getAttribute('data-theme-set'), true);
+            });
+        });
     }
 
-    window.HUB = { config: CONFIG };
+    window.HUB = {
+        config: CONFIG,
+        getTheme: getTheme,
+        setTheme: function (t) { applyTheme(t, true); }
+    };
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);

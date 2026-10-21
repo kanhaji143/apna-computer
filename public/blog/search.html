@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search — Apna Computer Blog</title>
+    <meta name="description" content="Search every tutorial on Apna Computer Blog — find guides on AI tools, computer basics, Excel, Power BI and digital skills.">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>Search</span>
+            </nav>
+
+            <div class="b-sec-title">
+                <h2>Search Articles</h2>
+                <span class="rule"></span>
+            </div>
+
+            <form class="b-search-bar" id="searchForm" role="search">
+                <input type="search" id="q" placeholder="Search tutorials… e.g. Excel, AI tools, Power BI" aria-label="Search articles" autocomplete="off">
+                <button type="submit"><i class="fas fa-search"></i> Search</button>
+            </form>
+
+            <p id="resultInfo" style="font-size:13.5px;color:var(--mid);margin-bottom:18px"></p>
+
+            <div id="grid" class="b-grid"></div>
+
+            <div id="empty" class="b-empty" hidden>
+                <i class="fas fa-search"></i>
+                <b id="emptyTitle">Type to search</b>
+                <span id="emptySub">Enter a keyword above to find tutorials.</span>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT, ui = B.ui, esc = ui.esc;
+        var allPosts = [];
+
+        function plain(html) { return String(html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').toLowerCase(); }
+
+        function cardHtml(p) {
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="lazy">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            var badge = p.categoryName ? '<span class="b-cat-badge">' + esc(p.categoryName) + '</span>' : '';
+            return '<article class="b-card">' +
+                '<a class="b-card-img" href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + img + badge + '</a>' +
+                '<div class="b-card-body">' +
+                    '<h3><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h3>' +
+                    '<p class="excerpt">' + esc(p.excerpt || B.excerptFrom(p.content)) + '</p>' +
+                    '<div class="b-card-meta">' +
+                        '<span>' + ui.fmtDate(p.publishedAt) + '</span><span class="dot"></span>' +
+                        '<span class="rt"><i class="far fa-clock"></i> ' + (p.readingTime || B.readingTime(p.content)) + ' min</span>' +
+                    '</div>' +
+                '</div>' +
+            '</article>';
+        }
+
+        function search(q) {
+            var grid = document.getElementById('grid');
+            var empty = document.getElementById('empty');
+            var info = document.getElementById('resultInfo');
+            q = (q || '').trim().toLowerCase();
+
+            if (!q) {
+                grid.innerHTML = '';
+                grid.hidden = true;
+                empty.hidden = false;
+                document.getElementById('emptyTitle').textContent = 'Type to search';
+                document.getElementById('emptySub').textContent = 'Enter a keyword above to find tutorials.';
+                info.textContent = '';
+                return;
+            }
+
+            var terms = q.split(/\s+/).filter(Boolean);
+
+            var results = allPosts.filter(function (p) {
+                var hay = (p.title + ' ' + (p.excerpt || '') + ' ' + plain(p.content) + ' ' +
+                    (p.categoryName || '') + ' ' + (p.tagList || []).map(function (t) {
+                        return typeof t === 'string' ? t : t.name;
+                    }).join(' ')).toLowerCase();
+                return terms.every(function (t) { return hay.indexOf(t) !== -1; });
+            });
+
+            /* rank: title match > excerpt > body */
+            results.sort(function (a, b) {
+                function score(p) {
+                    var s = 0;
+                    var t = p.title.toLowerCase();
+                    terms.forEach(function (x) {
+                        if (t.indexOf(x) !== -1) s += 10;
+                        if ((p.excerpt || '').toLowerCase().indexOf(x) !== -1) s += 4;
+                        if (plain(p.content).indexOf(x) !== -1) s += 1;
+                    });
+                    return s;
+                }
+                return score(b) - score(a) || (new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+            });
+
+            info.textContent = results.length + ' result' + (results.length === 1 ? '' : 's') + ' for “' + q + '”';
+
+            if (!results.length) {
+                grid.hidden = true;
+                empty.hidden = false;
+                document.getElementById('emptyTitle').textContent = 'No results found';
+                document.getElementById('emptySub').textContent = 'Try a different keyword — e.g. "Excel", "AI", "computer basics".';
+                return;
+            }
+
+            grid.hidden = false;
+            empty.hidden = true;
+            grid.innerHTML = results.map(cardHtml).join('');
+        }
+
+        L.mount('list').then(function (site) {
+            B.seo.setMeta({ title: 'Search — ' + site.siteName, noindex: true });
+            return B.posts.published();
+        }).then(function (posts) {
+            allPosts = posts;
+
+            var form = document.getElementById('searchForm');
+            var input = document.getElementById('q');
+            var initial = ui.qs('q');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                search(input.value);
+                var u = new URL(location.href);
+                u.searchParams.set('q', input.value.trim());
+                history.replaceState(null, '', u.toString());
+            });
+
+            /* live search as you type (debounced) */
+            var deb;
+            input.addEventListener('input', function () {
+                clearTimeout(deb);
+                deb = setTimeout(function () { search(input.value); }, 220);
+            });
+
+            if (initial) { input.value = initial; search(initial); }
+            else { search(''); }
+            input.focus();
+        }).catch(function (err) {
+            console.error(err);
+            document.getElementById('empty').hidden = false;
+            document.getElementById('emptyTitle').textContent = 'Could not load articles';
+        });
+    })();
+    </script>
+</body>
+</html>

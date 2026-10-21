@@ -1,0 +1,104 @@
+============================================================
+BASELINE TEST RUN — Apna Computer Blog Module
+Date: 2026-10-21
+Target: https://apna-computer-ltd.web.app/
+Tester: Automated (browser + filesystem inspection)
+============================================================
+
+PRECONDITIONS
+- Live site reachable: YES
+- Firebase project: apna-computer-ltd
+- Local repo: C:\Users\user\apna-computer-ltd
+- Branch: main (clean, 0 ahead / 0 behind at run start)
+
+------------------------------------------------------------
+B-03  public/blog/ folder exists
+------------------------------------------------------------
+Command : Test-Path 'C:\Users\user\apna-computer-ltd\public\blog'
+Result  : False
+Status  : FAIL
+
+------------------------------------------------------------
+B-04  Firestore collections bl_* present in rules
+------------------------------------------------------------
+File    : firestore.rules
+Inspect : 72 lines, collections declared:
+          cl_* (10), sc_* (12), oc_* (7), ch_* (15), hub_leads (1)
+          bl_* : NONE
+Status  : FAIL
+
+------------------------------------------------------------
+B-05  Storage rules bl_* / blog paths
+------------------------------------------------------------
+File    : storage.rules
+Inspect : paths = /notices/, /media/, /_probe/
+          blog paths : NONE
+Status  : FAIL
+
+------------------------------------------------------------
+B-01  Hub Products menu contains "Blog"
+------------------------------------------------------------
+Method  : DOM query on https://apna-computer-ltd.web.app/
+Selector: .nav-drop-menu a (Products dropdown)
+Items found (8):
+  1. Online Center Website + CRM
+  2. School ERP + CRM
+  3. Apnivo Business (Seller CRM)
+  4. Apnivo Fashion (Store)
+  5. Online Courses (LMS)
+  6. Coaching ERP
+  7. Security ERP
+  8. Real Estate Portal
+"Blog" match : NO
+Status  : FAIL
+
+Hub stats strip (as rendered):
+  9  Products & Modules
+  3  Live Demos
+  6  In Development
+  100% Mobile Ready
+
+------------------------------------------------------------
+B-02  /blog/ route serves blog homepage
+------------------------------------------------------------
+Method  : Browser navigate
+URL     : https://apna-computer-ltd.web.app/blog/
+Returned title   : Apna Computer — Multisoftware Hub | Website + CRM/ERP Solutions
+Returned content : hub homepage (hero "One Platform · 9 Business Sol...")
+Interpretation   : firebase.json rewrite {"source":"**","destination":"/index.html"}
+                   catches /blog/ and serves root index.html.
+                   No 404 raised, but NO blog content either.
+Status  : FAIL (route does not resolve to blog module)
+
+------------------------------------------------------------
+STRUCTURAL BASELINE (reference for build)
+------------------------------------------------------------
+Hub pages            : 5   (index, services, pricing, about, contact)
+Shop website         : 2
+Shop admin panel     : 14
+School ERP (crm)     : 16
+Clothing store       : 8
+Clothing panel       : 11
+Coaching panel       : 3
+TOTAL html pages     : 59
+
+Firebase config      : static hosting, public = "public"
+Auth in use          : demo client-side localStorage (no Firebase Auth)
+Firestore posture    : allow read, write: if true  (all collections)
+Storage posture      : allow read, write: true on /notices/, /media/
+
+------------------------------------------------------------
+SUMMARY
+------------------------------------------------------------
+Total baseline cases : 5
+Passed               : 0
+Failed               : 5
+Blocked              : 0
+
+CONCLUSION: Blog module is a clean greenfield build. No existing
+blog code, routes, collections, or menu entries to preserve or
+migrate. Safe to proceed with new module creation.
+
+Next: RFP.md (planning) -> TestCases.md (full case list) ->
+implementation -> Section B-F execution -> evidence capture.
+============================================================

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Overview of your blog</p>
+            </div>
+            <span class="sp"></span>
+            <a class="btn primary" href="/blog/admin/editor.html"><i class="fas fa-plus"></i> New Post</a>
+        </div>
+
+        <div class="stat-grid" id="stats">
+            <div class="stat"><span class="ic blue"><i class="fas fa-newspaper"></i></span><div><b>–</b><span>Published</span></div></div>
+            <div class="stat"><span class="ic orange"><i class="fas fa-file-pen"></i></span><div><b>–</b><span>Drafts</span></div></div>
+            <div class="stat"><span class="ic green"><i class="fas fa-eye"></i></span><div><b>–</b><span>Total Views</span></div></div>
+            <div class="stat"><span class="ic gray"><i class="fas fa-folder-tree"></i></span><div><b>–</b><span>Categories</span></div></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <a class="btn primary" href="/blog/admin/editor.html"><i class="fas fa-pen-to-square"></i> Write a post</a>
+                <a class="btn" href="/blog/admin/media.html"><i class="fas fa-upload"></i> Upload images</a>
+                <a class="btn" href="/blog/admin/categories.html"><i class="fas fa-folder-tree"></i> Categories</a>
+                <a class="btn" href="/blog/admin/messages.html"><i class="fas fa-inbox"></i> Messages</a>
+                <a class="btn" href="/blog/admin/settings.html"><i class="fas fa-sliders"></i> Settings</a>
+                <a class="btn accent" href="/blog/" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> View live blog</a>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start" class="dash-grid">
+            <div class="card">
+                <h3><i class="fas fa-clock-rotate-left"></i> Recent Posts</h3>
+                <ul class="list-plain" id="recent">
+                    <li><i class="fas fa-circle-notch fa-spin"></i><span class="t">Loading…</span></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-paper-plane"></i> Site Readiness <span style="margin-left:auto;font-size:11px;color:var(--light);font-weight:600" id="readyLabel"></span></h3>
+                <p style="font-size:12.5px;color:var(--mid);margin-bottom:12px">Steps that help SEO and AdSense approval.</p>
+                <ul class="list-plain" id="readiness"></ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-tags"></i> Tags</h3>
+            <ul class="list-plain" id="tagList"><li><i class="fas fa-circle-notch fa-spin"></i><span class="t">Loading…</span></li></ul>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, esc = B.ui.esc, fmt = B.ui.fmtDateShort;
+
+        A.guard('dashboard', function (user, site) {
+            Promise.all([
+                B.posts.all('updatedAt', 'desc').catch(function () { return []; }),
+                B.cats.all('name', 'asc').catch(function () { return []; }),
+                B.tags.all('name', 'asc').catch(function () { return []; }),
+                B.media.all('createdAt', 'desc').catch(function () { return []; })
+            ]).then(function (r) {
+                var posts = r[0], cats = r[1], tags = r[2], media = r[3];
+
+                var pub = posts.filter(function (p) { return p.status === 'published'; });
+                var drafts = posts.filter(function (p) { return p.status !== 'published'; });
+                var views = pub.reduce(function (s, p) { return s + (p.views || 0); }, 0);
+
+                var statEls = document.querySelectorAll('#stats .stat b');
+                statEls[0].textContent = pub.length;
+                statEls[1].textContent = drafts.length;
+                statEls[2].textContent = views.toLocaleString();
+                statEls[3].textContent = cats.length;
+
+                /* recent posts */
+                var recent = document.getElementById('recent');
+                if (!posts.length) {
+                    recent.innerHTML = '<li><i class="fas fa-info-circle"></i><span class="t"><b>No posts yet</b><span>Click "New Post" to write your first article.</span></span></li>';
+                } else {
+                    recent.innerHTML = posts.slice(0, 7).map(function (p) {
+                        var st = p.status === 'published'
+                            ? '<span class="pill pub">Published</span>'
+                            : (p.status === 'scheduled' ? '<span class="pill sched">Scheduled</span>' : '<span class="pill draft">Draft</span>');
+                        return '<li>' +
+                            '<i class="fas fa-file-lines"></i>' +
+                            '<span class="t"><b>' + esc(p.title || 'Untitled') + '</b>' +
+                            '<span>' + (p.categoryName ? esc(p.categoryName) + ' · ' : '') + fmt(p.updatedAt || p.createdAt) + '</span></span>' +
+                            '<span style="display:flex;gap:8px;align-items:center">' + st +
+                            '<a class="btn sm" href="/blog/admin/editor.html?id=' + encodeURIComponent(p.id) + '"><i class="fas fa-pen"></i></a></span>' +
+                        '</li>';
+                    }).join('');
+                }
+
+                /* tags */
+                var tagList = document.getElementById('tagList');
+                if (!tags.length) {
+                    tagList.innerHTML = '<li><i class="fas fa-info-circle"></i><span class="t"><b>No tags yet</b><span>Tags improve internal linking and SEO.</span></span></li>';
+                } else {
+                    tagList.innerHTML = tags.slice(0, 12).map(function (t) {
+                        return '<li><i class="fas fa-tag"></i><span class="t"><b>#' + esc(t.name) + '</b><span>' + esc(t.slug || '') + '</span></span></li>';
+                    }).join('');
+                }
+
+                /* readiness checklist */
+                var hasPrivacy = true; /* static page always present */
+                var checks = [
+                    { ok: pub.length >= 3, label: 'At least 3 published posts (' + pub.length + '/3)' },
+                    { ok: cats.length >= 3, label: 'At least 3 categories (' + cats.length + '/3)' },
+                    { ok: tags.length >= 3, label: 'At least 3 tags (' + tags.length + '/3)' },
+                    { ok: pub.every(function (p) { return !!p.featuredImage; }) && pub.length > 0, label: 'Every post has a featured image' },
+                    { ok: pub.every(function (p) { return !!(p.metaDescription || p.excerpt); }) && pub.length > 0, label: 'Every post has an SEO description' },
+                    { ok: !!(site && site.defaultSeo && site.defaultSeo.image), label: 'Default social share image set' },
+                    { ok: !!(site && site.logoUrl), label: 'Site logo uploaded' },
+                    { ok: !!(site && site.analyticsId), label: 'Google Analytics ID entered' },
+                    { ok: true, label: 'Privacy Policy / Disclaimer / Terms pages exist' },
+                    { ok: !!(site && site.social && (site.social.youtube || site.social.facebook || site.social.instagram)), label: 'At least one social profile linked' }
+                ];
+
+                var done = checks.filter(function (c) { return c.ok; }).length;
+                document.getElementById('readyLabel').textContent = done + '/' + checks.length + ' done';
+                document.getElementById('readiness').innerHTML = checks.map(function (c) {
+                    return '<li><i class="' + (c.ok ? 'fas fa-circle-check' : 'far fa-circle') + '" style="color:' + (c.ok ? 'var(--green)' : 'var(--light)') + '"></i>' +
+                        '<span class="t"><b style="color:' + (c.ok ? 'var(--text)' : 'var(--mid)') + '">' + esc(c.label) + '</b></span></li>';
+                }).join('');
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

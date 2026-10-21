@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer — Apna Computer Blog</title>
+    <meta name="description" content="Disclaimer for Apna Computer Blog — general information only, no professional advice, affiliate and advertising disclosure.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://apna-computer-ltd.web.app/blog/disclaimer.html">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+        <div class="b-page-wrap">
+            <nav class="b-crumbs" aria-label="Breadcrumb">
+                <a href="/blog/">Blog</a><span class="sep">/</span><span>Disclaimer</span>
+            </nav>
+
+            <h1>Disclaimer</h1>
+            <p class="lead">Last updated: <span id="dDate"></span></p>
+
+            <div class="b-body">
+                <p>All information on <strong>Apna Computer Blog</strong> — <a href="/blog/">apna-computer-ltd.web.app/blog</a> — is published in good faith and for <strong>general educational purposes only</strong>. This Disclaimer governs your use of the Site and was last updated on the date shown above.</p>
+
+                <h2>1. No professional advice</h2>
+                <p>The content on this Site — including tutorials about computers, software, AI tools, Excel and Power BI — is shared for <strong>informational and educational purposes only</strong>. It is <strong>not</strong> a substitute for professional advice (financial, legal, medical, security or otherwise). Always consult a qualified professional before acting on anything you read here.</p>
+
+                <h2>2. Accuracy &amp; completeness</h2>
+                <p>We make a reasonable effort to keep tutorials accurate and current, but we make <strong>no warranties or representations</strong> as to the accuracy, completeness or reliability of any content on this Site. Software interfaces, prices, features and government rules change frequently, and an article may become outdated after publication. Each article shows a "last updated" date where relevant.</p>
+                <p>Any action you take based on the information you find here is <strong>strictly at your own risk</strong>. We shall not be liable for any losses or damages arising from the use of, or reliance on, the information provided.</p>
+
+                <h2>3. External links</h2>
+                <p>The Site may contain links to external websites that are not operated by us. We have <strong>no control</strong> over the content, nature or availability of those sites. The inclusion of any link does not necessarily imply a recommendation or endorsement of the views expressed within them.</p>
+
+                <h2>4. Advertising &amp; affiliate disclosure</h2>
+                <p>The Site may display advertisements (including Google AdSense) and, from time to time, may contain <strong>affiliate links</strong>. This means that if you click a link and make a purchase, we may earn a small commission — <strong>at no extra cost to you</strong>.</p>
+                <ul>
+                    <li>Advertising and affiliate relationships <strong>never influence</strong> our editorial content, opinions or recommendations.</li>
+                    <li>Any sponsored or paid content will be <strong>clearly labelled</strong> as such.</li>
+                    <li>We only recommend tools and services we have genuinely evaluated.</li>
+                </ul>
+
+                <h2>5. Testimonials &amp; results</h2>
+                <p>Where we describe results, case studies or user experiences, these are <strong>illustrative only</strong> and are not a guarantee that you will achieve the same outcome. Your results depend on your own effort and circumstances.</p>
+
+                <h2>6. Consent</h2>
+                <p>By using the Site, you hereby <strong>consent</strong> to this Disclaimer and agree to its terms.</p>
+
+                <h2>7. Contact</h2>
+                <p>If you find an error in any article, please tell us — we will correct it. Reach us at <a href="mailto:kanhadigimkt@gmail.com">kanhadigimkt@gmail.com</a> or through our <a href="/blog/contact.html">contact page</a>.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT;
+        L.mount('list').then(function (site) {
+            B.seo.setMeta({
+                title: 'Disclaimer — ' + site.siteName,
+                description: 'Disclaimer for ' + site.siteName + ' — general information only, no professional advice, affiliate and advertising disclosure.',
+                siteName: site.siteName,
+                canonical: 'https://apna-computer-ltd.web.app/blog/disclaimer.html'
+            });
+            document.getElementById('dDate').textContent = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+        });
+    })();
+    </script>
+</body>
+</html>

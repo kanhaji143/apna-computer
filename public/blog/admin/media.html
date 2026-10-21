@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Library — Blog Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/admin.css">
+</head>
+<body>
+
+    <main class="main">
+        <div class="page-head">
+            <div>
+                <h1>Media Library</h1>
+                <p>Images uploaded here can be inserted into any post</p>
+            </div>
+            <span class="sp"></span>
+            <label class="btn primary" style="cursor:pointer">
+                <i class="fas fa-upload"></i> Upload Image
+                <input type="file" id="upload" accept="image/*" multiple hidden>
+            </label>
+        </div>
+
+        <div id="upProgress" class="card" hidden>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--mid);margin-bottom:8px">
+                <span id="upName">Uploading…</span><span id="upPct">0%</span>
+            </div>
+            <div class="pbar"><div class="fill" id="upBar" style="width:0%"></div></div>
+        </div>
+
+        <div class="toolbar">
+            <div class="grow"><i class="fas fa-search"></i><input id="q" type="search" placeholder="Search by file name…" aria-label="Search media"></div>
+            <span id="mediaCount" style="font-size:13px;color:var(--light)"></span>
+        </div>
+
+        <div class="card">
+            <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px">
+                <div style="color:var(--light);font-size:13px">Loading…</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/admin.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, A = window.BLOG_ADMIN, ui = B.ui, esc = ui.esc;
+        var all = [];
+        var $ = function (id) { return document.getElementById(id); };
+
+        function humanSize(b) {
+            if (!b) return '';
+            if (b < 1024) return b + ' B';
+            if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+            return (b / 1048576).toFixed(1) + ' MB';
+        }
+
+        function render() {
+            var q = ($('q').value || '').toLowerCase().trim();
+            var list = all.filter(function (m) { return !q || (m.name || '').toLowerCase().indexOf(q) !== -1; });
+            $('mediaCount').textContent = all.length + ' image' + (all.length === 1 ? '' : 's');
+
+            var grid = $('grid');
+            if (!list.length) {
+                grid.innerHTML = A.emptyState('fas fa-images', q ? 'No images match' : 'No images yet',
+                    q ? 'Try a different search.' : 'Use the Upload button above to add images.');
+                return;
+            }
+
+            grid.innerHTML = list.map(function (m) {
+                return '<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card)">' +
+                    '<img src="' + esc(m.url) + '" alt="" loading="lazy" style="width:100%;height:110px;object-fit:cover;display:block;background:var(--bg)">' +
+                    '<div style="padding:8px 10px">' +
+                        '<div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(m.name || '') + '">' + esc(m.name || 'image') + '</div>' +
+                        '<div style="font-size:11px;color:var(--light)">' + humanSize(m.size) + '</div>' +
+                        '<div style="display:flex;gap:6px;margin-top:8px">' +
+                            '<button class="btn sm copy" data-url="' + esc(m.url) + '" style="flex:1"><i class="fas fa-link"></i></button>' +
+                            '<button class="btn sm ghost-danger del" data-id="' + esc(m.id) + '"><i class="fas fa-trash"></i></button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+
+            Array.prototype.forEach.call(grid.querySelectorAll('.copy'), function (b) {
+                b.addEventListener('click', function () {
+                    ui.copy(b.getAttribute('data-url')).then(function () { ui.toast('URL copied.'); });
+                });
+            });
+            Array.prototype.forEach.call(grid.querySelectorAll('.del'), function (b) {
+                b.addEventListener('click', function () {
+                    var m = null; all.forEach(function (x) { if (x.id === b.getAttribute('data-id')) m = x; });
+                    if (!m) return;
+                    if (!A.askDelete('Remove "' + (m.name || 'this image') + '" from the library? (Files already used in posts may stop showing.)')) return;
+                    b.disabled = true;
+                    B.media.remove(B.coll.media, m.id).then(function () {
+                        all = all.filter(function (x) { return x.id !== m.id; });
+                        ui.toast('Removed from library.');
+                        render();
+                    }).catch(function (e) { ui.toast('Delete failed: ' + e.message, 'error'); b.disabled = false; });
+                });
+            });
+        }
+
+        $('upload').addEventListener('change', function () {
+            var files = Array.prototype.slice.call(this.files || []);
+            if (!files.length) return;
+            $('upProgress').hidden = false;
+
+            var chain = Promise.resolve();
+            files.forEach(function (f, i) {
+                chain = chain.then(function () {
+                    $('upName').textContent = 'Uploading ' + (i + 1) + '/' + files.length + ': ' + f.name;
+                    return B.upload(f, 'blog/content', function (p) {
+                        $('upBar').style.width = p + '%';
+                        $('upPct').textContent = p + '%';
+                    }).then(function (url) {
+                        return B.media.add(B.coll.media, { url: url, name: f.name, size: f.size });
+                    });
+                });
+            });
+
+            chain.then(function () {
+                ui.toast(files.length + ' image(s) uploaded.');
+                return load();
+            }).catch(function (e) {
+                ui.toast('Upload failed: ' + e.message, 'error');
+            }).then(function () {
+                $('upProgress').hidden = true;
+                $('upBar').style.width = '0%';
+                $('upload').value = '';
+            });
+        });
+
+        function load() {
+            return B.media.all('createdAt', 'desc').then(function (rows) { all = rows; render(); });
+        }
+
+        A.guard('media', function () {
+            A.bindToolbar({ searchId: 'q', onChange: render });
+            load().catch(function (e) {
+                $('grid').innerHTML = A.emptyState('fas fa-triangle-exclamation', 'Could not load media', e.message);
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

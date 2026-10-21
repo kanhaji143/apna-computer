@@ -8,6 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/hub.css">
+    <script>
+        // Light/Dark theme — paint se pehle apply (flash rokne ke liye)
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('hubTheme'); } catch (e) {}
+            if (t !== 'light' && t !== 'dark') {
+                t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body>
     <header id="hubHeader"></header>
@@ -49,7 +60,7 @@
         </div>
     </section>
 
-    <section class="section tight" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <section class="section tight" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
         <div class="container">
             <div class="section-head center"><span class="eyebrow">Principles</span><h2>Hamare 3 simple rules</h2></div>
             <div class="grid grid-3">

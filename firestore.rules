@@ -6,6 +6,62 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ---- Blog helpers (Phase 7) ----
+    // A signed-in admin may do anything to their own blog data.
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // A member of the public may only see a post that is:
+    //   1) marked published, AND
+    //   2) not scheduled for the future (publishAt is a Firestore Timestamp)
+    function canReadPublicPost() {
+      return resource.data.status == 'published'
+             && (!('publishAt' in resource.data) || resource.data.publishAt <= request.time);
+    }
+
+    // ---- Blog (Phase 7 — secured with Firebase Auth) ----
+    match /bl_posts/{id} {
+      allow get:  if isAdmin() || canReadPublicPost();
+      allow list: if isAdmin() || canReadPublicPost();
+
+      allow create: if isAdmin();
+
+      // Admin may edit freely. The public may ONLY bump the view counter by exactly 1 —
+      // nothing else on the document can change without an admin session.
+      allow update: if isAdmin()
+                    || (canReadPublicPost()
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views'])
+                        && request.resource.data.views == resource.data.views + 1);
+
+      allow delete: if isAdmin();
+    }
+
+    match /bl_categories/{id} { allow read: if true;  allow write: if isAdmin(); }
+    match /bl_tags/{id}       { allow read: if true;  allow write: if isAdmin(); }
+    match /bl_media/{id}      { allow read: if true;  allow write: if isAdmin(); }
+    match /bl_config/{id}     { allow read: if true;  allow write: if isAdmin(); }
+
+    // Newsletter — anyone may opt IN (consent is mandatory and must start as 'pending').
+    // Only an admin can read the subscriber list, so emails are never exposed publicly.
+    match /bl_subscribers/{id} {
+      allow create: if request.resource.data.consent == true
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() > 3
+                    && request.resource.data.status == 'pending';
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Contact form — anyone may send a message; only an admin can read the inbox.
+    match /bl_messages/{id} {
+      allow create: if request.resource.data.email is string
+                    && request.resource.data.email.size() > 3
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() < 5000;
+      allow read, update, delete: if isAdmin();
+    }
+
     // ---- Clothing CRM ----
     match /cl_products/{id}  { allow read, write: if true; }
     match /cl_suppliers/{id} { allow read, write: if true; }
