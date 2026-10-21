@@ -1,5 +1,5 @@
 /* ============================================================
-   CLOTHING MARKETPLACE — customer storefront data layer
+   APNIVO FASHION — customer storefront data layer
    Path: public/clothing/store/assets/store.js
    ============================================================ */
 (function () {

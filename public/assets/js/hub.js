@@ -21,8 +21,8 @@
         { label: 'Products', href: '#', key: 'products', drop: [
             { label: 'Online Center Website + CRM', href: '/shop/', live: true },
             { label: 'School ERP + CRM', href: '/crm/', live: true },
-            { label: 'Clothing CRM', href: '/clothing/panel/', live: true },
-            { label: 'Clothing Marketplace (Store)', href: '/clothing/store/', live: true },
+            { label: 'Apnivo Business (Seller CRM)', href: '/clothing/panel/', live: true },
+            { label: 'Apnivo Fashion (Store)', href: '/clothing/store/', live: true },
             { label: 'Online Courses (LMS)', href: '/contact.html?module=courses', live: false },
             { label: 'Coaching ERP', href: '/contact.html?module=coaching', live: false },
             { label: 'Security ERP', href: '/contact.html?module=security', live: false },
@@ -87,8 +87,8 @@
                 '<div class="footer-col"><h4>Products</h4>' +
                     '<a href="/shop/">Online Center Website + CRM</a>' +
                     '<a href="/crm/">School ERP + CRM</a>' +
-                    '<a href="/clothing/panel/">Clothing Seller CRM</a>' +
-                    '<a href="/clothing/store/">Clothing Marketplace (Store)</a>' +
+                    '<a href="/clothing/panel/">Apnivo Business (Seller CRM)</a>' +
+                    '<a href="/clothing/store/">Apnivo Fashion (Store)</a>' +
                     '<a href="/contact.html?module=realestate">Real Estate Portal</a>' +
                 '</div>' +
                 '<div class="footer-col"><h4>Company</h4>' +

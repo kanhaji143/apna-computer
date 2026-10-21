@@ -1,5 +1,5 @@
 /* ============================================================
-   CLOTHING CRM — Shared Data Layer
+   APNIVO BUSINESS — Shared Data Layer
    Path: public/clothing/assets/data.js
    Storage: localStorage (key: cl_store_v1)
    ============================================================ */

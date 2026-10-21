@@ -1,5 +1,5 @@
 /* ============================================================
-   CLOTHING CRM — Firebase (Firestore sync)
+   APNIVO BUSINESS — Firebase (Firestore sync)
    Path: public/clothing/assets/firebase.js
    Sab devices pe sync. Firebase na ho to localStorage chalta hai.
    ============================================================ */

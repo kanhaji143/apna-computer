@@ -1,5 +1,5 @@
 /* ============================================================
-   CLOTHING CRM — Shared App Logic
+   APNIVO BUSINESS — Shared App Logic
    Path: public/clothing/panel/assets/app.js
    ============================================================ */
 
