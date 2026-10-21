@@ -7,7 +7,7 @@
     'use strict';
 
     var FIREBASE_CONFIG = {
-        apiKey: 'AIzaSyC_iVUneR8fu_haqWPm5UMc5eu8ATBX1Y',
+        apiKey: 'AIzaSyC_iVUneR8fu_haqWPm5UMc5eu8ATBTX1Y',
         authDomain: 'apna-computer-ltd.firebaseapp.com',
         projectId: 'apna-computer-ltd',
         storageBucket: 'apna-computer-ltd.firebasestorage.app',
