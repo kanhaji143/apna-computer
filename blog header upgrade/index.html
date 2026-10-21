@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function(){try{var t=localStorage.getItem('blogTheme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+    <title>Apna Computer Blog — Technology Tutorials</title>
+    <meta name="description" content="Practical technology tutorials in simple English — AI tools, computer basics, Excel, Power BI and digital skills.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://apna-computer-ltd.web.app/blog/">
+    <meta property="og:title" content="Apna Computer Blog — Technology Tutorials">
+    <meta property="og:description" content="Practical technology tutorials in simple English — AI tools, computer basics, Excel, Power BI and digital skills.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://apna-computer-ltd.web.app/blog/">
+    <meta property="og:site_name" content="Apna Computer Blog">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/blog/assets/blog.css">
+</head>
+<body>
+
+    <header id="bHeader"></header>
+
+    <main id="bMain">
+
+        <!-- hero: Top News Today banner + intro -->
+        <section class="b-hero">
+            <div class="wrap">
+                <div class="b-hero-grid">
+                    <div class="b-hero-intro">
+                        <h1>Technology made simple.</h1>
+                        <p>Practical tutorials on AI tools, computer basics, Excel and digital skills — written in clear English so anyone can follow along.</p>
+                        <form class="b-hero-form" id="heroForm" novalidate>
+                            <input type="email" placeholder="Enter your email" aria-label="Email address" required>
+                            <button type="submit">Get new tutorials</button>
+                        </form>
+                    </div>
+                    <div class="b-hero-featured" id="heroFeatured">
+                        <div class="b-skel" style="height:260px;border-radius:14px"></div>
+                    </div>
+                </div>
+                <div class="b-hero-strip" id="heroStrip"></div>
+                <div class="b-hero-stats" id="heroStats"></div>
+            </div>
+        </section>
+
+        <div class="wrap">
+            <div id="adHome" class="b-ad wide" style="margin-bottom:24px"></div>
+
+            <div id="catChips" class="b-chips" hidden></div>
+
+            <div class="b-sec-title">
+                <h2>Latest Articles</h2>
+                <span class="rule"></span>
+                <a class="more" href="/blog/list.html">View all →</a>
+            </div>
+
+            <div id="homeGrid" class="b-grid">
+                <div class="b-skel" style="height:300px"></div>
+                <div class="b-skel" style="height:300px"></div>
+                <div class="b-skel" style="height:300px"></div>
+            </div>
+
+            <div id="homeEmpty" class="b-empty" hidden>
+                <i class="far fa-newspaper"></i>
+                <b>No articles published yet</b>
+                New tutorials are on the way. Check back soon.
+            </div>
+
+            <!-- sidebar -->
+            <div class="b-layout" style="margin-top:34px">
+                <div>
+                    <div class="b-sec-title" style="margin-top:0">
+                        <h2>Keep Reading</h2>
+                        <span class="rule"></span>
+                    </div>
+                    <div id="moreGrid" class="b-grid two"></div>
+                </div>
+
+                <aside class="b-side" aria-label="Sidebar">
+                    <div class="b-widget">
+                        <h4><i class="fas fa-folder-open"></i> Categories</h4>
+                        <ul id="sideCats"><li><a href="/blog/list.html">Loading…</a></li></ul>
+                    </div>
+
+                    <div class="b-widget">
+                        <h4><i class="fas fa-fire"></i> Popular Posts</h4>
+                        <div id="sidePopular"></div>
+                    </div>
+
+                    <div class="b-ad" id="adSidebar" style="min-height:250px"></div>
+
+                    <div class="b-news">
+                        <h4>Never miss a tutorial</h4>
+                        <p>One useful email when we publish. No spam, unsubscribe anytime.</p>
+                        <form id="sideNews" novalidate>
+                            <input type="email" placeholder="Your email address" aria-label="Email address" required>
+                            <label class="consent">
+                                <input type="checkbox">
+                                <span>I agree to receive tutorial emails and accept the <a href="/blog/privacy-policy.html">Privacy Policy</a>.</span>
+                            </label>
+                            <button type="submit">Subscribe</button>
+                            <div class="note" id="sideNewsNote">Double opt-in — you confirm by email first.</div>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <footer id="bFooter"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="/blog/assets/blog.js"></script>
+    <script src="/blog/assets/layout.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var B = window.BLOG, L = window.BLOG_LAYOUT, ui = B.ui, esc = ui.esc;
+
+        function cardHtml(p, featured) {
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="lazy">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            var badge = p.categoryName ? '<span class="b-cat-badge">' + esc(p.categoryName) + '</span>' : '';
+            var meta =
+                '<div class="b-card-meta">' +
+                    '<span>' + ui.fmtDate(p.publishedAt) + '</span>' +
+                    '<span class="dot"></span>' +
+                    '<span class="rt"><i class="far fa-clock"></i> ' + (p.readingTime || B.readingTime(p.content)) + ' min</span>' +
+                '</div>';
+
+            if (featured) {
+                return '<article class="b-featured">' +
+                    '<a class="b-card-img" href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + img + badge + '</a>' +
+                    '<div class="b-card-body">' +
+                        '<h3><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h3>' +
+                        '<p class="excerpt">' + esc(p.excerpt || B.excerptFrom(p.content, 300)) + '</p>' +
+                        meta +
+                    '</div>' +
+                '</article>';
+            }
+
+            return '<article class="b-card">' +
+                '<a class="b-card-img" href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + img + badge + '</a>' +
+                '<div class="b-card-body">' +
+                    '<h3><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h3>' +
+                    '<p class="excerpt">' + esc(p.excerpt || B.excerptFrom(p.content)) + '</p>' +
+                    meta +
+                '</div>' +
+            '</article>';
+        }
+
+        function heroFeaturedHtml(p) {
+            if (!p) return '';
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="eager">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            var badge = p.categoryName ? '<span class="hf-chip">' + esc(p.categoryName) + '</span>' : '';
+            var isLive = p.publishedAt && (Date.now() - new Date(p.publishedAt).getTime()) < 24 * 3600 * 1000;
+            var liveChip = isLive ? '<span class="hf-chip live"><span class="b-live-pulse" style="background:#fff;margin-right:4px"></span> LIVE</span>' : '';
+            var credit = p.source ? '<div class="hf-credit">via <a href="' + esc(p.sourceUrl || '#') + '" target="_blank" rel="noopener">' + esc(p.source) + ' ↗</a></div>' : '';
+            return '<a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' +
+                '<div class="hf-img">' + img + '<div class="hf-chips">' + liveChip + badge + '</div></div>' +
+                '<div class="hf-body">' +
+                    '<h3>' + esc(p.title) + '</h3>' +
+                    '<p>' + esc(p.excerpt || B.excerptFrom(p.content, 180)) + '</p>' +
+                    '<div class="hf-meta">' +
+                        '<span>' + ui.fmtDate(p.publishedAt) + '</span>' +
+                        '<span class="dot"></span>' +
+                        '<span><i class="far fa-clock"></i> ' + (p.readingTime || B.readingTime(p.content)) + ' min read</span>' +
+                        (p.author ? '<span class="dot"></span><span>' + esc(p.author) + '</span>' : '') +
+                    '</div>' +
+                    credit +
+                '</div>' +
+            '</a>';
+        }
+        L.mount('home').then(function (site) {
+            window.__BLOG_SITE__ = site;
+            B.seo.setMeta({
+                title: site.defaultSeo.title,
+                description: site.defaultSeo.description,
+                siteName: site.siteName,
+                canonical: 'https://apna-computer-ltd.web.app/blog/'
+            });
+
+            /* hero form = consent-free quick capture is not GDPR-safe,
+               so hero form jumps users to the proper consent form in sidebar */
+            document.getElementById('heroForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                var f = document.getElementById('sideNews');
+                if (f) { f.scrollIntoView({ behavior: 'smooth', block: 'center' }); f.querySelector('input[type=email]').focus(); }
+            });
+
+            L.wireNewsletter('sideNews', 'sideNewsNote');
+
+            /* ads */
+            B.renderAd(document.getElementById('adHome'), 'home', site);
+            B.renderAd(document.getElementById('adSidebar'), 'sidebar', site);
+
+            return Promise.all([
+                B.posts.published(),
+                B.cats.all('name', 'asc'),
+                B.tags.all('name', 'asc')
+            ]);
+        }).then(function (res) {
+            var posts = res[0], cats = res[1], tags = res[2];
+            var site = window.__BLOG_SITE__;
+
+            posts.sort(function (a, b) {
+                return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
+            });
+
+            var grid = document.getElementById('homeGrid');
+            var empty = document.getElementById('homeEmpty');
+            var moreGrid = document.getElementById('moreGrid');
+
+            if (!posts.length) {
+                grid.hidden = true;
+                empty.hidden = false;
+                moreGrid.innerHTML = '';
+                document.getElementById('heroFeatured').innerHTML = '<div class="b-empty" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:#c9d6ff"><i class="far fa-newspaper" style="color:rgba(255,255,255,.3)"></i><b style="color:#fff">No stories yet</b>New tutorials coming soon.</div>';
+            } else {
+                /* Top News Today banner = latest post */
+                document.getElementById('heroFeatured').innerHTML = heroFeaturedHtml(posts[0]);
+
+                /* featured = first post, big */
+                grid.innerHTML = cardHtml(posts[0], true);
+
+                /* keep reading = next 4 */
+                var rest = posts.slice(1, 5);
+                moreGrid.innerHTML = rest.map(function (p) { return cardHtml(p, false); }).join('');
+                if (!rest.length) moreGrid.closest('.b-layout').style.display = 'none';
+
+                /* timestamped strip of recent posts below hero */
+                var strip = document.getElementById('heroStrip');
+                if (strip && posts.length > 1) {
+                    strip.innerHTML = posts.slice(1, 6).map(function (p) {
+                        return '<a href="/blog/read/' + encodeURIComponent(p.slug) + '/"><span class="ts">' + ui.fmtDateShort(p.publishedAt) + '</span><span class="sep">·</span>' + esc(p.title) + '</a>';
+                    }).join('');
+                }
+            }
+
+            /* hero stats */
+            document.getElementById('heroStats').innerHTML =
+                '<span><b>' + posts.length + '</b>Articles</span>' +
+                '<span><b>' + cats.length + '</b>Categories</span>' +
+                '<span><b>' + tags.length + '</b>Topics</span>';
+
+            /* category chips */
+            var chipWrap = document.getElementById('catChips');
+            if (cats.length) {
+                chipWrap.hidden = false;
+                chipWrap.innerHTML = cats.map(function (c) {
+                    return '<a class="b-chip" href="/blog/category/' + encodeURIComponent(c.slug) + '/">' + esc(c.name) + '</a>';
+                }).join('');
+            }
+
+            /* sidebar categories */
+            var sideCats = document.getElementById('sideCats');
+            var counts = {};
+            posts.forEach(function (p) { counts[p.categorySlug] = (counts[p.categorySlug] || 0) + 1; });
+            if (cats.length) {
+                sideCats.innerHTML = cats.map(function (c) {
+                    return '<li><a href="/blog/category/' + encodeURIComponent(c.slug) + '/">' + esc(c.name) +
+                        '<span class="cnt">' + (counts[c.slug] || 0) + '</span></a></li>';
+                }).join('');
+            } else {
+                sideCats.innerHTML = '<li><a href="/blog/list.html">All Articles</a></li>';
+            }
+
+            /* popular posts = first 4 after featured */
+            var pop = posts.slice(1, 5);
+            var sidePop = document.getElementById('sidePopular');
+            sidePop.innerHTML = pop.length ? pop.map(function (p, i) {
+                var thumb = p.featuredImage
+                    ? '<img src="' + esc(p.featuredImage) + '" alt="" loading="lazy">'
+                    : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+                return '<div class="b-mini">' +
+                    '<span class="thumb">' + thumb + '</span>' +
+                    '<div><h5><a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' + esc(p.title) + '</a></h5>' +
+                    '<div class="m">' + (p.readingTime || B.readingTime(p.content)) + ' min read</div></div>' +
+                '</div>';
+            }).join('') : '<div class="m" style="font-size:13px;color:var(--light)">Nothing yet.</div>';
+
+            /* SEO: website JSON-LD */
+            B.seo.setJsonLd({
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: site.siteName,
+                url: 'https://apna-computer-ltd.web.app/blog/',
+                potentialAction: {
+                    '@type': 'SearchAction',
+                    target: 'https://apna-computer-ltd.web.app/blog/search.html?q={search_term_string}',
+                    'query-input': 'required name=search_term_string'
+                }
+            });
+
+            /* sitemap ping (best-effort, silent) */
+            try {
+                fetch('https://www.google.com/ping?sitemap=https://apna-computer-ltd.web.app/sitemap.xml').catch(function () {});
+            } catch (e) {}
+        }).catch(function (err) {
+            console.error(err);
+            document.getElementById('homeGrid').innerHTML =
+                '<div class="b-empty" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i>' +
+                '<b>Could not load articles</b>Please refresh the page or try again later.</div>';
+        });
+    })();
+    </script>
+</body>
+</html>

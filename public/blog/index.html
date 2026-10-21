@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function(){try{var t=localStorage.getItem('blogTheme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
     <title>Apna Computer Blog — Technology Tutorials</title>
     <meta name="description" content="Practical technology tutorials in simple English — AI tools, computer basics, Excel, Power BI and digital skills.">
     <meta name="robots" content="index, follow">
@@ -22,15 +23,23 @@
 
     <main id="bMain">
 
-        <!-- hero: site intro + newsletter -->
+        <!-- hero: Top News Today banner + intro -->
         <section class="b-hero">
             <div class="wrap">
-                <h1>Technology made simple.</h1>
-                <p>Practical tutorials on AI tools, computer basics, Excel and digital skills — written in clear English so anyone can follow along.</p>
-                <form class="b-hero-form" id="heroForm" novalidate>
-                    <input type="email" placeholder="Enter your email" aria-label="Email address" required>
-                    <button type="submit">Get new tutorials</button>
-                </form>
+                <div class="b-hero-grid">
+                    <div class="b-hero-intro">
+                        <h1>Technology made simple.</h1>
+                        <p>Practical tutorials on AI tools, computer basics, Excel and digital skills — written in clear English so anyone can follow along.</p>
+                        <form class="b-hero-form" id="heroForm" novalidate>
+                            <input type="email" placeholder="Enter your email" aria-label="Email address" required>
+                            <button type="submit">Get new tutorials</button>
+                        </form>
+                    </div>
+                    <div class="b-hero-featured" id="heroFeatured">
+                        <div class="b-skel" style="height:260px;border-radius:14px"></div>
+                    </div>
+                </div>
+                <div class="b-hero-strip" id="heroStrip"></div>
                 <div class="b-hero-stats" id="heroStats"></div>
             </div>
         </section>
@@ -145,7 +154,32 @@
             '</article>';
         }
 
+        function heroFeaturedHtml(p) {
+            if (!p) return '';
+            var img = p.featuredImage
+                ? '<img src="' + esc(p.featuredImage) + '" alt="' + esc(p.title) + '" loading="eager">'
+                : '<span class="ph"><i class="far fa-file-alt"></i></span>';
+            var badge = p.categoryName ? '<span class="hf-chip">' + esc(p.categoryName) + '</span>' : '';
+            var isLive = p.publishedAt && (Date.now() - new Date(p.publishedAt).getTime()) < 24 * 3600 * 1000;
+            var liveChip = isLive ? '<span class="hf-chip live"><span class="b-live-pulse" style="background:#fff;margin-right:4px"></span> LIVE</span>' : '';
+            var credit = p.source ? '<div class="hf-credit">via <a href="' + esc(p.sourceUrl || '#') + '" target="_blank" rel="noopener">' + esc(p.source) + ' ↗</a></div>' : '';
+            return '<a href="/blog/read/' + encodeURIComponent(p.slug) + '/">' +
+                '<div class="hf-img">' + img + '<div class="hf-chips">' + liveChip + badge + '</div></div>' +
+                '<div class="hf-body">' +
+                    '<h3>' + esc(p.title) + '</h3>' +
+                    '<p>' + esc(p.excerpt || B.excerptFrom(p.content, 180)) + '</p>' +
+                    '<div class="hf-meta">' +
+                        '<span>' + ui.fmtDate(p.publishedAt) + '</span>' +
+                        '<span class="dot"></span>' +
+                        '<span><i class="far fa-clock"></i> ' + (p.readingTime || B.readingTime(p.content)) + ' min read</span>' +
+                        (p.author ? '<span class="dot"></span><span>' + esc(p.author) + '</span>' : '') +
+                    '</div>' +
+                    credit +
+                '</div>' +
+            '</a>';
+        }
         L.mount('home').then(function (site) {
+            window.__BLOG_SITE__ = site;
             B.seo.setMeta({
                 title: site.defaultSeo.title,
                 description: site.defaultSeo.description,
@@ -188,7 +222,11 @@
                 grid.hidden = true;
                 empty.hidden = false;
                 moreGrid.innerHTML = '';
+                document.getElementById('heroFeatured').innerHTML = '<div class="b-empty" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:#c9d6ff"><i class="far fa-newspaper" style="color:rgba(255,255,255,.3)"></i><b style="color:#fff">No stories yet</b>New tutorials coming soon.</div>';
             } else {
+                /* Top News Today banner = latest post */
+                document.getElementById('heroFeatured').innerHTML = heroFeaturedHtml(posts[0]);
+
                 /* featured = first post, big */
                 grid.innerHTML = cardHtml(posts[0], true);
 
@@ -196,6 +234,14 @@
                 var rest = posts.slice(1, 5);
                 moreGrid.innerHTML = rest.map(function (p) { return cardHtml(p, false); }).join('');
                 if (!rest.length) moreGrid.closest('.b-layout').style.display = 'none';
+
+                /* timestamped strip of recent posts below hero */
+                var strip = document.getElementById('heroStrip');
+                if (strip && posts.length > 1) {
+                    strip.innerHTML = posts.slice(1, 6).map(function (p) {
+                        return '<a href="/blog/read/' + encodeURIComponent(p.slug) + '/"><span class="ts">' + ui.fmtDateShort(p.publishedAt) + '</span><span class="sep">·</span>' + esc(p.title) + '</a>';
+                    }).join('');
+                }
             }
 
             /* hero stats */
