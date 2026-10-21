@@ -18,21 +18,12 @@
     var NAV = [
         { label: 'Home', href: '/', key: 'home' },
         { label: 'Services', href: '/services.html', key: 'services' },
-        { label: 'Samples', href: '#', key: 'samples', drop: [
-            { label: 'Online Center (Shop + CRM)', href: '/shop/', live: true },
-            { label: 'School Management + CRM', href: '/crm/', live: true },
-            { label: 'Clothing Marketplace (storefront)', href: '/clothing/store/', live: true },
-            { label: 'Clothing Seller CRM', href: '/clothing/panel/', live: true },
-            { label: 'Online Courses (LMS)', href: '/contact.html?module=courses', live: false },
-            { label: 'Coaching ERP', href: '/contact.html?module=coaching', live: false },
-            { label: 'Security Agency ERP', href: '/contact.html?module=security', live: false },
-            { label: 'Real Estate Portal', href: '/contact.html?module=realestate', live: false }
-        ] },
         { label: 'Products', href: '#', key: 'products', drop: [
             { label: 'Online Center Website + CRM', href: '/shop/', live: true },
             { label: 'School ERP + CRM', href: '/crm/', live: true },
             { label: 'Clothing CRM', href: '/clothing/panel/', live: true },
             { label: 'Clothing Marketplace (Store)', href: '/clothing/store/', live: true },
+            { label: 'Online Courses (LMS)', href: '/contact.html?module=courses', live: false },
             { label: 'Coaching ERP', href: '/contact.html?module=coaching', live: false },
             { label: 'Security ERP', href: '/contact.html?module=security', live: false },
             { label: 'Real Estate Portal', href: '/contact.html?module=realestate', live: false }
