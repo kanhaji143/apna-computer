@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Capital A - Circling Documents</title>
+<style>
+  :root {
+    --bg1: #0f0c29;
+    --bg2: #302b63;
+    --bg3: #24243e;
+    --accent: #00e5ff;
+    --accent2: #ff6bcb;
+    --text: #f5f7fa;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: radial-gradient(circle at 50% 50%, var(--bg2), var(--bg1) 60%, var(--bg3));
+    color: var(--text);
+    font-family: "Segoe UI", "Poppins", system-ui, sans-serif;
+    overflow: hidden;
+  }
+  .stage {
+    position: relative;
+    width: 100vw; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* orbit ring */
+  .orbit {
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255,255,255,0.15);
+    animation: spin 14s linear infinite;
+  }
+  .orbit::before {
+    content: "";
+    position: absolute; inset: -40px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,229,255,0.08);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* center A */
+  .center {
+    position: relative; z-index: 5;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,255,0.25), rgba(255,107,203,0.12));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 60px rgba(0,229,255,0.45), inset 0 0 30px rgba(255,107,203,0.25);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  .center .A {
+    font-size: 96px; font-weight: 800;
+    background: linear-gradient(135deg, #fff, #00e5ff, #ff6bcb);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(0,229,255,0.6);
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); box-shadow: 0 0 60px rgba(0,229,255,0.45); }
+    50% { transform: scale(1.06); box-shadow: 0 0 90px rgba(255,107,203,0.6); }
+  }
+
+  /* items */
+  .item {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 130px; height: 60px;
+    margin: -30px 0 0 -65px;
+    transform-origin: center center;
+    /* placed on orbit radius */
+  }
+  .item .card {
+    width: 100%; height: 100%;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    animation: bob 2.4s ease-in-out infinite;
+  }
+  .ring .slot .card {
+    width: 100%; height: 100%;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-top: 1px solid rgba(255,255,255,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px;
+    letter-spacing: 0.6px;
+    color: #ffffff;
+    box-shadow:
+      0 10px 30px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -8px 16px rgba(0,0,0,0.15);
+    animation: spin 14s linear infinite reverse;
+    transition: transform 0.3s ease;
+  }
+  @keyframes bob {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* position each item around circle using transform rotate on wrapper */
+  .pos { position: absolute; top: 50%; left: 50%; width: 0; height: 0; }
+  .pos .wrap {
+    position: absolute;
+    transform: rotate(var(--ang)) translateX(210px) rotate(calc(-1 * var(--ang)));
+    animation: spin 14s linear infinite;
+    /* counter-rotate so item stays upright while orbit spins */
+  }
+  /* We'll instead animate the whole ring and counter-rotate items */
+  .ring {
+    position: absolute; inset: 0;
+    animation: spin 14s linear infinite;
+  }
+  .ring .slot {
+    position: absolute; top: 50%; left: 50%;
+    width: 132px; height: 44px;
+    margin: -22px 0 0 -66px;
+    transform: rotate(var(--a)) translateX(195px) rotate(calc(-1 * var(--a)));
+  }
+  /* item label colors */
+  .slot:nth-child(1) .card { background: linear-gradient(135deg, rgba(0,229,255,0.22), rgba(255,255,255,0.04)); border-color: rgba(0,229,255,0.45); }
+  .slot:nth-child(2) .card { background: linear-gradient(135deg, rgba(255,107,203,0.22), rgba(255,255,255,0.04)); border-color: rgba(255,107,203,0.45); }
+  .slot:nth-child(3) .card { background: linear-gradient(135deg, rgba(255,215,0,0.22), rgba(255,255,255,0.04)); border-color: rgba(255,215,0,0.45); }
+  .slot:nth-child(4) .card { background: linear-gradient(135deg, rgba(120,255,120,0.22), rgba(255,255,255,0.04)); border-color: rgba(120,255,120,0.45); }
+
+  .title {
+    position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+    font-size: 22px; font-weight: 700; letter-spacing: 2px;
+    background: linear-gradient(90deg, #00e5ff, #ff6bcb);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    font-size: 13px; opacity: 0.6; letter-spacing: 1px;
+  }
+
+  /* particles */
+  .particles { position: absolute; inset: 0; pointer-events: none; }
+  .particle {
+    position: absolute; width: 4px; height: 4px; border-radius: 50%;
+    background: #00e5ff; opacity: 0.6;
+    animation: float 6s linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="title">CAPITAL A &middot; DOCUMENTS IN ORBIT</div>
+
+    <div class="orbit"></div>
+
+    <div class="ring">
+      <div class="slot" style="--a:0deg"><div class="card">Aadhaar</div></div>
+      <div class="slot" style="--a:90deg"><div class="card">PAN Card</div></div>
+      <div class="slot" style="--a:180deg"><div class="card">Voter ID</div></div>
+      <div class="slot" style="--a:270deg"><div class="card">Driving Licence</div></div>
+    </div>
+
+    <div class="center"><span class="A">A</span></div>
+
+    <div class="subtitle">Rotating ring &middot; motion animation</div>
+  </div>
+
+  <div class="particles" id="particles"></div>
+
+  <script>
+    const p = document.getElementById('particles');
+    for (let i = 0; i < 40; i++) {
+      const d = document.createElement('div');
+      d.className = 'particle';
+      d.style.left = Math.random() * 100 + 'vw';
+      d.style.top = Math.random() * 100 + 'vh';
+      d.style.animationDelay = (Math.random() * 6) + 's';
+      d.style.animationDuration = (4 + Math.random() * 5) + 's';
+      d.style.background = Math.random() > 0.5 ? '#00e5ff' : '#ff6bcb';
+      p.appendChild(d);
+    }
+  </script>
+</body>
+</html>
