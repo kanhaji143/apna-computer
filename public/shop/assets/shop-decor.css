@@ -49,7 +49,7 @@
     border-radius: 999px; padding: 4px 11px;
 }
 
-.float-chip { animation: bob 5.5s ease-in-out infinite; transition: transform .2s; }
+.float-chip { transition: transform .2s; }
 .float-chip.c2 { animation-delay: .8s; }
 .float-chip.c3 { animation-delay: 1.6s; }
 .float-chip.c4 { animation-delay: 2.4s; }

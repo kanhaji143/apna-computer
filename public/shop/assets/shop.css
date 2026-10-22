@@ -362,16 +362,19 @@ tbody tr:last-child td { border-bottom: 0; }
 .hero-search button:hover { background: #ea580c; }
 
 .hero-visual { position: relative; height: 300px; display: grid; place-items: center; }
-.hero-ring { width: 230px; height: 230px; border-radius: 50%; border: 2px dashed rgba(255,255,255,.28); display: grid; place-items: center; animation: spin 40s linear infinite; }
-.hero-ring .core { width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #f97316, #fb923c); display: grid; place-items: center; font-size: 58px; font-weight: 900; color: #fff; box-shadow: 0 18px 44px rgba(249,115,22,.4); animation: spin 40s linear infinite reverse; }
+.hero-ring { width: 230px; height: 230px; border-radius: 50%; border: 2px dashed rgba(255,255,255,.28); display: grid; place-items: center; animation: spin 16s linear infinite; }
+.hero-ring .core { width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #f97316, #fb923c); display: grid; place-items: center; font-size: 58px; font-weight: 900; color: #fff; box-shadow: 0 18px 44px rgba(249,115,22,.4); animation: spin 16s linear infinite reverse; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.float-chip { position: absolute; background: #fff; color: #0f172a; border-radius: 10px; padding: 8px 11px; font-size: 11px; font-weight: 600; box-shadow: 0 8px 22px rgba(0,0,0,.22); display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.orbit-chips { position: absolute; inset: 0; animation: spin 16s linear infinite; pointer-events: none; }
+.float-chip { position: absolute; top: 50%; left: 50%; background: #fff; color: #0f172a; border-radius: 10px; padding: 8px 11px; font-size: 11px; font-weight: 600; box-shadow: 0 8px 22px rgba(0,0,0,.22); display: flex; align-items: center; gap: 7px; white-space: nowrap; animation: spin 16s linear infinite reverse; }
 .float-chip i { color: #1e40af; font-size: 12px; }
-.float-chip.c1 { top: 18px; left: -6px; }
-.float-chip.c2 { top: 34px; right: -4px; }
-.float-chip.c3 { bottom: 34px; left: 0; }
-.float-chip.c4 { bottom: 14px; right: -2px; }
+.float-chip.c1 { --a: 0deg; transform: rotate(var(--a)) translateX(115px) rotate(calc(-1 * var(--a))); }
+.float-chip.c2 { --a: 90deg; transform: rotate(var(--a)) translateX(115px) rotate(calc(-1 * var(--a))); }
+.float-chip.c3 { --a: 180deg; transform: rotate(var(--a)) translateX(115px) rotate(calc(-1 * var(--a))); }
+.float-chip.c4 { --a: 270deg; transform: rotate(var(--a)) translateX(115px) rotate(calc(-1 * var(--a))); }
 .float-chip b { color: #16a34a; }
+.orbit-chips:hover { animation-play-state: paused; }
+.orbit-chips:hover .float-chip { animation-play-state: paused; }
 
 .hero-strip { border-top: 1px solid rgba(255,255,255,.16); background: rgba(0,0,0,.12); position: relative; z-index: 2; }
 .hero-strip-inner { max-width: 1180px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(6, 1fr); }
