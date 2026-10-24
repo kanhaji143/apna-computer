@@ -100,40 +100,59 @@
 
     function wireInstallUI() {
         var btn = document.getElementById('installBtn');
-        var btnTop = document.getElementById('installBtnTop');
-        if (!btn && !btnTop) return;
+        if (!btn) return;
         var hint = document.getElementById('installHint');
         var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        function showBtns() { if (btn) btn.hidden = false; if (btnTop) btnTop.hidden = false; }
-        function hideBtns() { if (btn) btn.hidden = true; if (btnTop) btnTop.hidden = true; }
         if (isIOS) {
             if (hint) hint.hidden = false;
-            hideBtns();
+            btn.hidden = true;
             return;
         }
-        if (AC_PWA.deferred) { showBtns(); }
+        if (AC_PWA.deferred) { btn.hidden = false; return; }
         /* Chrome evaluates installability shortly after SW activation */
         var timer = setInterval(function () {
-            if (AC_PWA.deferred) { clearInterval(timer); showBtns(); }
+            if (AC_PWA.deferred) { clearInterval(timer); btn.hidden = false; }
         }, 700);
         setTimeout(function () { clearInterval(timer); }, 20000);
-        function doPrompt() {
-            var d = AC_PWA.deferred;
-            if (!d) {
-                if (hint) { hint.hidden = false; hint.innerHTML = 'Install option abhi ready nahi. Chrome menu (three dots) -> Install, ya address bar icon use karein.'; }
-                return;
-            }
-            d.prompt();
-            d.userChoice.then(function (choice) {
-                if (choice && choice.outcome === 'accepted') { hideBtns(); AC_PWA.installed = true; }
-                AC_PWA.deferred = null;
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var d = AC_PWA.deferred;
+                if (!d) return;
+                d.prompt();
+                d.userChoice.then(function (choice) {
+                    if (choice && choice.outcome === 'accepted') btn.hidden = true;
+                    AC_PWA.deferred = null;
+                });
             });
         }
-        [btn, btnTop].forEach(function (b) {
-            if (!b) return;
-            b.addEventListener('click', doPrompt);
-        });
+        /* Top-right install button (always visible affordance) */
+        var btnTop = document.getElementById('installBtnTop');
+        if (btnTop) {
+            function syncTop() { btnTop.hidden = !!AC_PWA.installed; }
+            syncTop();
+            btnTop.addEventListener('click', function () {
+                var d = AC_PWA.deferred;
+                if (d) {
+                    d.prompt();
+                    d.userChoice.then(function (choice) {
+                        if (choice && choice.outcome === 'accepted') { btnTop.hidden = true; AC_PWA.installed = true; }
+                        AC_PWA.deferred = null;
+                    });
+                } else {
+                    /* No deferred prompt (e.g. desktop first visit) — guide the user */
+                    var hint = document.getElementById('installHint');
+                    if (hint) {
+                        hint.hidden = false;
+                        hint.innerHTML = 'Install option abhi ready nahi. Chrome menu (three dots) -> Install Apna Software Hub, ya address bar ka install icon use karein.';
+                    }
+                }
+            });
+            var t2 = setInterval(function () {
+                if (AC_PWA.deferred) { clearInterval(t2); btnTop.hidden = AC_PWA.installed; }
+            }, 700);
+            setTimeout(function () { clearInterval(t2); }, 20000);
+        }
     }
 
     /* ---------- Offline safety: out-of-app pages need internet ----------
