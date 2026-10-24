@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact — Apna Computer | Free Consultation</title>
-    <meta name="description" content="Website, CRM ya ERP ke liye free consultation. Form bharein ya email karein — 24 ghante me jawab.">
+    <meta name="description" content="Free consultation for website, CRM or ERP. Fill the form or email us — reply within 24 hours.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/hub.css">
@@ -26,8 +26,8 @@
     <section class="page-head">
         <div class="container">
             <div class="crumb"><a href="/">Home</a> <i class="fas fa-chevron-right" style="font-size:9px"></i> <span>Contact</span></div>
-            <h1>Baat karein — consultation free hai</h1>
-            <p>Project, pricing ya demo — jo bhi sawal ho, batayein.</p>
+            <h1>Get in touch — free consultation</h1>
+            <p>Project, pricing or demo — ask us anything.</p>
         </div>
     </section>
 
@@ -44,7 +44,7 @@
                         <div>
                             <b>WhatsApp / Call</b>
                             <a href="https://wa.me/918504985149?text=Namaste%21%20Mujhe%20website%20ya%20CRM%20ke%20baare%20me%20information%20chahiye." target="_blank" rel="noopener" style="color:#128C4A;font-weight:600">+91 85049 85149</a>
-                            <span style="display:block;font-size:11.5px;color:var(--text-light)">Chat karein — turant jawab</span>
+                            <span style="display:block;font-size:11.5px;color:var(--text-light)">Chat with us — instant reply</span>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -57,25 +57,25 @@
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-circle-info"></i>
-                        <div><b>Response Time</b><span>24 ghante ke andar</span></div>
+                        <div><b>Response Time</b><span>Within 24 hours</span></div>
                     </div>
 
                     <div class="value-card" style="margin-top:18px">
-                        <h3 style="margin-bottom:10px"><i class="fas fa-lightbulb" style="color:var(--secondary)"></i> Demo dekhna chahate hain?</h3>
-                        <p style="margin-bottom:12px">Live demos dekhein — school, clothing aur online centre ke.</p>
+                        <h3 style="margin-bottom:10px"><i class="fas fa-lightbulb" style="color:var(--secondary)"></i> Want to see a demo?</h3>
+                        <p style="margin-bottom:12px">Try our live demos — school, clothing and online centre.</p>
                         <a class="btn btn-ghost btn-sm" href="/#products">Browse demos <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
 
                 <div class="form-card">
                     <h3 style="font-size:19px;margin-bottom:6px">Get in touch</h3>
-                    <p class="muted" style="font-size:13px;margin-bottom:20px">Form bharein — hum aapko call ya email karenge.</p>
+                    <p class="muted" style="font-size:13px;margin-bottom:20px">Fill the form — we will call or email you.</p>
 
                     <form id="leadForm" novalidate>
                         <div class="field-row">
                             <div class="field">
                                 <label for="name">Your Name *</label>
-                                <input id="name" name="name" type="text" placeholder="Aapka naam" required>
+                                <input id="name" name="name" type="text" placeholder="Your name" required>
                             </div>
                             <div class="field">
                                 <label for="mobile">Mobile Number *</label>
@@ -103,13 +103,13 @@
                         </div>
                         <div class="field">
                             <label for="message">Message *</label>
-                            <textarea id="message" name="message" placeholder="Apni requirement short me likhein..." required></textarea>
+                            <textarea id="message" name="message" placeholder="Briefly describe your requirement..." required></textarea>
                         </div>
                         <!-- honeypot (spam protection) -->
                         <input type="text" name="company_website" id="company_website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true">
 
                         <button class="btn btn-primary" type="submit" id="submitBtn" style="width:100%"><i class="fas fa-paper-plane"></i> Send Enquiry</button>
-                        <p class="form-note">Aapka data sirf enquiry ke liye use hoga. Kabhi share nahi karenge.</p>
+                        <p class="form-note">Your data is used only for enquiries. We will never share it.</p>
                         <p class="form-status" id="formStatus"></p>
                     </form>
 
@@ -162,10 +162,10 @@
                 module = val('module'), message = val('message'), trap = val('company_website');
 
             if (trap) return; // bot
-            if (!name) { show('Kripya apna naam likhein.', false); return; }
-            if (!/^[0-9+\-\s]{10,15}$/.test(mobile)) { show('Sahi mobile number likhein.', false); return; }
-            if (!module) { show('Solution select karein.', false); return; }
-            if (message.length < 5) { show('Apni requirement likhein.', false); return; }
+            if (!name) { show('Please enter your name.', false); return; }
+            if (!/^[0-9+\-\s]{10,15}$/.test(mobile)) { show('Enter a valid mobile number.', false); return; }
+            if (!module) { show('Please select a solution.', false); return; }
+            if (message.length < 5) { show('Describe your requirement.', false); return; }
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
@@ -192,9 +192,9 @@
             }).then(function (r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 form.reset();
-                show('✅ Dhanyavaad! Aapki enquiry mil gayi. Hum 24 ghante me contact karenge.', true);
+                show('✅ Thank you! Your enquiry has been received. We will contact you within 24 hours.', true);
             }).catch(function (err) {
-                show('Enquiry send nahi hui. Kripya email karein: kanhadigimkt@gmail.com', false);
+                show('Enquiry could not be sent. Please email us: kanhadigimkt@gmail.com', false);
                 console.warn('[Lead]', err.message);
             }).then(function () {
                 btn.disabled = false;

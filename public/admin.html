@@ -61,7 +61,7 @@ h2.sect{font-size:15px;font-weight:800;margin-top:16px}
 <div class="container">
     <div id="loginCard" class="card">
         <h2 style="font-size:17px;font-weight:800">🔐 Admin Sign-in</h2>
-        <p style="font-size:12.5px;color:var(--muted);margin:6px 0 12px">Sirf owner/admin email ke liye. Leads sirf yahi login padh sakta hai (Firestore rules enforce karte hain).</p>
+        <p style="font-size:12.5px;color:var(--muted);margin:6px 0 12px">For the owner/admin email only. Leads can be read only by this login (enforced by Firestore rules).</p>
         <div class="field"><label>Email</label><input id="admEmail" type="email" autocomplete="username"></div>
         <div class="field"><label>Password</label><input id="admPass" type="password" autocomplete="current-password"></div>
         <button class="btn" id="loginBtn">Sign in &nbsp;→</button>
@@ -133,7 +133,7 @@ h2.sect{font-size:15px;font-weight:800;margin-top:16px}
         var newN = leads.filter(function (l) { return l.status === 'new'; }).length;
         $('newCount').textContent = newN + ' new';
         $('countLine').textContent = 'Total saved enquiries: ' + leads.length + ' · latest first';
-        if (!leads.length) { list.className = 'empty'; list.textContent = '📭 Koi enquiry nahi mili. Jab koi customer /app/contact.html se form bharega, wo yahan turant dikhega.'; return; }
+        if (!leads.length) { list.className = 'empty'; list.textContent = '📭 No enquiries yet. When a customer fills the form at /app/contact.html, it will appear here instantly.'; return; }
         var MODELS = { 'website': 'Website Design', 'school-erp': 'School ERP + CRM', 'online-center': 'Online Center / Shop CRM', 'apnivo-fashion': 'Apnivo Fashion', 'blog': 'Blog / Content', 'courses-lms': 'Online Courses (LMS)', 'coaching-erp': 'Coaching ERP', 'security-erp': 'Security Agency ERP', 'real-estate': 'Real Estate Portal', 'custom': 'Custom / Other' };
         list.className = '';
         list.innerHTML = leads.map(function (l) {
@@ -166,10 +166,10 @@ h2.sect{font-size:15px;font-weight:800;margin-top:16px}
             if (!ok) {
                 if (err && err.indexOf('PERMISSION') > -1) {
                     $('leadsWrap').hidden = true; $('loginCard').hidden = false; idToken = null;
-                    showStatus($('loginStatus'), '⚠️ Login session expire ho gaya — phir se sign-in karein.', 'err');
+                    showStatus($('loginStatus'), '⚠️ Login session expired — please sign in again.', 'err');
                     return;
                 }
-                $('leadsList').innerHTML = '<div class="empty">⚠️ Leads load nahi hui: ' + esc(err || 'unknown') + '</div>';
+                $('leadsList').innerHTML = '<div class="empty">⚠️ Could not load leads: ' + esc(err || 'unknown') + '</div>';
                 return;
             }
             leads = docs; render();
@@ -179,14 +179,14 @@ h2.sect{font-size:15px;font-weight:800;margin-top:16px}
     /* ---------- wire ---------- */
     $('loginBtn').addEventListener('click', function () {
         var email = $('admEmail').value.trim(), pass = $('admPass').value;
-        if (!email || !pass) { showStatus($('loginStatus'), 'Email aur password dono bharein.', 'err'); return; }
+        if (!email || !pass) { showStatus($('loginStatus'), 'Please fill both email and password.', 'err'); return; }
         $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
         signIn(email, pass, function (ok, err, token) {
             $('loginBtn').disabled = false; $('loginBtn').textContent = 'Sign in →';
             if (!ok) {
                 var msg = err === 'EMAIL_NOT_FOUND' || err === 'INVALID_PASSWORD' ? 'Email/password galat hai.'
-                    : err === 'THIS_EMAIL_NOT_ADMIN' ? 'Ye email admin list me nahi hai.'
-                    : err === 'NETWORK' ? 'Internet check karein.' : (err || 'Login fail');
+                    : err === 'THIS_EMAIL_NOT_ADMIN' ? 'This email is not on the admin list.'
+                    : err === 'NETWORK' ? 'Check the internet.' : (err || 'Login fail');
                 showStatus($('loginStatus'), '⚠️ ' + msg, 'err'); return;
             }
             idToken = token;
