@@ -108,15 +108,15 @@
     function installHintText() {
         var ua = navigator.userAgent || '';
         if (/firefox/i.test(ua)) {
-            return 'Firefox desktop app install support nahi karta. Chrome ya Edge browser use karein, ya apne phone par install karein.';
+            return 'Firefox desktop does not support app install. Use Chrome or Edge, or install on your phone.';
         }
         if (/edg/i.test(ua)) {
-            return 'Edge: address bar ka install icon (⊕) click karein, ya menu (⋯) -> Apps -> Install this site as an app.';
+            return 'Edge: click the install icon (⊕) in the address bar, or use menu (⋯) -> Apps -> Install this site as an app.';
         }
         if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) {
             return 'Safari (macOS): File menu -> Add to Dock (macOS Sonoma+).';
         }
-        return 'Chrome: menu (three dots) -> Install Apna Software Hub, ya address bar ka install icon use karein.';
+        return 'Chrome: use the three-dots menu -> Install Apna Software Hub, or the install icon in the address bar.';
     }
 
     function wireInstallUI() {
@@ -209,7 +209,7 @@
             /^(index|detail|contact|offline)\.html/.test(href);
         if (!inApp) {
             e.preventDefault();
-            toast('📴 Offline hain — ye page/demo internet aane par khulega.');
+            toast('📴 You are offline — this page/demo will open when the internet is back.');
         }
     }, true);
 

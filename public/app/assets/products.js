@@ -13,7 +13,7 @@ var PRODUCTS = [
     category: 'platform',
     status: 'live',
     icon: 'layers',
-    tagline: 'Main platform — saare products, demos aur services ek jagah.',
+    tagline: 'Main platform — all products, demos and services in one place.',
     description: 'Unified product hub for Apna Software Hub: 9 business software solutions between website and CRM/ERP, mobile-first, with light/dark theme and enquiry integration.',
     features: [
       '9 business solutions on one platform',
@@ -32,8 +32,8 @@ var PRODUCTS = [
     category: 'website',
     status: 'live',
     icon: 'code',
-    tagline: 'Professional website kisi bhi shop ya business ke liye.',
-    description: 'Website design service for shops and businesses — design, hosting aur maintenance include. Delivery timelines: Starter 3–7 din, Business 2–4 hafte, Custom quote ke saath.',
+    tagline: 'A professional website for any shop or business.',
+    description: 'Website design service for shops and businesses — design, hosting and maintenance included. Timelines: Starter 3–7 days, Business 2–4 weeks, Custom with quote.',
     features: [
       'Design + hosting + maintenance packages',
       'Starter, Business and Custom plans (quote on request)',
@@ -51,8 +51,8 @@ var PRODUCTS = [
     category: 'retail',
     status: 'live-demo',
     icon: 'store',
-    tagline: 'Digital service shop ke liye website + billing CRM.',
-    description: 'Digital service shop solution — public website plus 14-page admin CRM: customers, transactions, expenses, notices, ticket enquiries, reports. Real-time Firestore sync with seeded demo data. Login demo chalata hai: koi bhi email/password kaafi hai.',
+    tagline: 'Website + billing CRM for digital service shops.',
+    description: 'Digital service shop solution — public website plus 14-page admin CRM: customers, transactions, expenses, notices, ticket enquiries, reports. Real-time Firestore sync with seeded demo data. The login demo accepts any email/password.',
     features: [
       'Public website with service request + ticket enquiry forms (secure backend)',
       'Admin CRM: customers, transactions, expenses, service requests, notices',
@@ -73,8 +73,8 @@ var PRODUCTS = [
     category: 'education',
     status: 'live-demo',
     icon: 'school',
-    tagline: 'Students, fees, dues, transport aur reports.',
-    description: 'School management CRM: 460+ student records, collect fee with receipts, fee structure per class, dues list with WhatsApp alerts, ledger, reports, employees, expenses, transport. Owner/Admin aur Cashier roles. Firestore-backed (sc_* collections).',
+    tagline: 'Students, fees, dues, transport and reports.',
+    description: 'School management CRM: 460+ student records, collect fee with receipts, fee structure per class, dues list with WhatsApp alerts, ledger, reports, employees, expenses, transport. Owner/Admin and Cashier roles. Firestore-backed (sc_* collections).',
     features: [
       'Students: 426 records with class, section, transport details',
       'Collect Fee / fee structure / dues / ledger / reports',
@@ -93,7 +93,7 @@ var PRODUCTS = [
     category: 'marketplace',
     status: 'live-demo',
     icon: 'shirt',
-    tagline: 'Amazon-style store — Customer, Seller aur Admin logins.',
+    tagline: 'Amazon-style store — Customer, Seller and Admin logins.',
     description: 'Marketplace for garments: customer-facing store plus Apnivo Business seller panel. Products, orders, reviews, payouts flows backed by Firestore (cl_* collections) with localStorage offline fallback.',
     features: [
       'Customer store: browse, cart, orders, reviews',
@@ -113,7 +113,7 @@ var PRODUCTS = [
     category: 'content',
     status: 'live',
     icon: 'pen',
-    tagline: 'Tutorials aur updates — secure Firebase Auth rule enforcement.',
+    tagline: 'Tutorials and updates — secure Firebase Auth rule enforcement.',
     description: 'Content section with 22 pages: articles, categories, tags, search, legal pages. Public posts are protected by Firestore rules (published-only view counter, admin-only writes).',
     features: [
       'List, post, category and tag pages',
@@ -132,8 +132,8 @@ var PRODUCTS = [
     category: 'education',
     status: 'soon',
     icon: 'grad',
-    tagline: 'Apne courses bechne ke liye platform.',
-    description: 'Learning platform — lessons, quizzes, certificates aur payments. Development phase; not yet available. Enquiry only.',
+    tagline: 'A platform to sell your own courses.',
+    description: 'Learning platform — lessons, quizzes, certificates and payments. Development phase; not yet available. Enquiry only.',
     features: [],
     links: [],
     pricing: null
@@ -144,8 +144,8 @@ var PRODUCTS = [
     category: 'business',
     status: 'soon',
     icon: 'chalk',
-    tagline: 'Admission, batches, tests aur payroll.',
-    description: 'Coaching center ERP — admission, batches, attendance, fees, tests aur payroll with role-based logins. Hub marks this Coming soon; enquiry only.',
+    tagline: 'Admission, batches, tests and payroll.',
+    description: 'Coaching center ERP — admission, batches, attendance, fees, tests and payroll with role-based logins. Hub marks this Coming soon; enquiry only.',
     features: [],
     links: [],
     pricing: null
@@ -156,8 +156,8 @@ var PRODUCTS = [
     category: 'business',
     status: 'soon',
     icon: 'shield',
-    tagline: 'Guards, verification aur payroll for security agencies.',
-    description: 'Guard registration, documents, police verification, duty roster, attendance aur payroll. Coming soon; enquiry only.',
+    tagline: 'Guards, verification and payroll for security agencies.',
+    description: 'Guard registration, documents, police verification, duty roster, attendance and payroll. Coming soon; enquiry only.',
     features: [],
     links: [],
     pricing: null
@@ -168,8 +168,8 @@ var PRODUCTS = [
     category: 'business',
     status: 'soon',
     icon: 'building',
-    tagline: 'Buy, sell aur rent listings portal.',
-    description: 'Property portal — Buyer, Owner, Agent aur Admin panels. Coming soon; enquiry only.',
+    tagline: 'Buy, sell and rent listings portal.',
+    description: 'Property portal — Buyer, Owner, Agent and Admin panels. Coming soon; enquiry only.',
     features: [],
     links: [],
     pricing: null
