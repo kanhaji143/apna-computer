@@ -98,6 +98,20 @@
         AC_PWA.installed = true;
     });
 
+    function installHintText() {
+        var ua = navigator.userAgent || '';
+        if (/firefox/i.test(ua)) {
+            return 'Firefox desktop app install support nahi karta. Chrome ya Edge browser use karein, ya apne phone par install karein.';
+        }
+        if (/edg/i.test(ua)) {
+            return 'Edge: address bar ka install icon (⊕) click karein, ya menu (⋯) -> Apps -> Install this site as an app.';
+        }
+        if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) {
+            return 'Safari (macOS): File menu -> Add to Dock (macOS Sonoma+).';
+        }
+        return 'Chrome: menu (three dots) -> Install Apna Software Hub, ya address bar ka install icon use karein.';
+    }
+
     function wireInstallUI() {
         var btn = document.getElementById('installBtn');
         if (!btn) return;
@@ -144,7 +158,7 @@
                     var hint = document.getElementById('installHint');
                     if (hint) {
                         hint.hidden = false;
-                        hint.innerHTML = 'Install option abhi ready nahi. Chrome menu (three dots) -> Install Apna Software Hub, ya address bar ka install icon use karein.';
+                        hint.innerHTML = installHintText();
                     }
                 }
             });
