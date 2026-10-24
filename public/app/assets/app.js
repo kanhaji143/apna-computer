@@ -99,42 +99,63 @@
     });
 
     function wireInstallUI() {
-        var btn = document.getElementById('installBtn');
-        if (!btn) return;
+        var btnHero = document.getElementById('installBtn');
+        var btnTop = document.getElementById('installBtnTop');
         var hint = document.getElementById('installHint');
+        var isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
         var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        function showBtns() {
+            if (btnHero) btnHero.hidden = false;
+            if (btnTop) btnTop.hidden = false;
+        }
+        function hideBtns() {
+            if (btnHero) btnHero.hidden = true;
+            if (btnTop) btnTop.hidden = true;
+        }
+        function doPrompt() {
+            var d = AC_PWA.deferred;
+            if (!d) return;
+            d.prompt();
+            d.userChoice.then(function (choice) {
+                if (choice && choice.outcome === 'accepted') { hideBtns(); AC_PWA.installed = true; }
+                AC_PWA.deferred = null;
+            });
+        }
+        if (isStandalone) { hideBtns(); if (hint) hint.hidden = true; return; }
         if (isIOS) {
-            if (hint) hint.hidden = false;
-            btn.hidden = true;
+            if (hint) { hint.hidden = false; hint.innerHTML = '📲 iPhone: Safari share icon → "Add to Home Screen".'; }
+            hideBtns();
             return;
         }
-        if (AC_PWA.deferred) { btn.hidden = false; return; }
-        /* Chrome evaluates installability shortly after SW activation */
+        if (AC_PWA.deferred) { showBtns(); }
         var timer = setInterval(function () {
-            if (AC_PWA.deferred) { clearInterval(timer); btn.hidden = false; }
+            if (AC_PWA.deferred) { clearInterval(timer); showBtns(); }
         }, 700);
         setTimeout(function () {
             clearInterval(timer);
-            if (!AC_PWA.deferred && !AC_PWA.installed && btn && btn.hidden && hint) {
+            if (!AC_PWA.deferred && !AC_PWA.installed && hint) {
                 var isDesktop = !/android|iphone|ipad|ipod/i.test(navigator.userAgent);
                 if (isDesktop) {
                     hint.hidden = false;
-                    hint.innerHTML = 'Desktop: Chrome menu (three dots) -> Install Apna Software Hub, or use the install icon in the address bar.';
+                    hint.innerHTML = '🖥️ Desktop install: Chrome menu (⋮) → <b>Install Apna Software Hub</b>, ya address bar ka install icon use karein.';
                 }
             }
         }, 6000);
-        if (btn) {
-            btn.addEventListener('click', function () {
-                var d = AC_PWA.deferred;
-                if (!d) return;
-                d.prompt();
-                d.userChoice.then(function (choice) {
-                    if (choice && choice.outcome === 'accepted') btn.hidden = true;
-                    AC_PWA.deferred = null;
-                });
+        [btnHero, btnTop].forEach(function (b) {
+            if (!b) return;
+            b.addEventListener('click', function () {
+                if (AC_PWA.deferred) { doPrompt(); }
+                else {
+                    /* No deferred prompt yet — guide the user */
+                    if (hint) {
+                        hint.hidden = false;
+                        hint.innerHTML = 'Install option abhi ready nahi. Chrome menu (⋮) → "Install Apna Software Hub" ya address bar icon use karein.';
+                    }
+                }
             });
-        }
+        });
     }
 
     /* ---------- Offline safety: out-of-app pages need internet ----------
