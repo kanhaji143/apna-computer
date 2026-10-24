@@ -114,7 +114,16 @@
         var timer = setInterval(function () {
             if (AC_PWA.deferred) { clearInterval(timer); btn.hidden = false; }
         }, 700);
-        setTimeout(function () { clearInterval(timer); }, 20000);
+        setTimeout(function () {
+            clearInterval(timer);
+            if (!AC_PWA.deferred && !AC_PWA.installed && btn && btn.hidden && hint) {
+                var isDesktop = !/android|iphone|ipad|ipod/i.test(navigator.userAgent);
+                if (isDesktop) {
+                    hint.hidden = false;
+                    hint.innerHTML = 'Desktop: Chrome menu (three dots) -> Install Apna Software Hub, or use the install icon in the address bar.';
+                }
+            }
+        }, 6000);
         if (btn) {
             btn.addEventListener('click', function () {
                 var d = AC_PWA.deferred;
