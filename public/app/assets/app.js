@@ -160,6 +160,7 @@
                         hint.hidden = false;
                         hint.innerHTML = installHintText();
                     }
+                    toast(installHintText());
                 }
             });
             var t2 = setInterval(function () {
