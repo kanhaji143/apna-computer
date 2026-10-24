@@ -9,7 +9,7 @@
    No sensitive or authenticated data is cached (the app performs
    only hub_leads create POSTs and no Firestore reads).
    ============================================================ */
-var VERSION = 'v2';
+var VERSION = 'v3';
 var PREFIX = '/app/';
 
 var PRECACHE = PREFIX + 'shell-' + VERSION;

@@ -1,5 +1,5 @@
 {
-  "name": "Apna Computer — Multisoftware Hub",
+  "name": "Apna Software Hub",
   "short_name": "Apna Hub",
   "id": "apna-computer-app",
   "description": "9 business software solutions — websites, CRM/ERP, marketplace aur live demos, ek mobile-first app par.",
@@ -7,9 +7,9 @@
   "scope": "/app/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f1f3f6",
-  "theme_color": "#2874f0",
-  "lang": "hi",
+  "background_color": "#0a0f1e",
+  "theme_color": "#0a0f1e",
+  "lang": "en",
   "dir": "ltr",
   "categories": ["business", "productivity"],
   "icons": [

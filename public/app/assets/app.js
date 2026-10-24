@@ -89,6 +89,13 @@
        Chrome fires beforeinstallprompt ONLY on sessions that genuinely
        meet install criteria. We defer the prompt behind our own button. */
     var AC_PWA = window.AC_PWA = { deferred: null, installed: false };
+    /* Already installed? (standalone window / iOS homescreen) — hide install UI */
+    try {
+        var standalone = window.matchMedia('(display-mode: standalone)').matches ||
+            window.matchMedia('(display-mode: minimal-ui)').matches ||
+            navigator.standalone === true;
+        if (standalone) AC_PWA.installed = true;
+    } catch (e) { /* no-op */ }
     window.addEventListener('beforeinstallprompt', function (e) {
         e.preventDefault();
         AC_PWA.deferred = e;
@@ -115,6 +122,12 @@
     function wireInstallUI() {
         var btn = document.getElementById('installBtn');
         if (!btn) return;
+        var btnTop = document.getElementById('installBtnTop');
+        if (AC_PWA.installed) {
+            btn.hidden = true;
+            if (btnTop) btnTop.hidden = true;
+            return;
+        }
         var hint = document.getElementById('installHint');
         var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);

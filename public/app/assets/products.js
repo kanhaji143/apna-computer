@@ -14,7 +14,7 @@ var PRODUCTS = [
     status: 'live',
     icon: 'layers',
     tagline: 'Main platform — saare products, demos aur services ek jagah.',
-    description: 'Unified product hub for Apna Computer: 9 business software solutions between website and CRM/ERP, mobile-first, with light/dark theme and enquiry integration.',
+    description: 'Unified product hub for Apna Software Hub: 9 business software solutions between website and CRM/ERP, mobile-first, with light/dark theme and enquiry integration.',
     features: [
       '9 business solutions on one platform',
       'Products, demos and services in one place',
