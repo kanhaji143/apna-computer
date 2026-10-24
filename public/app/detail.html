@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Product — Apna Computer (App)</title>
+<meta name="theme-color" content="#2874f0">
+<link rel="manifest" href="/app/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/app/assets/app.css">
+</head>
+<body>
+<div id="offlineBanner" class="offline-banner">⚠️ Aap offline hain — cached pages khulenge.</div>
+
+<header class="appbar">
+    <a href="index.html" class="brand-mark" style="color:var(--primary)" aria-label="Back">←</a>
+    <div class="brand-text"><strong>Product</strong><small>Apna Computer</small></div>
+    <div class="spacer"></div>
+    <a class="call-btn" href="contact.html">Enquire</a>
+</header>
+
+<div class="container" id="detailRoot">
+    <p style="padding:20px 4px;color:var(--muted)">Loading…</p>
+</div>
+
+<footer class="app-footer container">
+    <div class="rowgap">
+        <a href="https://wa.me/918504985149">WhatsApp</a>
+        <a href="mailto:kanhadigimkt@gmail.com">Email</a>
+        <a href="/about.html">About</a>
+        <a href="/admin.html">Owner Login</a>
+    </div>
+    <span>© <span id="yearNow"></span> Apna Computer · All rights reserved.</span>
+</footer>
+
+<nav class="bottom-nav" id="bottomNav"></nav>
+
+<script>window.PRODUCT_ID_HINT = 'detail';</script>
+<script src="/app/assets/products.js"></script>
+<script src="/app/assets/app.js"></script>
+<script>
+(function () {
+    var APP = window.AC_APP, icon = APP.icon;
+    document.getElementById('yearNow').textContent = new Date().getFullYear();
+    document.getElementById('bottomNav').innerHTML = [
+        ['index.html', 'Home', 'home', false],
+        ['contact.html', 'Enquire', 'send', false],
+        ['/', 'Full Site', 'globe', false]
+    ].map(function (n) {
+        return '<a href="' + n[0] + '">' + icon(n[2]) + '<span>' + n[1] + '</span></a>';
+    }).join('');
+
+    var params = new URLSearchParams(location.search);
+    var id = params.get('id');
+    var p = APP.productById(id);
+    var root = document.getElementById('detailRoot');
+
+    if (!p) {
+        root.innerHTML =
+            '<div class="empty-state" style="padding-top:40px">' +
+                '<div class="glyph">🧐</div><h2 style="font-size:15px">Product not found</h2>' +
+                '<p style="font-size:12.5px;margin:6px 0 14px">Ye ID ya to nahi hai ya badal gayi hai.</p>' +
+                '<a class="btn ghost" href="index.html">Catalogue par jayein</a>' +
+            '</div>';
+        document.title = 'Not found — Apna Computer';
+        return;
+    }
+
+    document.title = p.name + ' — Apna Computer';
+    var st = APP.STATUS_META[p.status];
+    var from = params.get('from') === 'app' ? '&from=app' : '';
+
+    /* build demo / info link buttons (only real, verified URLs) */
+    var linkBtns = (p.links || []).map(function (l) {
+        return '<a class="link-btn' + (l.primary ? ' primary' : '') + '" href="' + l.url + '" target="_blank" rel="noopener">' +
+            '<span>' + l.label + '</span><span class="arr">↗</span></a>';
+    }).join('');
+
+    var featHtml = '';
+    if (p.features && p.features.length) {
+        featHtml = '<section class="section"><h2>Verified Features</h2><div class="list-card"><ul class="feat-list">' +
+            p.features.map(function (f) {
+                return '<li><span class="tick">✓</span><span>' + f + '</span></li>';
+            }).join('') + '</ul></div></section>';
+    } else {
+        featHtml = '<section class="section"><div class="note-text">🛠️ Is module ka development abhi chal raha hai. Neche diye gaye contact se demo request bhejein — hum timeline share karenge.</div></section>';
+    }
+
+    var pricingHtml = p.pricing
+        ? '<section class="section"><h2>Pricing</h2><div class="list-card" style="font-size:13.5px">' + p.pricing + '</div></section>'
+        : '';
+
+    var noteHtml = p.demoNote ? '<div class="note-text ">' + '🔐 ' + p.demoNote + '</div>' : '';
+
+    root.innerHTML =
+        '<div class="breadcrumb"><a href="index.html">Catalogue</a> › <span>' + APP.catLabel(p.category) + '</span></div>' +
+        '<div class="detail-hero">' +
+            '<div class="icon-wrap">' + icon(p.icon) + '</div>' +
+            '<h1>' + p.name + '</h1>' +
+            '<p class="tagline">' + p.tagline + '</p>' +
+            '<div style="margin-top:10px"><span class="badge ' + st.cls + '">' + st.label + '</span></div>' +
+        '</div>' +
+        '<section class="section"><h2>About</h2><div class="list-card" style="font-size:13.5px;color:var(--text)">' +
+            '<p>' + p.description + '</p>' + (noteHtml ? '<div style="height:10px"></div>' + noteHtml : '') +
+        '</div></section>' +
+        featHtml +
+        (linkBtns ? '<section class="section"><h2>Open &amp; Try</h2>' + linkBtns + '</section>' : '') +
+        pricingHtml +
+        '<section class="cta-band">' +
+            '<h2>Is product ke baare me poochna hai?</h2>' +
+            '<p>Free consultation — response 24 ghante ke andar.</p>' +
+            '<a class="btn block" href="contact.html?module=' + p.id + from + '">Request Demo / Enquire</a>' +
+        '</section>';
+})();
+</script>
+</body>
+</html>

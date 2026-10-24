@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apna Computer — Multisoftware Hub | Website + CRM/ERP Solutions</title>
-    <meta name="description" content="Schools, shops, coaching centres, security agencies aur real estate ke liye website + CRM/ERP. Ek hi platform par 9 software solutions.">
-    <meta property="og:title" content="Apna Computer — Multisoftware Hub">
+    <title>Apna Software Hub | Websites, CRM/ERP &amp; Mobile Apps — One Platform</title>
+    <meta name="description" content="Websites + CRM/ERP for schools, shops, coaching centres, security agencies and real estate. 9 software solutions on a single platform.">
+    <meta property="og:title" content="Apna Software Hub — Websites + CRM/ERP, Ek Hi Platform">
     <meta property="og:description" content="Website + CRM/ERP solutions for every business.">
     <meta property="og:type" content="website">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/hub.css">
+    <link rel="stylesheet" href="/assets/css/home.css">
     <script>
-        // Light/Dark theme — paint se pehle apply (flash rokne ke liye)
+        // Light/Dark theme — apply before first paint (prevents flash)
         (function () {
             var t = null;
             try { t = localStorage.getItem('hubTheme'); } catch (e) {}
@@ -24,48 +25,113 @@
         })();
     </script>
 </head>
-<body>
+<body class="home-page">
     <header id="hubHeader"></header>
 
-    <!-- ============ HERO ============ -->
-    <section class="hero">
+    <!-- ============ SCROLLING TICKER ============ -->
+    <div class="ticker-v2" aria-label="Apna Software Hub services">
+        <div class="ticker-track">
+            <div class="ticker-chunk">
+                <span class="ticker-item">🚀 APNA SOFTWARE HUB — Technology That Grows Your Business</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🌐 Business Websites</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">💼 Custom CRM &amp; ERP Solutions</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🏫 School Management Systems</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🛍️ E-Commerce Solutions</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">⚙️ Smart Business Automation</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🤝 From Setup to Go Live — We Help Your Business Grow</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item"><a href="/contact.html">📞 Get a Free Consultation Today!</a></span>
+                <span class="ticker-sep">◆</span>
+            </div>
+            <div class="ticker-chunk" aria-hidden="true">
+                <span class="ticker-item">🚀 APNA SOFTWARE HUB — Technology That Grows Your Business</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🌐 Business Websites</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">💼 Custom CRM &amp; ERP Solutions</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🏫 School Management Systems</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🛍️ E-Commerce Solutions</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">⚙️ Smart Business Automation</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item">🤝 From Setup to Go Live — We Help Your Business Grow</span>
+                <span class="ticker-sep">◆</span>
+                <span class="ticker-item"><a href="/contact.html">📞 Get a Free Consultation Today!</a></span>
+                <span class="ticker-sep">◆</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ HERO (dark, hybrid) ============ -->
+    <section class="home-hero">
+        <span class="glow-orb orb-1"></span>
+        <span class="glow-orb orb-2"></span>
         <div class="container">
-            <div class="hero-inner">
-                <span class="hero-badge"><i class="fas fa-bolt"></i> One Platform · 9 Business Solutions</span>
-                <h1>Har business ke liye <span>website + CRM</span>, ek hi jagah.</h1>
-                <p>School, shop, coaching, security agency ya real estate — apni website, apna admin panel, apna data. Setup se shuru, reporting tak sab kuch.</p>
-                <div class="hero-actions">
-                    <a class="btn btn-orange" href="/services.html"><i class="fas fa-rocket"></i> Explore Solutions</a>
-                    <a class="btn btn-ghost" href="/contact.html"><i class="fas fa-comments"></i> Talk to Us</a>
+            <div class="hero-grid-v2">
+                <div class="hero-copy-v2">
+                    <span class="hero-badge-v2"><i class="fas fa-bolt"></i> One Platform · 9 Business Solutions</span>
+                    <h1 class="hero-title-v2">A complete <span class="hl">website + CRM</span> platform for every business.</h1>
+                    <p class="hero-sub-v2">Schools, shops, coaching centres, security agencies or real estate — get your own website, your own admin panel and your own data. From setup to reporting, everything in one place.</p>
+                    <div class="hero-ctas-v2">
+                        <a class="btn-hero" href="/services.html"><i class="fas fa-rocket"></i> Explore Solutions</a>
+                        <a class="btn-hero-ghost" href="/contact.html"><i class="fas fa-comments"></i> Talk to Us</a>
+                    </div>
+                </div>
+
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="hv-topbar">
+                        <span class="hv-dot c1"></span><span class="hv-dot c2"></span><span class="hv-dot c3"></span>
+                        <span class="hv-title">Apna Hub · Modules Overview</span>
+                    </div>
+                    <div class="hv-grid">
+                        <a class="hv-chip" href="/#products"><i class="fas fa-layer-group"></i>Multisoftware Hub<small><span class="dot-live"></span>Live</small></a>
+                        <a class="hv-chip c-orange" href="/services.html"><i class="fas fa-laptop-code"></i>Website-Making<small><span class="dot-live"></span>Live</small></a>
+                        <a class="hv-chip c-green" href="/shop/"><i class="fas fa-store"></i>Online Center CRM<small><span class="dot-live"></span>Live</small></a>
+                        <a class="hv-chip" href="/crm/"><i class="fas fa-school"></i>School ERP<small><span class="dot-live"></span>Live</small></a>
+                        <a class="hv-chip c-purple" href="/clothing/store/"><i class="fas fa-shirt"></i>Apnivo Fashion<small><span class="dot-live"></span>Live</small></a>
+                        <a class="hv-chip c-orange" href="/contact.html?module=courses"><i class="fas fa-graduation-cap"></i>Courses LMS<small>Coming soon</small></a>
+                        <a class="hv-chip c-green" href="/contact.html?module=coaching"><i class="fas fa-chalkboard-user"></i>Coaching ERP<small>Coming soon</small></a>
+                        <a class="hv-chip c-purple" href="/contact.html?module=security"><i class="fas fa-shield-halved"></i>Security ERP<small>Coming soon</small></a>
+                        <a class="hv-chip" href="/contact.html?module=realestate"><i class="fas fa-building"></i>Real Estate<small>Coming soon</small></a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- ============ STATS ============ -->
     <div class="container">
-        <div class="stats-strip">
-            <div class="stat-card"><b>9</b><span>Products &amp; Modules</span></div>
-            <div class="stat-card"><b>3</b><span>Live Demos</span></div>
-            <div class="stat-card"><b>6</b><span>In Development</span></div>
-            <div class="stat-card"><b>100%</b><span>Mobile Ready</span></div>
+        <div class="stats-v2">
+            <div class="stat-v2"><b>9</b><span>Products &amp; Modules</span></div>
+            <div class="stat-v2"><b>3</b><span>Live Demos</span></div>
+            <div class="stat-v2"><b>6</b><span>In Development</span></div>
+            <div class="stat-v2"><b>100%</b><span>Mobile Ready</span></div>
         </div>
     </div>
 
     <!-- ============ PRODUCTS ============ -->
-    <section class="section" id="products">
+    <section class="v2-section" id="products">
         <div class="container">
-            <div class="section-head">
-                <span class="eyebrow">Our Products</span>
-                <h2>Ek hub, poora software ecosystem</h2>
-                <p>Har module apne sector ki top website jaisa — website, admin panel, reports aur role-based logins ke saath.</p>
+            <div class="v2-head">
+                <span class="eyebrow-v2">Our Products</span>
+                <h2>One hub. A complete software ecosystem.</h2>
+                <p>Every module is built to the standard of the best sites in its sector — website, admin panel, reports and role-based logins.</p>
             </div>
 
-            <div class="grid grid-3">
+            <div class="mod-grid-v2">
                 <!-- 1 -->
                 <article class="module-card">
                     <div class="module-icon"><i class="fas fa-layer-group"></i></div>
                     <h3>Multisoftware Hub</h3>
-                    <p>Main platform — saare products, demos aur services ek jagah. Aap isi page par hain.</p>
+                    <p>The main platform — all products, demos and services in one place. You are here.</p>
                     <div class="module-meta"><span class="badge live">Live</span><a class="card-link" href="/">You are here</a></div>
                 </article>
 
@@ -73,7 +139,7 @@
                 <article class="module-card">
                     <div class="module-icon orange"><i class="fas fa-laptop-code"></i></div>
                     <h3>Website-Making Service</h3>
-                    <p>Kisi bhi shop ya business ke liye professional website — design, hosting aur maintenance ke saath.</p>
+                    <p>A professional website for any shop or business — with design, hosting and maintenance included.</p>
                     <div class="module-meta"><span class="badge live">Live</span><a class="card-link" href="/services.html">View service <i class="fas fa-arrow-right"></i></a></div>
                 </article>
 
@@ -81,7 +147,7 @@
                 <article class="module-card">
                     <div class="module-icon green"><i class="fas fa-store"></i></div>
                     <h3>Online Center + CRM</h3>
-                    <p>Digital service shop ke liye website + billing CRM — customers, transactions, expenses aur reports.</p>
+                    <p>Website + billing CRM for digital service shops — customers, transactions, expenses and reports.</p>
                     <div class="module-meta"><span class="badge live">Live</span><a class="card-link" href="/shop/">Open demo <i class="fas fa-arrow-right"></i></a></div>
                 </article>
 
@@ -89,7 +155,7 @@
                 <article class="module-card">
                     <div class="module-icon"><i class="fas fa-school"></i></div>
                     <h3>School ERP + CRM</h3>
-                    <p>Students, fees, dues, transport, staff aur reports — Cashier aur Owner/Admin panels ke saath.</p>
+                    <p>Students, fees, dues, transport, staff and reports — with Cashier and Owner/Admin panels.</p>
                     <div class="module-meta"><span class="badge live">Live</span><a class="card-link" href="/crm/">Open demo <i class="fas fa-arrow-right"></i></a></div>
                 </article>
 
@@ -97,7 +163,7 @@
                 <article class="module-card">
                     <div class="module-icon purple"><i class="fas fa-shirt"></i></div>
                     <h3>Apnivo Fashion</h3>
-                    <p>Amazon-style store — Customer, Seller aur Admin logins ke saath products, orders aur payouts.</p>
+                    <p>Amazon-style store — Customer, Seller and Admin logins with products, orders and payouts.</p>
                     <div class="module-meta"><span class="badge live">Live</span><a class="card-link" href="/clothing/store/">Open Demo (Store)</a><a class="card-link" href="/clothing/panel/">Apnivo Business</a></div>
                 </article>
 
@@ -105,7 +171,7 @@
                 <article class="module-card">
                     <div class="module-icon orange"><i class="fas fa-graduation-cap"></i></div>
                     <h3>Online Courses (LMS)</h3>
-                    <p>Apne courses bechne ke liye platform — lessons, quizzes, certificates aur payments.</p>
+                    <p>A platform to sell your own courses — lessons, quizzes, certificates and payments.</p>
                     <div class="module-meta"><span class="badge soon">Coming soon</span><a class="card-link" href="/contact.html?module=courses">Enquire <i class="fas fa-arrow-right"></i></a></div>
                 </article>
 
@@ -113,7 +179,7 @@
                 <article class="module-card">
                     <div class="module-icon green"><i class="fas fa-chalkboard-user"></i></div>
                     <h3>Coaching ERP</h3>
-                    <p>Admission, batches, attendance, fees, tests aur payroll — 6 role-based logins ke saath.</p>
+                    <p>Admissions, batches, attendance, fees, tests and payroll — with 6 role-based logins.</p>
                     <div class="module-meta"><span class="badge soon">Coming soon</span><a class="card-link" href="/contact.html?module=coaching">Enquire <i class="fas fa-arrow-right"></i></a></div>
                 </article>
 
@@ -121,7 +187,7 @@
                 <article class="module-card">
                     <div class="module-icon purple"><i class="fas fa-shield-halved"></i></div>
                     <h3>Security Agency ERP</h3>
-                    <p>Guard registration, documents, police verification, duty roster, attendance aur payroll.</p>
+                    <p>Guard registration, documents, police verification, duty roster, attendance and payroll.</p>
                     <div class="module-meta"><span class="badge soon">Coming soon</span><a class="card-link" href="/contact.html?module=security">Enquire <i class="fas fa-arrow-right"></i></a></div>
                 </article>
 
@@ -129,7 +195,7 @@
                 <article class="module-card">
                     <div class="module-icon"><i class="fas fa-building"></i></div>
                     <h3>Real Estate Portal</h3>
-                    <p>Buy, sell aur rent listings — Buyer, Owner, Agent aur Admin panels ke saath.</p>
+                    <p>Buy, sell and rent listings — with Buyer, Owner, Agent and Admin panels.</p>
                     <div class="module-meta"><span class="badge soon">Coming soon</span><a class="card-link" href="/contact.html?module=realestate">Enquire <i class="fas fa-arrow-right"></i></a></div>
                 </article>
             </div>
@@ -137,47 +203,47 @@
     </section>
 
     <!-- ============ WHY US ============ -->
-    <section class="section">
+    <section class="v2-section alt">
         <div class="container">
-            <div class="section-head center">
-                <span class="eyebrow">Why Apna Computer</span>
+            <div class="v2-head center">
+                <span class="eyebrow-v2">Why Apna Software Hub</span>
                 <h2>Simple software, serious results</h2>
-                <p>Bina complicated setup — seedha kaam.</p>
+                <p>No complicated setup — just straightforward, working software.</p>
             </div>
-            <div class="grid grid-4">
-                <div class="value-card"><i class="fas fa-mobile-screen"></i><h3>Mobile First</h3><p>Har module phone par perfect chalta hai — dukaan, school ya site par.</p></div>
-                <div class="value-card"><i class="fas fa-shield-halved"></i><h3>Role-Based Access</h3><p>Owner, cashier, teacher, seller — har role ko sirf apna kaam dikhta hai.</p></div>
-                <div class="value-card"><i class="fas fa-cloud"></i><h3>Cloud Sync</h3><p>Data safe aur synced — ek jagah entry, sab jagah update.</p></div>
-                <div class="value-card"><i class="fas fa-chart-line"></i><h3>Reports Ready</h3><p>Daily, monthly aur custom reports — print, PDF aur CSV export.</p></div>
+            <div class="val-grid-v2">
+                <div class="value-card"><i class="fas fa-mobile-screen"></i><h3>Mobile First</h3><p>Every module works perfectly on the phone — at the shop, the school or the site.</p></div>
+                <div class="value-card"><i class="fas fa-shield-halved"></i><h3>Role-Based Access</h3><p>Owner, cashier, teacher, seller — each role sees only what belongs to them.</p></div>
+                <div class="value-card"><i class="fas fa-cloud"></i><h3>Cloud Sync</h3><p>Safe and synced data — enter it once, and it updates everywhere.</p></div>
+                <div class="value-card"><i class="fas fa-chart-line"></i><h3>Reports Ready</h3><p>Daily, monthly and custom reports — with print, PDF and CSV export.</p></div>
             </div>
         </div>
     </section>
 
     <!-- ============ HOW IT WORKS ============ -->
-    <section class="section tight">
+    <section class="v2-section tight">
         <div class="container">
-            <div class="section-head">
-                <span class="eyebrow">How It Works</span>
+            <div class="v2-head">
+                <span class="eyebrow-v2">How It Works</span>
                 <h2>4 steps me shuru</h2>
             </div>
-            <div class="steps">
-                <div class="step"><h3>Requirement</h3><p>Batayein kaunsa business aur kya features chahiye.</p></div>
-                <div class="step"><h3>Demo</h3><p>Live demo dikhate hain — apne data ke saath test karein.</p></div>
-                <div class="step"><h3>Setup</h3><p>Website + panel setup, branding aur data entry.</p></div>
-                <div class="step"><h3>Go Live</h3><p>Training + support ke saath aapka system live.</p></div>
+            <div class="steps-v2">
+                <div class="step-v2"><span class="step-num">1</span><h3>Requirement</h3><p>Tell us your business type and the features you need.</p></div>
+                <div class="step-v2"><span class="step-num">2</span><h3>Demo</h3><p>We walk you through a live demo — test it with your own data.</p></div>
+                <div class="step-v2"><span class="step-num">3</span><h3>Setup</h3><p>Website and panel setup, branding and data entry.</p></div>
+                <div class="step-v2"><span class="step-num">4</span><h3>Go Live</h3><p>Your system goes live — with training and support.</p></div>
             </div>
         </div>
     </section>
 
     <!-- ============ CTA ============ -->
-    <section class="section">
+    <section class="v2-section">
         <div class="container">
-            <div class="cta-band">
+            <div class="cta-v2">
                 <div>
-                    <h2>Apne business ke liye system chahiye?</h2>
-                    <p>Free consultation — batayein kya chahiye, hum solution suggest karenge.</p>
+                    <h2>Need a system for your business?</h2>
+                    <p>Free consultation — tell us what you need, and we'll suggest the right solution.</p>
                 </div>
-                <a class="btn btn-orange" href="/contact.html"><i class="fas fa-paper-plane"></i> Get Free Consultation</a>
+                <a class="btn-hero" href="/contact.html"><i class="fas fa-paper-plane"></i> Get Free Consultation</a>
             </div>
         </div>
     </section>

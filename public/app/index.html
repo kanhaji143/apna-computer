@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Apna Computer — Multisoftware Hub (App)</title>
+<meta name="description" content="9 business software solutions — websites, CRM/ERP, marketplace and demos. Ek hi platform par.">
+<meta name="theme-color" content="#2874f0">
+<link rel="manifest" href="/app/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/app/assets/app.css">
+</head>
+<body>
+<div id="offlineBanner" class="offline-banner">⚠️ Aap offline hain — cached pages khulenge. Internet aane par live data sync ho jayega.</div>
+
+<header class="appbar">
+    <div class="brand-mark">A</div>
+    <div class="brand-text"><strong>Apna Computer</strong><small>Multisoftware Hub</small></div>
+    <div class="spacer"></div>
+    <a class="call-btn" href="/contact.html" aria-label="Full website">
+        Full Site <span style="font-size:11px">↗</span>
+    </a>
+</header>
+
+<section class="hero">
+    <h1>Har business ke liye <br>website + CRM, ek hi jagah</h1>
+    <p>School, shop, coaching, security agency ya real estate — 9 business software solutions, mobile ke liye ready.</p>
+    <div class="badge-row">
+        <span class="chip" id="badgeProducts"></span>
+        <span class="chip" id="badgeDemos"></span>
+        <span class="chip">Mobile Ready</span>
+    </div>
+    <button id="installBtn" class="btn install-btn" type="button" hidden>
+        ⬇️ App Install karein
+    </button>
+    <p id="installHint" class="install-hint" hidden>
+        📲 iPhone: Safari share icon → "Add to Home Screen"
+    </p>
+</section>
+
+<div class="container">
+    <div class="stats">
+        <div class="stat"><b id="statTotal"></b><span>Solutions</span></div>
+        <div class="stat"><b>3</b><span>Live Demos</span></div>
+        <div class="stat"><b>22</b><span>Blog Pages</span></div>
+        <div class="stat"><b>100%</b><span>Mobile Ready</span></div>
+    </div>
+
+    <div class="searchbar">
+        <span class="search-ic" id="searchIc"></span>
+        <input id="searchInput" type="search" placeholder="Product search karein…" autocomplete="off">
+        <button class="clear-btn" id="clearBtn" aria-label="Clear">✕</button>
+    </div>    <div class="chips" id="chipRow"></div>
+
+    <div class="grid" id="productGrid"></div>
+    <div id="emptyState" class="empty-state" style="display:none">
+        <div class="glyph">🔍</div>
+        <h2>Koi product nahi mila</h2>
+        <p style="font-size:12.5px;margin-top:4px">Search word badlein ya "All" category select karein.</p>
+    </div>
+
+    <section class="cta-band">
+        <h2>Apne business ke liye system chahiye?</h2>
+        <p>Free consultation — hum aapko solution suggest karenge.</p>
+        <a class="btn block" href="contact.html">Get Free Consultation</a>
+    </section>
+</div>
+
+<footer class="app-footer container">
+    <div class="rowgap">
+        <a href="https://wa.me/918504985149">WhatsApp</a>
+        <a href="mailto:kanhadigimkt@gmail.com">Email</a>
+        <a href="/about.html">About</a>
+        <a href="/admin.html">Owner Login</a>
+    </div>
+    <span>© <span id="yearNow"></span> Apna Computer · All rights reserved.</span>
+</footer>
+
+<nav class="bottom-nav" id="bottomNav"></nav>
+
+<script src="/app/assets/products.js"></script>
+<script src="/app/assets/app.js"></script>
+<script>
+(function () {
+    var APP = window.AC_APP, icon = APP.icon;
+
+    /* fill static bits */
+    document.getElementById('searchIc').innerHTML = icon('search');
+    document.getElementById('yearNow').textContent = new Date().getFullYear();
+
+    var liveCount = APP.PRODUCTS.filter(function (p) { return p.status !== 'soon'; }).length;
+    var demoCount = APP.PRODUCTS.filter(function (p) { return p.status === 'live-demo'; }).length;
+    document.getElementById('badgeProducts').textContent = liveCount + ' Live & Ready';
+    document.getElementById('badgeDemos').textContent = demoCount + ' Live Demos';
+    document.getElementById('statTotal').textContent = APP.PRODUCTS.length;
+
+    /* bottom nav */
+    document.getElementById('bottomNav').innerHTML = [
+        ['index.html', 'Home', 'home', true],
+        ['detail.html?id=online-center', 'Demos', 'store', false],
+        ['contact.html', 'Enquire', 'send', false]
+    ].map(function (n) {
+        return '<a href="' + n[0] + '"' + (n[3] ? ' class="active"' : '') + '>' +
+            icon(n[2]) + '<span>' + n[1] + '</span></a>';
+    }).join('');
+
+    /* chips */
+    var chipRow = document.getElementById('chipRow');
+    var activeCat = 'all';
+    chipRow.innerHTML = APP.CATEGORIES.map(function (c, i) {
+        return '<button class="chip-btn' + (i === 0 ? ' active' : '') + '" data-cat="' + c.id + '">' + c.label + '</button>';
+    }).join('');
+    chipRow.addEventListener('click', function (e) {
+        var b = e.target.closest('.chip-btn'); if (!b) return;
+        activeCat = b.getAttribute('data-cat');
+        chipRow.querySelectorAll('.chip-btn').forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        render();
+    });
+
+    /* search */
+    var searchInput = document.getElementById('searchInput');
+    var clearBtn = document.getElementById('clearBtn');
+    searchInput.addEventListener('input', function () {
+        clearBtn.classList.toggle('show', !!searchInput.value);
+        render();
+    });
+    clearBtn.addEventListener('click', function () {
+        searchInput.value = ''; clearBtn.classList.remove('show'); render();
+    });
+
+    /* grid */
+    var grid = document.getElementById('productGrid');
+    function render() {
+        var q = (searchInput.value || '').trim().toLowerCase();
+        var items = APP.PRODUCTS.filter(function (p) {
+            var catOk = activeCat === 'all' ||
+                (activeCat === 'live' ? p.status !== 'soon' : p.category === activeCat);
+            var qOk = !q || (p.name + ' ' + p.tagline + ' ' + APP.catLabel(p.category))
+                .toLowerCase().indexOf(q) > -1;
+            return catOk && qOk;
+        });
+        document.getElementById('emptyState').style.display = items.length ? 'none' : 'block';
+        grid.innerHTML = items.map(function (p) {
+            var st = APP.STATUS_META[p.status];
+            var openHref = p.status === 'soon'
+                ? 'contact.html?module=' + p.id + '&from=app'
+                : (p.id === 'hub' ? '/' : 'detail.html?id=' + p.id + '&from=app');
+            var openLabel = p.status === 'soon' ? 'Enquire' : (p.id === 'hub' ? 'Open' : 'Details');
+            return '<article class="pcard">' +
+                '<div class="icon-wrap">' + icon(p.icon) + '</div>' +
+                '<h3>' + p.name + '</h3>' +
+                '<p>' + p.tagline + '</p>' +
+                '<div class="card-foot">' +
+                    '<span class="badge ' + st.cls + '">' + st.label + '</span>' +
+                    '<a class="open-link" href="' + openHref + '">' + openLabel + ' →</a>' +
+                '</div></article>';
+        }).join('');
+    }
+    render();
+})();
+</script>
+</body>
+</html>

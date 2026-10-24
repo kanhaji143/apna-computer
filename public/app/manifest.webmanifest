@@ -1,0 +1,47 @@
+{
+  "name": "Apna Computer — Multisoftware Hub",
+  "short_name": "Apna Hub",
+  "id": "apna-computer-app",
+  "description": "9 business software solutions — websites, CRM/ERP, marketplace aur live demos, ek mobile-first app par.",
+  "start_url": "/app/index.html",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f1f3f6",
+  "theme_color": "#2874f0",
+  "lang": "hi",
+  "dir": "ltr",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/app/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live Demos",
+      "url": "/app/detail.html?id=online-center",
+      "icons": [{ "src": "/app/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Enquire",
+      "url": "/app/contact.html",
+      "icons": [{ "src": "/app/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

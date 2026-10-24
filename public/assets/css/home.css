@@ -1,0 +1,363 @@
+/* ============================================================
+   Apna Software Hub — Homepage redesign (Hybrid theme)
+   Page-scoped: body.home-page — baaki site (services, about,
+   contact, demos) par KOI asar nahi.
+   Dark hero + light sections + premium typography.
+   ============================================================ */
+
+/* ---------- Hero (always dark — Hybrid look) ---------- */
+.home-page .home-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 84px 0 76px;
+    background:
+        radial-gradient(900px 420px at 85% -10%, rgba(40, 116, 240, .28), transparent 60%),
+        radial-gradient(700px 360px at -10% 110%, rgba(255, 111, 0, .16), transparent 55%),
+        linear-gradient(160deg, #0a0f1e 0%, #0d1526 55%, #0a1122 100%);
+    color: #f2f5fb;
+}
+
+.home-hero .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .5;
+    pointer-events: none;
+}
+.home-hero .orb-1 { width: 420px; height: 420px; top: -140px; right: 8%; background: rgba(40, 116, 240, .35); }
+.home-hero .orb-2 { width: 300px; height: 300px; bottom: -120px; left: 4%; background: rgba(255, 111, 0, .18); }
+
+.home-hero .container { position: relative; z-index: 1; }
+
+.hero-grid-v2 {
+    display: grid;
+    grid-template-columns: 1.08fr .92fr;
+    gap: 48px;
+    align-items: center;
+}
+
+.hero-copy-v2 .hero-badge-v2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    color: #9cc2ff;
+    background: rgba(40, 116, 240, .14);
+    border: 1px solid rgba(122, 167, 255, .25);
+}
+
+.home-page .hero-title-v2 {
+    margin: 18px 0 14px;
+    font-size: clamp(2.4rem, 5.4vw, 4.1rem);
+    line-height: 1.06;
+    letter-spacing: -1.6px;
+    font-weight: 800;
+    color: #ffffff;
+}
+.hero-title-v2 .hl {
+    background: linear-gradient(92deg, #6db4ff 0%, #2874f0 55%, #ffb457 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-sub-v2 {
+    font-size: clamp(1rem, 1.5vw, 1.18rem);
+    line-height: 1.65;
+    color: #b9c4d8;
+    max-width: 540px;
+    margin: 0 0 26px;
+}
+
+.hero-ctas-v2 { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 26px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 15px;
+    text-decoration: none;
+    background: linear-gradient(120deg, #ff8f00, #ff6f00);
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(255, 111, 0, .28);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.btn-hero:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(255, 111, 0, .36); }
+
+.btn-hero-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 26px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    color: #eaf1ff;
+    border: 1px solid rgba(255, 255, 255, .28);
+    background: rgba(255, 255, 255, .06);
+    transition: background .18s ease, border-color .18s ease;
+}
+.btn-hero-ghost:hover { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .4); }
+
+/* Hero visual — CSS "hub console" mock (no images needed) */
+.hero-visual {
+    position: relative;
+    border-radius: 20px;
+    padding: 22px;
+    background: linear-gradient(150deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
+    border: 1px solid rgba(255, 255, 255, .14);
+    box-shadow: 0 30px 70px rgba(2, 8, 20, .55);
+    backdrop-filter: blur(8px);
+    animation: floaty 7s ease-in-out infinite;
+}
+@keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+}
+
+.hv-topbar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+    margin-bottom: 16px;
+}
+.hv-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.25); }
+.hv-dot.c1 { background: #ff5f57; } .hv-dot.c2 { background: #febc2e; } .hv-dot.c3 { background: #28c840; }
+.hv-title { margin-left: 8px; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #93a3bd; font-weight: 700; }
+
+.hv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.hv-chip {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 13px 12px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(255, 255, 255, .1);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #d6e2f5;
+    text-align: left;
+    line-height: 1.25;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.hv-chip:hover { transform: translateY(-3px); background: rgba(255, 255, 255, .1); border-color: rgba(122, 167, 255, .45); }
+.hv-chip:focus-visible { outline: 3px solid #ffb457; outline-offset: 3px; }
+.hv-chip i { font-size: 15px; color: #6db4ff; }
+.hv-chip.c-orange i { color: #ffb457; }
+.hv-chip.c-green i { color: #67d98a; }
+.hv-chip.c-purple i { color: #cf9bff; }
+.hv-chip small { font-weight: 600; font-size: 9.5px; letter-spacing: .5px; color: #7e8da6; text-transform: uppercase; }
+.hv-chip.live small .dot-live { width: 6px; height: 6px; border-radius: 50%; background: #28c840; display: inline-block; margin-right: 4px; }
+.hv-chip.soon small { color: #8f8a7a; }
+
+/* ---------- Common section shell (bigger, premium) ---------- */
+.home-page .v2-section { padding: 92px 0; }
+.home-page .v2-section.tight { padding: 64px 0; }
+.home-page .v2-section.alt { background: var(--card); border-block: 1px solid var(--border); }
+
+.v2-head { max-width: 720px; margin-bottom: 42px; }
+.v2-head.center { margin-inline: auto; text-align: center; }
+.eyebrow-v2 {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 7px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+}
+.home-page .v2-head h2 {
+    font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+    line-height: 1.14;
+    letter-spacing: -1px;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 10px;
+}
+.home-page .v2-head p { font-size: 1.02rem; line-height: 1.6; color: var(--text-mid); margin: 0; }
+
+/* ---------- Stats strip ---------- */
+.stats-v2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: -44px;
+    position: relative;
+    z-index: 2;
+}
+.stat-v2 {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: 0 14px 34px rgba(10, 20, 45, .1);
+}
+.stat-v2 b {
+    display: block;
+    font-size: clamp(1.9rem, 3vw, 2.5rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(120deg, var(--primary), #6db4ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.stat-v2 span { font-size: .85rem; font-weight: 700; color: var(--text-mid); letter-spacing: .3px; }
+
+/* ---------- Modules grid ---------- */
+.mod-grid-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+.home-page .module-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 24px 22px;
+    box-shadow: 0 4px 16px rgba(10, 20, 45, .05);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.home-page .module-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 22px 44px rgba(10, 20, 45, .14);
+    border-color: var(--card-hover-border);
+}
+.home-page .module-icon {
+    width: 52px; height: 52px;
+    font-size: 21px;
+    border-radius: 15px;
+}
+.home-page .module-card h3 { font-size: 1.12rem; font-weight: 800; letter-spacing: -.3px; }
+.home-page .module-card > p { font-size: .92rem; line-height: 1.6; }
+
+/* ---------- Value cards ---------- */
+.val-grid-v2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.home-page .value-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 20px;
+    text-align: center;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.home-page .value-card:hover { transform: translateY(-5px); box-shadow: 0 18px 38px rgba(10, 20, 45, .12); }
+.home-page .value-card i { font-size: 24px; color: var(--primary); }
+.home-page .value-card h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.2px; }
+.home-page .value-card p { font-size: .87rem; line-height: 1.55; }
+
+/* ---------- Steps ---------- */
+.steps-v2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: step; }
+.step-v2 { position: relative; padding: 22px 18px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--border); }
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    font-weight: 900;
+    font-size: .95rem;
+    color: #fff;
+    background: linear-gradient(120deg, var(--primary), #6db4ff);
+    margin-bottom: 12px;
+}
+.home-page .step-v2 h3 { font-size: 1rem; font-weight: 800; }
+.home-page .step-v2 p { font-size: .87rem; line-height: 1.55; color: var(--text-mid); margin: 0; }
+
+/* ---------- CTA band ---------- */
+.cta-v2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 46px 42px;
+    border-radius: 26px;
+    background:
+        radial-gradient(600px 260px at 90% -20%, rgba(109, 180, 255, .35), transparent 60%),
+        linear-gradient(130deg, #0d1526, #12204a 75%, #1a2f5e);
+    color: #fff;
+    box-shadow: 0 26px 60px rgba(8, 16, 40, .35);
+}
+.cta-v2 h2 { font-size: clamp(1.5rem, 2.8vw, 2.1rem); letter-spacing: -.8px; margin: 0 0 8px; color: #fff; }
+.cta-v2 p { color: #b9c4d8; margin: 0; font-size: 1rem; }
+.cta-v2 .btn-hero { background: #fff; color: #12204a; box-shadow: 0 14px 30px rgba(255, 255, 255, .18); }
+.cta-v2 .btn-hero:hover { box-shadow: 0 18px 40px rgba(255, 255, 255, .28); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1020px) {
+    .hero-grid-v2 { grid-template-columns: 1fr; gap: 36px; }
+    .hero-visual { max-width: 520px; margin: 0 auto; }
+    .mod-grid-v2 { grid-template-columns: repeat(2, 1fr); }
+    .val-grid-v2 { grid-template-columns: repeat(2, 1fr); }
+    .steps-v2 { grid-template-columns: repeat(2, 1fr); }
+    .stats-v2 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+    .home-page .home-hero { padding: 56px 0 64px; }
+    .home-page .v2-section { padding: 64px 0; }
+    .hero-ctas-v2 .btn-hero, .btn-hero-ghost { width: 100%; justify-content: center; }
+    .hero-ctas-v2 { flex-direction: column; }
+    .mod-grid-v2, .val-grid-v2, .steps-v2, .stats-v2 { grid-template-columns: 1fr; }
+    .stats-v2 { margin-top: -28px; }
+    .cta-v2 { padding: 34px 24px; }
+    .cta-v2 .btn-hero { width: 100%; justify-content: center; }
+}
+
+/* ---------- Scrolling ticker (below header menu) ---------- */
+.home-page .ticker-v2 {
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, #08111f, #101d3a 50%, #08111f);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+    padding: 11px 0;
+    position: relative;
+    z-index: 5;
+}
+.ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker-scroll 38s linear infinite;
+}
+.ticker-v2:hover .ticker-track { animation-play-state: paused; }
+.ticker-chunk {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+.ticker-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 22px;
+    color: #dbe6f8;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: .4px;
+}
+.ticker-item a { color: #ffd27a; text-decoration: none; font-weight: 800; padding: 6px 10px; border: 1px solid rgba(255, 210, 122, .3); border-radius: 999px; }
+.ticker-item a:hover { background: rgba(255, 210, 122, .12); }
+.ticker-sep { color: #5aa2ff; opacity: .9; font-size: 12px; }
+@keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* Reduced motion — accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .hero-visual { animation: none; }
+    .ticker-track { animation: none; }
+    .home-page .module-card, .home-page .value-card, .btn-hero { transition: none; }
+}

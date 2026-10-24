@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admin — Leads (Apna Computer)</title>
+<meta name="theme-color" content="#2874f0">
+<style>
+:root{--primary:#2874f0;--primary-dark:#1a5dc8;--primary-light:#e8f1ff;--bg:#f1f3f6;--card:#fff;--text:#1a2333;--muted:#64748b;--border:#e5eafc;--success:#16a34a;--danger:#dc2626;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;padding-bottom:30px}
+button{font:inherit;cursor:pointer;border:none;background:none}
+input{font:inherit;width:100%}
+.appbar{position:sticky;top:0;z-index:50;background:var(--primary);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+.brand-text small{display:block;font-size:11px;opacity:.85}
+.spacer{flex:1}
+.chipbtn{background:rgba(255,255,255,.16);color:#fff;padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none}
+.container{max-width:680px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:0 2px 10px rgba(26,58,110,.08);margin-top:12px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+.field input{padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none}
+.field input:focus{border-color:var(--primary);background:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:999px;font-size:13.5px;font-weight:700;background:var(--primary);color:#fff;border:1px solid var(--primary);width:100%}
+.btn.ghost{background:#fff;color:var(--primary);border:1px solid var(--border)}
+.btn:disabled{opacity:.6}
+.status{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12.5px;font-weight:600}
+.status.show{display:block}
+.status.err{background:#fef2f2;color:var(--danger)}
+.status.info{background:var(--primary-light);color:var(--primary-dark)}
+.lead{border:1px solid var(--border);border-radius:var(--radius);background:#fff;padding:12px 14px;margin-top:10px;box-shadow:0 2px 8px rgba(26,58,110,.06)}
+.lead .top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.lead .name{font-weight:800;font-size:15px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.new{background:var(--primary-light);color:var(--primary)}
+.badge.done{background:#eafaf0;color:var(--success)}
+.badge.web{background:#fff4e5;color:#c2740a}
+.meta{font-size:12.5px;color:var(--muted);margin-top:6px}
+.meta a{color:var(--primary);font-weight:700;text-decoration:none}
+.msg{font-size:13px;margin-top:8px;background:#f7f9ff;border:1px solid var(--border);border-radius:10px;padding:9px 12px;white-space:pre-wrap}
+.row-btn{margin-top:9px;text-align:right}
+.row-btn button{font-size:12.5px;font-weight:700;color:var(--primary);padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:#fff}
+.row-btn button:hover{background:var(--primary-light)}
+.empty{text-align:center;color:var(--muted);padding:36px 14px;font-size:13px}
+h2.sect{font-size:15px;font-weight:800;margin-top:16px}
+.countline{font-size:12.5px;color:var(--muted);margin-top:4px}
+.loading{text-align:center;color:var(--muted);padding:30px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="appbar">
+    <div class="brand-mark">A</div>
+    <div class="brand-text"><strong>Admin Panel</strong><small>Hub Leads · Apna Computer</small></div>
+    <div class="spacer"></div>
+    <a class="chipbtn" id="logoutBtn" hidden>Logout</a>
+    <a class="chipbtn" href="/app/index.html">← App</a>
+</div>
+
+<div class="container">
+    <div id="loginCard" class="card">
+        <h2 style="font-size:17px;font-weight:800">🔐 Admin Sign-in</h2>
+        <p style="font-size:12.5px;color:var(--muted);margin:6px 0 12px">Sirf owner/admin email ke liye. Leads sirf yahi login padh sakta hai (Firestore rules enforce karte hain).</p>
+        <div class="field"><label>Email</label><input id="admEmail" type="email" autocomplete="username"></div>
+        <div class="field"><label>Password</label><input id="admPass" type="password" autocomplete="current-password"></div>
+        <button class="btn" id="loginBtn">Sign in &nbsp;→</button>
+        <div class="status" id="loginStatus"></div>
+    </div>
+
+    <div id="leadsWrap" hidden>
+        <h2 class="sect">📥 Customer Enquiries <span class="badge new" id="newCount" style="margin-left:6px">0 new</span></h2>
+        <p class="countline" id="countLine"></p>
+        <button class="btn ghost" id="refreshBtn" style="margin-top:10px">↻ Refresh</button>
+        <div id="leadsList"><div class="loading">Loading…</div></div>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var PROJECT = 'apna-computer-ltd';
+    var API_KEY = 'AIzaSyC_iVUneR8fu_haqWPm5UMc5eu8ATBTX1Y'; /* real Firebase auto-created Browser key (GCP Credentials) */
+    var ADMIN_EMAIL = 'kanhadigimkt@gmail.com';
+    var idToken = null;
+    var leads = [];
+
+    var $ = function (id) { return document.getElementById(id); };
+    function showStatus(el, msg, cls) { el.textContent = msg; el.className = 'status show ' + (cls || 'info'); }
+
+    /* ---------- Firebase Auth via Identity Toolkit REST (session-only token) ---------- */
+    function signIn(email, pass, cb) {
+        fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + API_KEY, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: pass, returnSecureToken: true })
+        }).then(function (r) { return r.json(); }).then(function (j) {
+            if (j.error) { cb(false, j.error.message); return; }
+            if ((j.email || '').toLowerCase() !== ADMIN_EMAIL) { cb(false, 'THIS_EMAIL_NOT_ADMIN'); return; }
+            cb(true, null, j.idToken, j.email);
+        }).catch(function () { cb(false, 'NETWORK'); });
+    }
+
+    /* ---------- Firestore REST ---------- */
+    function fsList(cb) {
+        var url = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/hub_leads?pageSize=100&orderBy=createdAt%20desc';
+        fetch(url, { headers: { Authorization: 'Bearer ' + idToken } })
+            .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+            .then(function (o) {
+                if (!o.ok) { cb(false, (o.j.error && o.j.error.message) || 'HTTP error'); return; }
+                var docs = (o.j.documents || []).map(function (d) {
+                    var f = d.fields || {}, v = function (k) { return f[k] ? (f[k].stringValue || '') : ''; };
+                    return { id: d.name.split('/documents/')[1], created: v('createdAt'), source: v('source'), name: v('name'), mobile: v('mobile'), email: v('email'), module: v('module'), status: v('status') || 'new', message: v('message') };
+                });
+                cb(true, null, docs);
+            }).catch(function () { cb(false, 'NETWORK'); });
+    }
+
+    function fsSetStatus(id, val, cb) {
+        var url = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/hub_leads/' + id + '?updateMask.fieldPaths=status';
+        fetch(url, {
+            method: 'PATCH',
+            headers: { Authorization: 'Bearer ' + idToken, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: { status: { stringValue: val } } })
+        }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (o) { cb(o.ok, o.ok ? null : ((o.j.error && o.j.error.message) || 'HTTP error')); })
+          .catch(function () { cb(false, 'NETWORK'); });
+    }
+
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function render() {
+        var list = $('leadsList');
+        var newN = leads.filter(function (l) { return l.status === 'new'; }).length;
+        $('newCount').textContent = newN + ' new';
+        $('countLine').textContent = 'Total saved enquiries: ' + leads.length + ' · latest first';
+        if (!leads.length) { list.className = 'empty'; list.textContent = '📭 Koi enquiry nahi mili. Jab koi customer /app/contact.html se form bharega, wo yahan turant dikhega.'; return; }
+        var MODELS = { 'website': 'Website Design', 'school-erp': 'School ERP + CRM', 'online-center': 'Online Center / Shop CRM', 'apnivo-fashion': 'Apnivo Fashion', 'blog': 'Blog / Content', 'courses-lms': 'Online Courses (LMS)', 'coaching-erp': 'Coaching ERP', 'security-erp': 'Security Agency ERP', 'real-estate': 'Real Estate Portal', 'custom': 'Custom / Other' };
+        list.className = '';
+        list.innerHTML = leads.map(function (l) {
+            return '<div class="lead">' +
+                '<div class="top"><span class="name">' + esc(l.name || '(no name)') + '</span>' +
+                '<span><span class="badge ' + (l.status === 'done' ? 'done' : 'new') + '">' + (l.status === 'done' ? 'Done' : 'New') + '</span> ' +
+                (l.source === 'hub-app' ? '' : '<span class="badge web">Website</span>') + '</span></div>' +
+                '<div class="meta">🕒 ' + esc((l.created || '').replace('T', ' ').slice(0, 16)) +
+                ' &nbsp;·&nbsp; 📞 <a href="tel:' + esc(l.mobile) + '">' + esc(l.mobile || '—') + '</a>' +
+                (l.email ? ' &nbsp;·&nbsp; ✉️ ' + esc(l.email) : '') + '</div>' +
+                '<div class="meta">📦 Interested in: <b>' + esc(MODELS[l.module] || l.module || '—') + '</b></div>' +
+                '<div class="msg">' + esc(l.message || '') + '</div>' +
+                '<div class="row-btn"><button data-id="' + esc(l.id) + '" data-val="' + (l.status === 'done' ? 'new' : 'done') + '">' + (l.status === 'done' ? '↩ Mark as New' : '✔ Mark as Done') + '</button></div>' +
+                '</div>';
+        }).join('');
+        list.querySelectorAll('button[data-id]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                b.disabled = true; b.textContent = '…';
+                fsSetStatus(b.getAttribute('data-id'), b.getAttribute('data-val'), function (ok) {
+                    if (ok) load();
+                    else { b.disabled = false; b.textContent = 'Retry'; }
+                });
+            });
+        });
+    }
+
+    function load() {
+        $('leadsList').innerHTML = '<div class="loading">Loading leads…</div>';
+        fsList(function (ok, err, docs) {
+            if (!ok) {
+                if (err && err.indexOf('PERMISSION') > -1) {
+                    $('leadsWrap').hidden = true; $('loginCard').hidden = false; idToken = null;
+                    showStatus($('loginStatus'), '⚠️ Login session expire ho gaya — phir se sign-in karein.', 'err');
+                    return;
+                }
+                $('leadsList').innerHTML = '<div class="empty">⚠️ Leads load nahi hui: ' + esc(err || 'unknown') + '</div>';
+                return;
+            }
+            leads = docs; render();
+        });
+    }
+
+    /* ---------- wire ---------- */
+    $('loginBtn').addEventListener('click', function () {
+        var email = $('admEmail').value.trim(), pass = $('admPass').value;
+        if (!email || !pass) { showStatus($('loginStatus'), 'Email aur password dono bharein.', 'err'); return; }
+        $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
+        signIn(email, pass, function (ok, err, token) {
+            $('loginBtn').disabled = false; $('loginBtn').textContent = 'Sign in →';
+            if (!ok) {
+                var msg = err === 'EMAIL_NOT_FOUND' || err === 'INVALID_PASSWORD' ? 'Email/password galat hai.'
+                    : err === 'THIS_EMAIL_NOT_ADMIN' ? 'Ye email admin list me nahi hai.'
+                    : err === 'NETWORK' ? 'Internet check karein.' : (err || 'Login fail');
+                showStatus($('loginStatus'), '⚠️ ' + msg, 'err'); return;
+            }
+            idToken = token;
+            $('loginCard').hidden = true; $('leadsWrap').hidden = false; $('logoutBtn').hidden = false;
+            load();
+        });
+    });
+    $('refreshBtn').addEventListener('click', function () { if (idToken) load(); });
+    $('logoutBtn').addEventListener('click', function () {
+        idToken = null; leads = [];
+        $('leadsWrap').hidden = true; $('loginCard').hidden = false; $('logoutBtn').hidden = true;
+        showStatus($('loginStatus'), 'Logged out. Token memory se clear ho gaya.', 'info');
+    });
+})();
+</script>
+</body>
+</html>

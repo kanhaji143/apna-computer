@@ -116,8 +116,15 @@ service cloud.firestore {
 
     // ---- Hub (website enquiries) ----
     match /hub_leads/{id} {
-      allow create: if true;   // public form submit
-      allow read, update, delete: if false;  // leads private
+      allow create: if true;   // public form submit (unchanged)
+      // Admin (owner email only) can read leads; update limited to 'status' field only
+      allow read: if request.auth != null
+                  && request.auth.token.email == 'kanhadigimkt@gmail.com';
+      allow update: if request.auth != null
+                    && request.auth.token.email == 'kanhadigimkt@gmail.com'
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['status']);
+      allow delete: if false;  // delete always denied (even admin, for now)
     }
 
     // ---- default: deny ----

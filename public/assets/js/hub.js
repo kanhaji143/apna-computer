@@ -67,7 +67,7 @@
         return '<div class="header-inner">' +
             '<a class="brand" href="/">' +
                 '<span class="brand-mark">A</span>' +
-                '<span class="brand-text"><strong>Apna Computer</strong><small>Multisoftware Hub</small></span>' +
+                '<span class="brand-text"><strong>Apna Software Hub</strong><small>Websites · CRM/ERP · Mobile</small></span>' +
             '</a>' +
             '<button class="mobile-toggle" type="button" aria-label="Menu"><i class="fas fa-bars"></i></button>' +
             '<nav class="main-nav" id="mainNav">' + items +
@@ -116,8 +116,8 @@
             '<div class="footer-grid">' +
                 '<div>' +
                     '<div class="footer-brand"><span class="brand-mark">A</span>' +
-                        '<span><strong>Apna Computer</strong><small>Multisoftware Hub</small></span></div>' +
-                    '<p>Schools, shops, coaching centres aur businesses ke liye website + CRM/ERP — ek hi platform par.</p>' +
+                        '<span><strong>Apna Software Hub</strong><small>Websites · CRM/ERP · Mobile</small></span></div>' +
+                    '<p>Websites + CRM/ERP for schools, shops, coaching centres and growing businesses — all in one platform.</p>' +
                 '</div>' +
                 '<div class="footer-col"><h4>Products</h4>' +
                     '<a href="/shop/">Online Center Website + CRM</a>' +
@@ -142,7 +142,7 @@
                 '</div>' +
             '</div>' +
             '<div class="footer-bottom">' +
-                '<span>© ' + y + ' Apna Computer · All rights reserved.</span>' +
+                '<span>© ' + y + ' Apna Software Hub · All rights reserved.</span>' +
                 '<span>Made with ❤️ in India</span>' +
             '</div>' +
         '</div>';
