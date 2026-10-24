@@ -328,3 +328,8 @@ input, select, textarea { font: inherit; width: 100%; }
 /* ---------- Top app bar install button ---------- */
 .appbar .install-top-btn { background: linear-gradient(120deg, #2874f0, #4f9bff); color: #fff; border: 1px solid rgba(122,167,255,.35); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(40,116,240,.3); }
 .appbar .install-top-btn:active { transform: scale(.96); }
+/* Inside the installed app (standalone window) there is nothing left to
+   install — hide every install affordance at CSS level, even without JS. */
+@media (display-mode: standalone), (display-mode: minimal-ui) {
+    .install-top-btn, .install-btn, .install-hint { display: none !important; }
+}
