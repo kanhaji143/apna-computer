@@ -154,7 +154,7 @@
             /^(index|detail|contact|offline)\.html/.test(href);
         if (!inApp) {
             e.preventDefault();
-            toast('📴 Offline hain — ye page/demo internet aane par khulega.');
+            toast('📴 You are offline — this page/demo will open once internet returns.');
         }
     }, true);
 

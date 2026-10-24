@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Product — Apna Computer (App)</title>
+<title>Product — Apna Software Hub (App)</title>
 <meta name="theme-color" content="#2874f0">
 <link rel="manifest" href="/app/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/app/assets/app.css">
 </head>
 <body>
-<div id="offlineBanner" class="offline-banner">⚠️ Aap offline hain — cached pages khulenge.</div>
+<div id="offlineBanner" class="offline-banner">⚠️ You are offline — cached pages will open.</div>
 
 <header class="appbar">
     <a href="index.html" class="brand-mark" style="color:var(--primary)" aria-label="Back">←</a>
-    <div class="brand-text"><strong>Product</strong><small>Apna Computer</small></div>
+    <div class="brand-text"><strong>Product</strong><small>Apna Software Hub</small></div>
     <div class="spacer"></div>
     <a class="call-btn" href="contact.html">Enquire</a>
 </header>
@@ -30,7 +30,7 @@
         <a href="/about.html">About</a>
         <a href="/admin.html">Owner Login</a>
     </div>
-    <span>© <span id="yearNow"></span> Apna Computer · All rights reserved.</span>
+    <span>© <span id="yearNow"></span> Apna Software Hub · All rights reserved.</span>
 </footer>
 
 <nav class="bottom-nav" id="bottomNav"></nav>
@@ -59,14 +59,14 @@
         root.innerHTML =
             '<div class="empty-state" style="padding-top:40px">' +
                 '<div class="glyph">🧐</div><h2 style="font-size:15px">Product not found</h2>' +
-                '<p style="font-size:12.5px;margin:6px 0 14px">Ye ID ya to nahi hai ya badal gayi hai.</p>' +
+                '<p style="font-size:12.5px;margin:6px 0 14px">This ID either doesn\'t exist or has changed.</p>' +
                 '<a class="btn ghost" href="index.html">Catalogue par jayein</a>' +
             '</div>';
-        document.title = 'Not found — Apna Computer';
+        document.title = 'Not found — Apna Software Hub';
         return;
     }
 
-    document.title = p.name + ' — Apna Computer';
+    document.title = p.name + ' — Apna Software Hub';
     var st = APP.STATUS_META[p.status];
     var from = params.get('from') === 'app' ? '&from=app' : '';
 
@@ -83,7 +83,7 @@
                 return '<li><span class="tick">✓</span><span>' + f + '</span></li>';
             }).join('') + '</ul></div></section>';
     } else {
-        featHtml = '<section class="section"><div class="note-text">🛠️ Is module ka development abhi chal raha hai. Neche diye gaye contact se demo request bhejein — hum timeline share karenge.</div></section>';
+        featHtml = '<section class="section"><div class="note-text">🛠️ This module is still under development. Request a demo using the contact below — we\'ll share the timeline.</div></section>';
     }
 
     var pricingHtml = p.pricing
@@ -107,8 +107,8 @@
         (linkBtns ? '<section class="section"><h2>Open &amp; Try</h2>' + linkBtns + '</section>' : '') +
         pricingHtml +
         '<section class="cta-band">' +
-            '<h2>Is product ke baare me poochna hai?</h2>' +
-            '<p>Free consultation — response 24 ghante ke andar.</p>' +
+            '<h2>Questions about this product?</h2>' +
+            '<p>Free consultation — response within 24 hours.</p>' +
             '<a class="btn block" href="contact.html?module=' + p.id + from + '">Request Demo / Enquire</a>' +
         '</section>';
 })();
