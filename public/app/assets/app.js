@@ -183,7 +183,7 @@
         el.textContent = msg;
         document.body.appendChild(el);
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () { el.remove(); }, 3400);
+        toastTimer = setTimeout(function () { el.remove(); }, 6000);
     }
 
     document.addEventListener('click', function (e) {
