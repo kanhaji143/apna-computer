@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Apna Software Hub — App</title>
-<meta name="description" content="9 business software solutions — websites, CRM/ERP, marketplace and demos. One platform.">
-<meta name="theme-color" content="#0a1122">
+<title>Apna Computer — Multisoftware Hub (App)</title>
+<meta name="description" content="9 business software solutions — websites, CRM/ERP, marketplace and demos. Ek hi platform par.">
+<meta name="theme-color" content="#2874f0">
 <link rel="manifest" href="/app/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/app/assets/app.css">
 </head>
 <body>
-<div id="offlineBanner" class="offline-banner">⚠️ You are offline — cached pages will open. Live data syncs when internet returns.</div>
+<div id="offlineBanner" class="offline-banner">⚠️ Aap offline hain — cached pages khulenge. Internet aane par live data sync ho jayega.</div>
 
 <header class="appbar">
     <div class="brand-mark">A</div>
-    <div class="brand-text"><strong>Apna Software Hub</strong><small>Websites · CRM/ERP · Mobile</small></div>
+    <div class="brand-text"><strong>Apna Computer</strong><small>Multisoftware Hub</small></div>
     <div class="spacer"></div>
-    <button id="installBtnTop" class="install-top-btn" type="button" aria-label="Install app" title="Install App">
+    <button id="installBtnTop" class="install-top-btn" type="button" aria-label="Install app" title="Install App" hidden>
         ⬇️ Install
     </button>
     <a class="call-btn" href="/contact.html" aria-label="Full website">
@@ -25,17 +25,16 @@
     </a>
 </header>
 
-
 <section class="hero">
-    <h1>A complete <span class="hl">website + CRM</span> platform for every business.</h1>
-    <p>Schools, shops, coaching centres, security agencies or real estate — get your own website, your own admin panel and your own data. From setup to reporting, everything in one place.</p>
+    <h1>Har business ke liye <br>website + CRM, ek hi jagah</h1>
+    <p>School, shop, coaching, security agency ya real estate — 9 business software solutions, mobile ke liye ready.</p>
     <div class="badge-row">
         <span class="chip" id="badgeProducts"></span>
         <span class="chip" id="badgeDemos"></span>
         <span class="chip">Mobile Ready</span>
     </div>
     <button id="installBtn" class="btn install-btn" type="button" hidden>
-        ⬇️ Install App
+        ⬇️ App Install karein
     </button>
     <p id="installHint" class="install-hint" hidden>
         📲 iPhone: Safari share icon → "Add to Home Screen"
@@ -52,20 +51,20 @@
 
     <div class="searchbar">
         <span class="search-ic" id="searchIc"></span>
-        <input id="searchInput" type="search" placeholder="Search products…" autocomplete="off">
+        <input id="searchInput" type="search" placeholder="Product search karein…" autocomplete="off">
         <button class="clear-btn" id="clearBtn" aria-label="Clear">✕</button>
     </div>    <div class="chips" id="chipRow"></div>
 
     <div class="grid" id="productGrid"></div>
     <div id="emptyState" class="empty-state" style="display:none">
         <div class="glyph">🔍</div>
-        <h2>No product found</h2>
-        <p style="font-size:12.5px;margin-top:4px">Try a different keyword or select the "All" category.</p>
+        <h2>Koi product nahi mila</h2>
+        <p style="font-size:12.5px;margin-top:4px">Search word badlein ya "All" category select karein.</p>
     </div>
 
     <section class="cta-band">
-        <h2>Need a system for your business?</h2>
-        <p>Free consultation — tell us what you need, and we'll suggest the right solution.</p>
+        <h2>Apne business ke liye system chahiye?</h2>
+        <p>Free consultation — hum aapko solution suggest karenge.</p>
         <a class="btn block" href="contact.html">Get Free Consultation</a>
     </section>
 </div>
@@ -77,7 +76,7 @@
         <a href="/about.html">About</a>
         <a href="/admin.html">Owner Login</a>
     </div>
-    <span>© <span id="yearNow"></span> Apna Software Hub · All rights reserved.</span>
+    <span>© <span id="yearNow"></span> Apna Computer · All rights reserved.</span>
 </footer>
 
 <nav class="bottom-nav" id="bottomNav"></nav>

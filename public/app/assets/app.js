@@ -99,62 +99,40 @@
     });
 
     function wireInstallUI() {
-        var btnHero = document.getElementById('installBtn');
+        var btn = document.getElementById('installBtn');
         var btnTop = document.getElementById('installBtnTop');
+        if (!btn && !btnTop) return;
         var hint = document.getElementById('installHint');
-        var isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
         var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-        function showBtns() {
-            if (btnHero) btnHero.hidden = false;
-            if (btnTop) btnTop.hidden = false;
+        function showBtns() { if (btn) btn.hidden = false; if (btnTop) btnTop.hidden = false; }
+        function hideBtns() { if (btn) btn.hidden = true; if (btnTop) btnTop.hidden = true; }
+        if (isIOS) {
+            if (hint) hint.hidden = false;
+            hideBtns();
+            return;
         }
-        function hideBtns() {
-            if (btnHero) btnHero.hidden = true;
-            if (btnTop) btnTop.hidden = true;
-        }
+        if (AC_PWA.deferred) { showBtns(); }
+        /* Chrome evaluates installability shortly after SW activation */
+        var timer = setInterval(function () {
+            if (AC_PWA.deferred) { clearInterval(timer); showBtns(); }
+        }, 700);
+        setTimeout(function () { clearInterval(timer); }, 20000);
         function doPrompt() {
             var d = AC_PWA.deferred;
-            if (!d) return;
+            if (!d) {
+                if (hint) { hint.hidden = false; hint.innerHTML = 'Install option abhi ready nahi. Chrome menu (three dots) -> Install, ya address bar icon use karein.'; }
+                return;
+            }
             d.prompt();
             d.userChoice.then(function (choice) {
                 if (choice && choice.outcome === 'accepted') { hideBtns(); AC_PWA.installed = true; }
                 AC_PWA.deferred = null;
             });
         }
-        if (isStandalone) { hideBtns(); if (hint) hint.hidden = true; return; }
-        if (isIOS) {
-            if (hint) { hint.hidden = false; hint.innerHTML = '📲 iPhone: Safari share icon → "Add to Home Screen".'; }
-            hideBtns();
-            return;
-        }
-        if (AC_PWA.deferred) { showBtns(); }
-        var timer = setInterval(function () {
-            if (AC_PWA.deferred) { clearInterval(timer); showBtns(); }
-        }, 700);
-        setTimeout(function () {
-            clearInterval(timer);
-            if (!AC_PWA.deferred && !AC_PWA.installed && hint) {
-                var isDesktop = !/android|iphone|ipad|ipod/i.test(navigator.userAgent);
-                if (isDesktop) {
-                    hint.hidden = false;
-                    hint.innerHTML = '🖥️ Desktop install: Chrome menu (⋮) → <b>Install Apna Software Hub</b>, ya address bar ka install icon use karein.';
-                }
-            }
-        }, 6000);
-        [btnHero, btnTop].forEach(function (b) {
+        [btn, btnTop].forEach(function (b) {
             if (!b) return;
-            b.addEventListener('click', function () {
-                if (AC_PWA.deferred) { doPrompt(); }
-                else {
-                    /* No deferred prompt yet — guide the user */
-                    if (hint) {
-                        hint.hidden = false;
-                        hint.innerHTML = 'Install option abhi ready nahi. Chrome menu (⋮) → "Install Apna Software Hub" ya address bar icon use karein.';
-                    }
-                }
-            });
+            b.addEventListener('click', doPrompt);
         });
     }
 
@@ -184,7 +162,7 @@
             /^(index|detail|contact|offline)\.html/.test(href);
         if (!inApp) {
             e.preventDefault();
-            toast('📴 You are offline — this page/demo will open once internet returns.');
+            toast('📴 Offline hain — ye page/demo internet aane par khulega.');
         }
     }, true);
 

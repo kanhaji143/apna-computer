@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Enquire — Apna Software Hub (App)</title>
+<title>Enquire — Apna Computer (App)</title>
 <meta name="theme-color" content="#2874f0">
 <link rel="manifest" href="/app/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/app/assets/app.css">
 </head>
 <body>
-<div id="offlineBanner" class="offline-banner">⚠️ You are offline — the form won't submit. Connect to internet first.</div>
+<div id="offlineBanner" class="offline-banner">⚠️ Aap offline hain — form simulate nahi hoga. Upar se internet connect karein.</div>
 
 <header class="appbar">
     <a href="index.html" class="brand-mark" style="color:var(--primary)" aria-label="Back">←</a>
-    <div class="brand-text"><strong>Enquire</strong><small>Reply within 24 hours</small></div>
+    <div class="brand-text"><strong>Enquire</strong><small>24 ghante me jawab</small></div>
     <div class="spacer"></div>
     <a class="call-btn" href="https://wa.me/918504985149?text=Namaste%21%20Mujhe%20CRM%20ke%20baare%20me%20information%20chahiye." target="_blank" rel="noopener">WhatsApp</a>
 </header>
@@ -26,8 +26,8 @@
         <div class="list-card" style="display:flex;gap:12px;align-items:flex-start">
             <div style="font-size:22px">💬</div>
             <div>
-                <h2 style="font-size:14px;font-weight:800;margin-bottom:2px">Demos, pricing or support</h2>
-                <p style="font-size:12.5px;color:var(--muted)">Fill the form — we'll call or email. Consultation is free.</p>
+                <h2 style="font-size:14px;font-weight:800;margin-bottom:2px">Demos, pricing ya support</h2>
+                <p style="font-size:12.5px;color:var(--muted)">Form bharein — hum call ya email karenge. Consultation free hai.</p>
             </div>
         </div>
     </section>
@@ -35,12 +35,12 @@
     <section class="section contact-grid">
         <div class="form-card">
             <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">Get in touch</h3>
-            <p class="form-note" style="margin:0 0 14px">Fill the form — we'll contact you.</p>
+            <p class="form-note" style="margin:0 0 14px">Form bharein — hum aapko contact karenge.</p>
 
             <form id="leadForm" novalidate>
                 <div class="field">
                     <label for="name">Your Name *</label>
-                    <input id="name" type="text" placeholder="Your name" required>
+                    <input id="name" type="text" placeholder="Aapka naam" required>
                 </div>
                 <div class="field">
                     <label for="mobile">Mobile Number *</label>
@@ -68,16 +68,16 @@
                 </div>
                 <div class="field">
                     <label for="message">Message *</label>
-                    <textarea id="message" placeholder="Describe your requirement briefly..." required></textarea>
+                    <textarea id="message" placeholder="Apni requirement short me likhein..." required></textarea>
                 </div>
                 <!-- honeypot (spam protection) -->
                 <input type="text" name="company_website" id="company_website" tabindex="-1" autocomplete="off"
                        style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true">
 
                 <button type="submit" id="submitBtn" class="btn block">✉️ Send Enquiry</button>
-                <button type="button" id="retryBtn" class="btn ghost block" hidden>↻ Send saved enquiry</button>
+                <button type="button" id="retryBtn" class="btn ghost block" hidden>↻ Saved enquiry bhejein</button>
                 <p class="form-note" id="queueNote" hidden></p>
-                <p class="form-note">Your data will only be used for the enquiry. We never share it.</p>
+                <p class="form-note">Aapka data sirf enquiry ke liye use hoga. Kabhi share nahi karenge.</p>
                 <p class="form-status" id="formStatus"></p>
             </form>
         </div>
@@ -105,7 +105,7 @@
         <a href="/about.html">About</a>
         <a href="/admin.html">Owner Login</a>
     </div>
-    <span>© <span id="yearNow"></span> Apna Software Hub · All rights reserved.</span>
+    <span>© <span id="yearNow"></span> Apna Computer · All rights reserved.</span>
 </footer>
 
 <nav class="bottom-nav" id="bottomNav"></nav>
@@ -172,7 +172,7 @@
         retryBtn.hidden = !(n > 0);
         if (n > 0) {
             queueNote.hidden = false;
-            queueNote.textContent = '⏳ ' + n + ' enquiry saved on device (not sent). Will send automatically when internet returns.';
+            queueNote.textContent = '⏳ ' + n + ' enquiry device me saved hai (bheja NAHIN gaya). Internet aane par automatic bhej denge.';
         } else {
             queueNote.hidden = true;
         }
@@ -192,15 +192,15 @@
             sending = false; retryBtn.disabled = false;
             refreshQueueState();
             if (getQueue().length) { flushQueue(); }
-            else { show('✅ Saved enquiry sent — accepted by backend.', true); }
+            else { show('✅ Saved enquiry bhej di gayi — backend se accept hui.', true); }
         }, function fail() {
             sending = false; retryBtn.disabled = false;
-            show('⚠️ Send failed — check internet. Enquiry is still saved on device.', false);
+            show('⚠️ Bhejne me dikkat — internet check karein. Enquiry abhi bhi device me saved hai.', false);
         }, null);
     }
 
     retryBtn.addEventListener('click', function () {
-        if (navigator.onLine === false) { APP.toast('📴 Turn on internet first.'); return; }
+        if (navigator.onLine === false) { APP.toast('📴 Pehle internet on karein.'); return; }
         flushQueue();
     });
     window.addEventListener('online', flushQueue);
@@ -214,11 +214,11 @@
             module = val('module'), message = val('message'), trap = val('company_website');
 
         if (trap) return; /* bot */
-        if (!name) { show('Please enter your name.', false); return; }
-        if (!/^[0-9+\-\s]{10,15}$/.test(mobile)) { show('Enter a valid mobile number (10 digits).', false); return; }
-        if (email && !/^\S+@\S+\.\S+$/.test(email)) { show('Enter a valid email.', false); return; }
-        if (!module) { show('Please select a solution.', false); return; }
-        if (message.length < 5) { show('Describe your requirement (min 5 chars).', false); return; }
+        if (!name) { show('Kripya apna naam likhein.', false); return; }
+        if (!/^[0-9+\-\s]{10,15}$/.test(mobile)) { show('Sahi mobile number likhein (10 digit).', false); return; }
+        if (email && !/^\S+@\S+\.\S+$/.test(email)) { show('Sahi email likhein.', false); return; }
+        if (!module) { show('Solution select karein.', false); return; }
+        if (message.length < 5) { show('Apni requirement likhein (min 5 chars).', false); return; }
 
         var payload = {
             name: name,
@@ -235,7 +235,7 @@
         if (navigator.onLine === false) {
             setQueue(getQueue().concat([{ data: payload, queuedAt: new Date().toISOString() }]));
             refreshQueueState();
-            show('📴 Enquiry NOT sent — you are offline. Enquiry saved on device; will send automatically when internet returns (or tap Retry above).', false);
+            show('📴 Enquiry bheja NAHIN gaya — aap offline hain. Enquiry device me saved hai; internet aane par automatic bhej denge (ya upar Retry dabayein).', false);
             return;
         }
 
@@ -247,9 +247,9 @@
         window.submitLead(payload, function ok() {
             form.reset();
             sel.value = mod && APP.PRODUCTS.filter(function (p) { return p.id === mod; })[0] ? mod : '';
-            show('✅ Thanks! Your enquiry has been received. We will contact you within 24 hours.', true);
+            show('✅ Dhanyavaad! Aapki enquiry mil gayi. Hum 24 ghante me contact karenge.', true);
         }, function fail() {
-            show('Enquiry not sent. Please WhatsApp: +91 85049 85149, or email: kanhadigimkt@gmail.com', false);
+            show('Enquiry send nahi hui. Kripya WhatsApp karein: +91 85049 85149, ya email: kanhadigimkt@gmail.com', false);
         }, btn);
     });
 })();
