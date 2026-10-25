@@ -35,7 +35,7 @@
                     </select>
                 </div>
                 <button class="btn btn-primary" type="submit" style="width:100%;padding:11px"><i class="fas fa-right-to-bracket"></i> Login</button>
-                <p class="login-note">Demo login — koi bhi email/password chalega.</p>
+                <p class="login-note">Demo login — any email/password works.</p>
             </form>
 
             <a href="/shop/" class="login-back"><i class="fas fa-arrow-left"></i> Back to website</a>
@@ -58,7 +58,7 @@
             var email = document.getElementById('email').value.trim();
             var pass = document.getElementById('password').value;
             var role = document.getElementById('role').value;
-            if (!email || !pass) { S.ui.toast('Email aur password bharein.'); return; }
+            if (!email || !pass) { S.ui.toast('Please fill in email and password.'); return; }
             S.auth.login(email, pass, role);
             S.ui.toast('Login successful');
             location.href = next;

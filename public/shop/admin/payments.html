@@ -111,7 +111,7 @@
             S.all(S.coll.transactions).then(function (r) {
                 rows = r.sort(U.byDateDesc('transactionDate'));
                 render();
-            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+            }).catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function render() {
@@ -135,7 +135,7 @@
                     '<td><span class="badge grey">' + U.esc(t.paymentMethod || 'cash') + '</span></td>' +
                     '<td class="small muted t-nowrap">' + U.fmtDate(t.transactionDate) + '</td>' +
                     '<td class="t-right amount green">' + U.money(t.amountReceived) + '</td></tr>';
-            }).join('') : '<tr><td colspan="5" class="empty-row">Abhi koi payment nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">No payments yet.</td></tr>';
 
             var dues = rows.filter(function (t) { return due(t) > 0; })
                 .sort(function (a, b) { return due(b) - due(a); }).slice(0, 7);
@@ -143,7 +143,7 @@
                 return '<tr><td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.service) + '</span></td>' +
                     '<td class="t-right amount red">' + U.money(due(t)) + '</td>' +
                     '<td class="t-right"><button class="btn btn-ghost btn-sm btn-icon collect" data-id="' + t.id + '" title="Collect"><i class="fas fa-hand-holding-dollar"></i></button></td></tr>';
-            }).join('') : '<tr><td colspan="3" class="empty-row">Koi due nahi 🎉</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">No dues 🎉</td></tr>';
 
             document.querySelectorAll('.collect').forEach(function (b) {
                 b.addEventListener('click', function () { openCollect(b.getAttribute('data-id')); });
@@ -152,7 +152,7 @@
 
         function openCollect(txId) {
             var pending = rows.filter(function (t) { return due(t) > 0; });
-            if (!pending.length) { U.toast('Koi pending payment nahi hai 🎉'); return; }
+            if (!pending.length) { U.toast('No pending payments 🎉'); return; }
             var sel = document.getElementById('txSelect');
             sel.innerHTML = pending.map(function (t) {
                 return '<option value="' + t.id + '">' + U.esc(t.customerName) + ' · ' + U.esc(t.receiptNumber || '') + ' · Due ' + U.money(due(t)) + '</option>';
@@ -178,8 +178,8 @@
             if (!t) return;
             var amt = U.num(document.getElementById('amount').value);
             var d = due(t);
-            if (amt <= 0) { U.toast('Amount bharein.'); return; }
-            if (amt > d) { U.toast('Due se zyada amount nahi le sakte.'); return; }
+            if (amt <= 0) { U.toast('Please enter an amount.'); return; }
+            if (amt > d) { U.toast('The amount cannot exceed the due.'); return; }
 
             var received = U.num(t.amountReceived) + amt;
             var remaining = Math.max(0, U.num(t.totalAmount) - received);
@@ -193,7 +193,7 @@
                 U.closeModal('modal');
                 U.toast('Payment receive ho gaya: ' + U.money(amt));
                 load();
-            }).catch(function (err) { console.error(err); U.toast('Payment save nahi hua.'); });
+            }).catch(function (err) { console.error(err); U.toast('Could not save the payment.'); });
         }
     })();
     </script>

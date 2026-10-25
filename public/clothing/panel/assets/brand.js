@@ -4,7 +4,7 @@
    ke hisaab se values badlo — poora CRM uska brand dikhayega.
    ============================================================ */
 window.CL_BRAND = {
-    name: 'Apnivo Business',           // panel ka naam (client branded ho sakta hai, jaise 'Rahul CRM')
+    name: 'Apnivo Business',           // panel name (can be white-labelled per client, e.g. 'Rahul CRM')
     logoIcon: 'fa-shirt',              // sidebar icon
-    tagline: 'Apna Market, Apni Choice' // optional tagline; khali chhodne par shopName (Settings se) dikhta hai
+    tagline: 'Your Market, Your Choice' // optional tagline; khali chhodne par shopName (Settings se) dikhta hai
 };

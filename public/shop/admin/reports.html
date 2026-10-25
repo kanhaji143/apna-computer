@@ -100,7 +100,7 @@
         function load() {
             Promise.all([S.all(S.coll.transactions), S.all(S.coll.expenses)])
                 .then(function (r) { TX = r[0]; EX = r[1]; render(); })
-                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+                .catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
@@ -133,7 +133,7 @@
                 return '<tr><td class="small">' + U.esc(k) + '</td><td class="t-right">' + svc[k].jobs + '</td>' +
                     '<td class="t-right">' + U.money(svc[k].billed) + '</td>' +
                     '<td class="t-right amount green">' + U.money(svc[k].collected) + '</td></tr>';
-            }).join('') : '<tr><td colspan="4" class="empty-row">Koi data nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="4" class="empty-row">No data.</td></tr>';
 
             var cat = {};
             o.ex.forEach(function (e) {
@@ -146,7 +146,7 @@
                 return '<tr><td class="small"><span class="badge grey">' + U.esc(k) + '</span></td>' +
                     '<td class="t-right">' + cat[k].n + '</td>' +
                     '<td class="t-right amount red">' + U.money(cat[k].amt) + '</td></tr>';
-            }).join('') : '<tr><td colspan="3" class="empty-row">Koi expense nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">No expenses.</td></tr>';
         }
 
         function exportTx() {

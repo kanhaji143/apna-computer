@@ -65,7 +65,7 @@
                 <div class="modal-body">
                     <div class="form-grid">
                         <div class="field"><label>Customer Name *</label>
-                            <input name="customerName" list="custList" required placeholder="Naam likhein ya chunein">
+                            <input name="customerName" list="custList" required placeholder="Type or pick a name">
                             <datalist id="custList"></datalist>
                         </div>
                         <div class="field"><label>Mobile *</label><input name="mobile" type="tel" required placeholder="10-digit mobile"></div>
@@ -142,7 +142,7 @@
                         return '<option value="' + U.esc(c.name) + '">' + U.esc(c.mobile) + '</option>';
                     }).join('');
                     render();
-                }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+                }).catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
@@ -190,19 +190,19 @@
                     '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
                     '<button class="print" title="Receipt"><i class="fas fa-print"></i></button>' +
                     (due(t) > 0 ? '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" href="' +
-                        U.waLink(t.mobile, 'Namaste ' + t.customerName + ', aapka ' + U.money(due(t)) + ' payment pending hai. — ' + cfg.shopName) +
+                        U.waLink(t.mobile, 'Hello ' + t.customerName + ', your ' + U.money(due(t)) + ' payment is pending. — ' + cfg.shopName) +
                         '" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' : '') +
                     '<button class="edit" title="Edit"><i class="fas fa-pen"></i></button>' +
                     '<button class="del" title="Delete"><i class="fas fa-trash"></i></button>' +
                     '</div></td></tr>';
-            }).join('') : '<tr><td colspan="8" class="empty-row">Koi transaction nahi mili.</td></tr>';
+            }).join('') : '<tr><td colspan="8" class="empty-row">No transactions found.</td></tr>';
 
             b.querySelectorAll('tr[data-id]').forEach(function (tr) {
                 var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
                 tr.querySelector('.print').addEventListener('click', function () { printReceipt(rec); });
                 tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
                 tr.querySelector('.del').addEventListener('click', function () {
-                    if (!confirm('Transaction delete karein (' + rec.receiptNumber + ')?')) return;
+                    if (!confirm('Delete transaction (' + rec.receiptNumber + ')?')) return;
                     S.remove(S.coll.transactions, rec.id).then(function () { U.toast('Transaction delete ho gayi.'); load(); });
                 });
             });
@@ -236,7 +236,7 @@
             var f = e.target;
             var get = function (n) { return f.querySelector('[name="' + n + '"]').value; };
             var total = U.num(get('totalAmount')), received = U.num(get('amountReceived'));
-            if (received > total) { U.toast('Received amount total se zyada nahi ho sakta.'); return; }
+            if (received > total) { U.toast('Received amount cannot exceed the total.'); return; }
             var diff = Math.max(0, total - received);
             var data = {
                 customerName: get('customerName').trim(),
@@ -263,7 +263,7 @@
                 U.closeModal('modal');
                 U.toast(editing ? 'Transaction update ho gayi.' : 'Transaction add ho gayi.');
                 load();
-            }).catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+            }).catch(function (err) { console.error(err); U.toast('Could not save.'); });
         }
 
         function printReceipt(t) {
@@ -282,7 +282,7 @@
                 '<tr><td style="padding:6px 0">' + U.esc(t.service) + '</td><td style="text-align:right">' + U.money(t.totalAmount) + '</td></tr>' +
                 '<tr><td style="padding:4px 0">Received (' + U.esc(t.paymentMethod || 'cash') + ')</td><td style="text-align:right">' + U.money(t.amountReceived) + '</td></tr>' +
                 '<tr style="border-top:1px dashed #999"><td style="padding:6px 0"><b>Due</b></td><td style="text-align:right"><b>' + U.money(d) + '</b></td></tr></table>' +
-                '<div style="text-align:center;font-size:10.5px;color:#666;margin-top:14px;border-top:1px dashed #999;padding-top:8px">Dhanyavaad! Aapka din shubh ho.</div></div>';
+                '<div style="text-align:center;font-size:10.5px;color:#666;margin-top:14px;border-top:1px dashed #999;padding-top:8px">Thank you! Have a great day.</div></div>';
             window.print();
         }
 

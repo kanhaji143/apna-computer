@@ -70,7 +70,7 @@
             S.all(S.coll.transactions).then(function (r) {
                 rows = r.filter(function (t) { return U.num(t.amountReceived) > 0; }).sort(U.byDateDesc('transactionDate'));
                 render();
-            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+            }).catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function filtered() {
@@ -102,7 +102,7 @@
                     '<td><span class="badge ' + (t.paymentStatus === 'paid' ? 'b-paid' : 'b-partial') + '">' + U.esc(t.paymentStatus || 'paid') + '</span></td>' +
                     '<td class="t-right"><button class="btn btn-ghost btn-sm btn-icon" data-print="' + t.id + '" title="Print receipt"><i class="fas fa-print"></i></button></td>' +
                     '</tr>';
-            }).join('') : '<tr><td colspan="8" class="empty-row">Koi payment nahi mili.</td></tr>';
+            }).join('') : '<tr><td colspan="8" class="empty-row">No payments found.</td></tr>';
 
             document.getElementById('foot').innerHTML = list.length ?
                 '<tr style="background:#f8fafc"><td colspan="5" style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL (' + list.length + ')</td>' +
@@ -131,7 +131,7 @@
                 '<tr><td style="padding:6px 0">' + U.esc(t.service) + '</td><td style="text-align:right">' + U.money(t.totalAmount) + '</td></tr>' +
                 '<tr><td style="padding:4px 0">Received (' + U.esc(t.paymentMethod || 'cash') + ')</td><td style="text-align:right">' + U.money(t.amountReceived) + '</td></tr>' +
                 '<tr style="border-top:1px dashed #999"><td style="padding:6px 0"><b>Due</b></td><td style="text-align:right"><b>' + U.money(d) + '</b></td></tr></table>' +
-                '<div style="text-align:center;font-size:10.5px;color:#666;margin-top:14px;border-top:1px dashed #999;padding-top:8px">Dhanyavaad!</div></div>';
+                '<div style="text-align:center;font-size:10.5px;color:#666;margin-top:14px;border-top:1px dashed #999;padding-top:8px">Thank you!</div></div>';
             window.print();
         }
 

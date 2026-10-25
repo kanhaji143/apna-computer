@@ -54,7 +54,7 @@
                 <button type="submit" class="btn btn-primary"><i class="fas fa-right-to-bracket"></i> Sign In</button>
             </form>
             <div class="login-note">
-                <strong>Demo mode:</strong> koi bhi email + password chalega. Baad me Firebase Auth jod sakte hain.
+                <strong>Demo mode:</strong> any email + password works. Firebase Auth can be added later.
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     var role = document.getElementById('loginRole').value;
     var email = document.getElementById('loginEmail').value.trim();
     var pass = document.getElementById('loginPassword').value;
-    if (!name || !email || !pass) { alert('Name, email aur password bharein'); return; }
+    if (!name || !email || !pass) { alert('Please fill in name, email and password'); return; }
     CH.setUser({ name: name, email: email, role: role });
     location.href = 'index.html';
 });

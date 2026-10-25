@@ -312,7 +312,7 @@
             document.dispatchEvent(new CustomEvent('shop-ready', { detail: ctx }));
         }).catch(function (e) {
             console.error('[Shop] init failed', e);
-            toast('Data load nahi hua — internet check karein.');
+            toast('Could not load data — check the internet.');
         });
     }
 

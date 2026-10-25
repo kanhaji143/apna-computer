@@ -131,7 +131,7 @@
                     '<td>' + CL.esc(x.customer) + '</td>' +
                     '<td class="num">' + CL.money(x.total) + '</td>' +
                     '<td class="num" style="color:' + (x.profit >= 0 ? 'var(--success)' : 'var(--danger)') + ';font-weight:700">' + CL.money(x.profit) + '</td></tr>';
-            }).join('') : '<tr><td colspan="4"><div class="empty"><i class="fas fa-cash-register"></i>Abhi koi sale nahi</div></td></tr>';
+            }).join('') : '<tr><td colspan="4"><div class="empty"><i class="fas fa-cash-register"></i>No sales yet</div></td></tr>';
         }
 
         // shop settings
@@ -192,7 +192,7 @@
                     '<button class="btn btn-icon" onclick="App.editProduct(\'' + p.id + '\')"><i class="fas fa-pen"></i></button> ' +
                     '<button class="btn btn-icon" onclick="App.delProduct(\'' + p.id + '\')"><i class="fas fa-trash"></i></button>' +
                 '</td></tr>';
-        }).join('') : '<tr><td colspan="9"><div class="empty"><i class="fas fa-shirt"></i>Koi product nahi mila</div></td></tr>';
+        }).join('') : '<tr><td colspan="9"><div class="empty"><i class="fas fa-shirt"></i>No products found</div></td></tr>';
     }
 
     function productForm(p) {
@@ -274,7 +274,7 @@
                     '<button class="btn btn-icon" onclick="App.editSupplier(\'' + x.id + '\')"><i class="fas fa-pen"></i></button> ' +
                     '<button class="btn btn-icon" onclick="App.delSupplier(\'' + x.id + '\')"><i class="fas fa-trash"></i></button>' +
                 '</td></tr>';
-        }).join('') : '<tr><td colspan="9"><div class="empty"><i class="fas fa-truck-field"></i>Koi wholeseller nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="9"><div class="empty"><i class="fas fa-truck-field"></i>No wholesalers</div></td></tr>';
     }
 
     function supplierForm(x) {
@@ -370,7 +370,7 @@
                     '<button class="btn btn-icon" onclick="App.viewPurchase(\'' + x.id + '\')"><i class="fas fa-eye"></i></button> ' +
                     '<button class="btn btn-icon" onclick="App.delPurchase(\'' + x.id + '\')"><i class="fas fa-trash"></i></button>' +
                 '</td></tr>';
-        }).join('') : '<tr><td colspan="8"><div class="empty"><i class="fas fa-cart-flatbed"></i>Koi purchase nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="8"><div class="empty"><i class="fas fa-cart-flatbed"></i>No purchases</div></td></tr>';
     }
 
     function viewPurchase(id) {
@@ -429,7 +429,7 @@
                     '<button class="btn btn-icon" onclick="App.viewSale(\'' + x.id + '\')"><i class="fas fa-eye"></i></button> ' +
                     '<button class="btn btn-icon" onclick="App.delSale(\'' + x.id + '\')"><i class="fas fa-trash"></i></button>' +
                 '</td></tr>';
-        }).join('') : '<tr><td colspan="9"><div class="empty"><i class="fas fa-cash-register"></i>Abhi koi sale nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="9"><div class="empty"><i class="fas fa-cash-register"></i>No sales yet</div></td></tr>';
     }
 
     function viewSale(id) {
@@ -601,7 +601,7 @@
                 '<td class="num" style="font-weight:700;color:var(--danger)">' + CL.money(x.amount) + '</td>' +
                 '<td><button class="btn btn-icon" onclick="App.delExpense(\'' + x.id + '\')"><i class="fas fa-trash"></i></button></td>' +
             '</tr>';
-        }).join('') : '<tr><td colspan="7"><div class="empty"><i class="fas fa-receipt"></i>Koi expense nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="7"><div class="empty"><i class="fas fa-receipt"></i>No expenses</div></td></tr>';
     }
 
     function expenseForm() {
@@ -662,7 +662,7 @@
                     '<button class="btn btn-icon" onclick="App.editStaff(\'' + x.id + '\')"><i class="fas fa-pen"></i></button> ' +
                     '<button class="btn btn-icon" onclick="App.delStaff(\'' + x.id + '\')"><i class="fas fa-trash"></i></button>' +
                 '</td></tr>';
-        }).join('') : '<tr><td colspan="7"><div class="empty"><i class="fas fa-users"></i>Koi staff nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="7"><div class="empty"><i class="fas fa-users"></i>No staff</div></td></tr>';
 
         // salary history
         const sh = $('salaryBody');
@@ -670,7 +670,7 @@
             sh.innerHTML = s.salary.length ? s.salary.slice(0, 20).map(function (v) {
                 return '<tr><td>' + CL.esc(v.id) + '</td><td>' + CL.esc(v.staffName) + '</td><td>' + CL.esc(v.month) + '</td>' +
                     '<td>' + CL.esc(v.date) + '</td><td class="num" style="font-weight:700">' + CL.money(v.amount) + '</td></tr>';
-            }).join('') : '<tr><td colspan="5"><div class="empty"><i class="fas fa-money-check-dollar"></i>Abhi koi salary nahi di</div></td></tr>';
+            }).join('') : '<tr><td colspan="5"><div class="empty"><i class="fas fa-money-check-dollar"></i>No salaries paid yet</div></td></tr>';
         }
     }
 
@@ -793,7 +793,7 @@
             return '<tr><td>' + (i + 1) + '</td><td>' + CL.esc(t.name) + '</td><td class="num">' + t.qty + '</td>' +
                 '<td class="num">' + CL.money(t.sale) + '</td>' +
                 '<td class="num" style="color:var(--success);font-weight:700">' + CL.money(t.profit) + '</td></tr>';
-        }).join('') : '<tr><td colspan="5"><div class="empty"><i class="fas fa-chart-line"></i>Abhi koi sale nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="5"><div class="empty"><i class="fas fa-chart-line"></i>No sales yet</div></td></tr>';
 
         // supplier payables
         $('payBody').innerHTML = s.suppliers.map(function (x) {
@@ -894,7 +894,7 @@
         openModal('<i class="fas fa-barcode"></i> Scan Product',
             '<div id="qrReader" style="width:100%;min-height:260px;background:#000;border-radius:12px;overflow:hidden"></div>' +
             '<div id="scanMsg" style="margin-top:12px;font-size:13px;color:var(--muted)">Camera khul raha hai... product ka barcode dikhao.</div>' +
-            '<div class="form-group" style="margin-top:12px"><label>Ya Product ID type karein</label>' +
+            '<div class="form-group" style="margin-top:12px"><label>Or type the Product ID</label>' +
             '<input class="form-control" id="scanManual" placeholder="jaise P001" onkeydown="if(event.key===\'Enter\')App.scanUse(this.value)"></div>',
             '<button class="btn btn-light" onclick="App.closeModal()">Close</button>' +
             '<button class="btn btn-primary" onclick="App.scanUse(document.getElementById(\'scanManual\').value)"><i class="fas fa-check"></i> Use</button>');
@@ -911,13 +911,13 @@
                     },
                     function () { /* ignore frame errors */ }
                 ).catch(function (e) {
-                    $('scanMsg').textContent = 'Camera nahi khula: ' + e.message + ' — neeche ID type karein';
+                    $('scanMsg').textContent = 'Camera did not open: ' + e.message + ' — type the ID below';
                 });
             } catch (e) {
-                $('scanMsg').textContent = 'Scanner load nahi hua — ID type karein';
+                $('scanMsg').textContent = 'Scanner could not load — type the ID';
             }
         };
-        s.onerror = function () { $('scanMsg').textContent = 'Scanner library load nahi hui — ID type karein'; };
+        s.onerror = function () { $('scanMsg').textContent = 'Scanner library did not load — type the ID'; };
         document.head.appendChild(s);
     }
 
@@ -930,7 +930,7 @@
 
     function scanUse(code) {
         const p = CL.product(String(code).trim().toUpperCase());
-        if (!p) { toast('Product nahi mila: ' + code); return; }
+        if (!p) { toast('Product not found: ' + code); return; }
         stopScanner();
         closeModal();
         toast('Mila: ' + p.name);
@@ -981,7 +981,7 @@
                 '<td class="num">' + CL.money(m.purchase) + '</td>' +
                 '<td class="num" style="color:var(--danger)">' + CL.money(m.expense + m.salary) + '</td>' +
                 '<td class="num" style="font-weight:800;color:' + (m.net >= 0 ? 'var(--success)' : 'var(--danger)') + '">' + CL.money(m.net) + '</td></tr>';
-        }).join('') : '<tr><td colspan="8"><div class="empty"><i class="fas fa-calendar"></i>Koi data nahi</div></td></tr>';
+        }).join('') : '<tr><td colspan="8"><div class="empty"><i class="fas fa-calendar"></i>No data</div></td></tr>';
 
         const chart = $('monthChart');
         if (chart) {
@@ -1004,7 +1004,7 @@
     function whatsappLowStock() {
         const s = CL.load();
         const st = CL.stats();
-        if (!st.lowStockList.length) { toast('Sab stock theek hai — koi alert nahi'); return; }
+        if (!st.lowStockList.length) { toast('All stock is fine — no alerts'); return; }
 
         const lines = st.lowStockList.map(function (p) {
             return '• ' + p.name + ' (' + p.size + ') — ' + p.stock + ' pcs left  [' + p.id + ']';
@@ -1013,7 +1013,7 @@
         const msg = '*' + (s.config.shopName || 'Clothing Store') + ' — LOW STOCK ALERT*\n' +
             'Date: ' + new Date().toLocaleDateString('en-IN') + '\n\n' +
             lines + '\n\n' +
-            'Total ' + st.lowStockList.length + ' items reorder karne hain.\n' +
+            'Total ' + st.lowStockList.length + ' items need reorder.\n' +
             'Kripya maal mangwa lein. 🙏';
 
         const num = String(s.config.whatsapp || '').replace(/\D/g, '');
@@ -1053,7 +1053,7 @@
                         '<i class="fas ' + (online ? 'fa-cloud-arrow-up' : 'fa-cloud-slash') + '"></i></div>' +
                     '<div><div style="font-weight:700;font-size:15px">' + (online ? 'Connected' : 'Offline') + '</div>' +
                     '<div style="font-size:12.5px;color:var(--muted)">' +
-                        (online ? 'Project: apna-computer-ltd · Last sync: ' + last : (fb.error || 'Firestore available nahi')) +
+                        (online ? 'Project: apna-computer-ltd · Last sync: ' + last : (fb.error || 'Firestore unavailable')) +
                     '</div></div>' +
                 '</div>' +
                 '<div style="font-size:13px;color:var(--muted);line-height:1.8">' +

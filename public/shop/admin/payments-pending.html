@@ -70,7 +70,7 @@
             S.all(S.coll.transactions).then(function (r) {
                 rows = r.filter(function (t) { return due(t) > 0; }).sort(U.byDateDesc('transactionDate'));
                 render();
-            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+            }).catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function daysOld(dateStr) {
@@ -105,11 +105,11 @@
                     '<td class="t-right amount red">' + U.money(d) + '</td>' +
                     '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
                     '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" title="WhatsApp reminder" href="' +
-                    U.waLink(t.mobile, 'Namaste ' + t.customerName + ', aapka ' + U.money(d) + ' payment pending hai (' + (t.receiptNumber || '') + '). Kripya shop par aa kar payment karein. — ' + cfg.shopName) +
+                    U.waLink(t.mobile, 'Hello ' + t.customerName + ', your ' + U.money(d) + ' payment is pending (' + (t.receiptNumber || '') + '). Please visit the shop to pay. — ' + cfg.shopName) +
                     '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
                     '<a class="btn btn-ghost btn-sm btn-icon" title="Collect" href="/shop/admin/payments.html"><i class="fas fa-hand-holding-dollar"></i></a>' +
                     '</div></td></tr>';
-            }).join('') : '<tr><td colspan="8" class="empty-row">Koi pending payment nahi 🎉</td></tr>';
+            }).join('') : '<tr><td colspan="8" class="empty-row">No pending payments 🎉</td></tr>';
 
             document.getElementById('foot').innerHTML = list.length ?
                 '<tr style="background:#f8fafc"><td colspan="4" style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL (' + list.length + ')</td>' +

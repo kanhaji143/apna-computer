@@ -103,7 +103,7 @@
             S.all(S.coll.expenses).then(function (r) {
                 rows = r.sort(U.byDateDesc('expenseDate'));
                 render();
-            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+            }).catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function filtered() {
@@ -130,13 +130,13 @@
                     '<td class="t-right amount red">' + U.money(r.amount) + '</td>' +
                     '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
                     '<button class="edit"><i class="fas fa-pen"></i></button><button class="del"><i class="fas fa-trash"></i></button></div></td></tr>';
-            }).join('') : '<tr><td colspan="6" class="empty-row">Koi expense nahi mila.</td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">No expenses found.</td></tr>';
 
             b.querySelectorAll('tr[data-id]').forEach(function (tr) {
                 var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
                 tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
                 tr.querySelector('.del').addEventListener('click', function () {
-                    if (!confirm('Expense delete karein: ' + rec.title + '?')) return;
+                    if (!confirm('Delete expense: ' + rec.title + '?')) return;
                     S.remove(S.coll.expenses, rec.id).then(function () { U.toast('Expense delete ho gaya.'); load(); });
                 });
             });
@@ -172,7 +172,7 @@
             var p = editing ? S.set(S.coll.expenses, editing.id, data) : S.add(S.coll.expenses, data);
             p.then(function () {
                 U.closeModal('modal'); U.toast(editing ? 'Expense update ho gaya.' : 'Expense add ho gaya.'); load();
-            }).catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+            }).catch(function (err) { console.error(err); U.toast('Could not save.'); });
         }
 
         function exportCsv() {

@@ -24,7 +24,7 @@
             </div>
 
             <div class="filters">
-                <input class="grow" id="search" placeholder="🔍 Naam ya mobile se search karein...">
+                <input class="grow" id="search" placeholder="🔍 Search by name or mobile...">
             </div>
 
             <div class="card">
@@ -50,7 +50,7 @@
                         <div class="field"><label>Name *</label><input name="name" required placeholder="Customer ka naam"></div>
                         <div class="field"><label>Mobile *</label><input name="mobile" required type="tel" placeholder="10-digit mobile"></div>
                         <div class="field full"><label>Address</label><input name="address" placeholder="Gaon / mohalla / market"></div>
-                        <div class="field full"><label>Notes</label><textarea name="notes" placeholder="Koi khaas baat..."></textarea></div>
+                        <div class="field full"><label>Notes</label><textarea name="notes" placeholder="Any special notes..."></textarea></div>
                     </div>
                 </div>
                 <div class="modal-foot">
@@ -88,7 +88,7 @@
         function load() {
             Promise.all([S.all(S.coll.customers), S.all(S.coll.transactions)])
                 .then(function (r) { rows = r[0]; tx = r[1]; render(); })
-                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+                .catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function business(mobile) {
@@ -118,13 +118,13 @@
                     '<button class="edit" title="Edit"><i class="fas fa-pen"></i></button>' +
                     '<button class="del" title="Delete"><i class="fas fa-trash"></i></button>' +
                     '</div></td></tr>';
-            }).join('') : '<tr><td colspan="6" class="empty-row">Koi customer nahi mila.</td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">No customers found.</td></tr>';
 
             b.querySelectorAll('tr[data-id]').forEach(function (tr) {
                 var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
                 tr.querySelector('.edit').addEventListener('click', function () { openForm(rec); });
                 tr.querySelector('.del').addEventListener('click', function () {
-                    if (!confirm('Customer delete karein: ' + rec.name + '?')) return;
+                    if (!confirm('Delete customer: ' + rec.name + '?')) return;
                     S.remove(S.coll.customers, rec.id).then(function () { U.toast('Customer delete ho gaya.'); load(); });
                 });
             });
@@ -151,7 +151,7 @@
                 U.closeModal('modal');
                 U.toast(editing ? 'Customer update ho gaya.' : 'Customer add ho gaya.');
                 load();
-            }).catch(function (err) { console.error(err); U.toast('Save nahi hua.'); });
+            }).catch(function (err) { console.error(err); U.toast('Could not save.'); });
         }
 
         function exportCsv() {

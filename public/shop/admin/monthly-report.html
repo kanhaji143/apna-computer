@@ -89,7 +89,7 @@
         function load() {
             Promise.all([S.all(S.coll.transactions), S.all(S.coll.expenses)])
                 .then(function (r) { TX = r[0]; EX = r[1]; render(); })
-                .catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+                .catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function due(t) { return Math.max(0, U.num(t.totalAmount) - U.num(t.amountReceived)); }
@@ -133,7 +133,7 @@
                     '<td class="t-right amount green">' + U.money(d.inc) + '</td>' +
                     '<td class="t-right amount red">' + U.money(d.out) + '</td>' +
                     '<td class="t-right amount">' + U.money(d.inc - d.out) + '</td></tr>';
-            }).join('') : '<tr><td colspan="5" class="empty-row">Is month koi transaction nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">No transactions this month.</td></tr>';
 
             document.getElementById('dayFoot').innerHTML = dayList.length ?
                 '<tr style="background:#f8fafc"><td style="padding:10px 12px;font-weight:700;font-size:12px">TOTAL</td>' +
@@ -152,7 +152,7 @@
             document.getElementById('svcBody').innerHTML = svcRows.length ? svcRows.map(function (s) {
                 return '<tr><td class="small">' + U.esc(s.name) + '</td><td class="t-right">' + s.jobs + '</td>' +
                     '<td class="t-right amount green">' + U.money(s.amt) + '</td></tr>';
-            }).join('') : '<tr><td colspan="3" class="empty-row">Koi data nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">No data.</td></tr>';
 
             var methods = {};
             o.tx.forEach(function (t) {
@@ -163,7 +163,7 @@
             document.getElementById('methodBody').innerHTML = mKeys.length ? mKeys.map(function (k) {
                 return '<tr><td><span class="badge grey">' + U.esc(k) + '</span></td>' +
                     '<td class="t-right amount green">' + U.money(methods[k]) + '</td></tr>';
-            }).join('') : '<tr><td colspan="2" class="empty-row">Koi data nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="2" class="empty-row">No data.</td></tr>';
         }
 
         function printReport() {

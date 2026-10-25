@@ -2,7 +2,7 @@
    SCHOOL CRM — Shared Script (Excel ERP data driven)
    Path: public/crm/assets/crm.js
    Data: public/crm/data/crm-data.json
-   Edits localStorage me save hote hain (key: crm_store_v2)
+   Edits are saved in localStorage (key: crm_store_v2)
    ============================================================ */
 
 (function () {
@@ -725,7 +725,7 @@
 
     function whatsappFeeDue() {
         const list = feeDueList();
-        if (!list.length) { toast('Sab fees jama hai — koi due nahi'); return; }
+        if (!list.length) { toast('All fees collected — no dues'); return; }
         const cfg = config || {};
         const total = list.reduce(function (a, f) { return a + num(f['Outstanding']); }, 0);
         const topN = num(cfg.dueAlertCount) || 10;
@@ -739,7 +739,7 @@
             (list.length > topN ? '\n...aur ' + (list.length - topN) + ' students\n' : '') +
             '\n*Total Due: ' + money(total) + '*\n' +
             'Total ' + list.length + ' students ki fees baaki hai.\n' +
-            'Kripya follow-up karein. \uD83D\uDE4F';
+            'Please follow up. \uD83D\uDE4F';
 
         const num2 = String(cfg.whatsapp || '').replace(/\D/g, '');
         if (!num2) toast('Settings me WhatsApp number daalein (contact khud chunna padega)');
@@ -763,7 +763,7 @@
             document.execCommand('copy');
             document.body.removeChild(ta);
             toast(okMsg);
-        } catch (e) { toast('Copy fail \u2014 text manually select karein'); }
+        } catch (e) { toast('Copy fail \u2014 select the text manually'); }
     }
 
     function copyFeeDue() {
@@ -772,7 +772,7 @@
         const txt = list.slice(0, topN).map(function (f, i) {
             return (i + 1) + '. ' + f['Student Name'] + ' (' + clsSec(f) + ') \u2014 ' + money(f['Outstanding']);
         }).join('\n');
-        if (!txt) { toast('Koi due nahi'); return; }
+        if (!txt) { toast('No dues'); return; }
         copyText(txt, 'Due list copy ho gayi (' + Math.min(list.length, topN) + ' students)');
     }
 
@@ -825,7 +825,7 @@
     var MONTHS_FULL = ['April','May','June','July','August','September','October','November','December','January','February','March'];
     var PAY_MODES = ['Cash','UPI','Cheque','Bank Transfer','Card','NEFT','RTGS','IMPS'];
 
-    /* Excel me khaali Section cell "0" ban jata hai — usko saaf karo */
+    /* In Excel, an empty Section cell becomes "0" — clean it up */
     function normSection(v) {
         var s = String(v == null ? '' : v).trim();
         return (s === '0' || s === '-' || s === 'NA' || s === 'N/A') ? '' : s;
@@ -933,7 +933,7 @@
         }
         return null;
     }
-    /* Fee Register ka Collection / Outstanding / Status transactions se dobara nikalo.
+    /* Recompute Fee Register Collection / Outstanding / Status from transactions.
        Formula: Outstanding = Expected + Old Due - Collection  (Excel se verified) */
     function reapplyFeeStatus(adm) {
         var f = feeRowByAdm(adm);
@@ -981,7 +981,7 @@
         var s = studentFromLabel(cfVal('cfStudent'));
         var info = document.getElementById('cfStudentInfo');
         if (!s) {
-            if (info) info.innerHTML = '<span style="color:#e53935">Student list se chuno (\u2014 naam ya Adm No)</span>';
+            if (info) info.innerHTML = '<span style="color:#e53935">Pick from the student list (\u2014 name or Adm No)</span>';
             return;
         }
         var f = feeRowByAdm(s['Admission No']) || {};
@@ -1005,7 +1005,7 @@
         var ed = null;
         if (receiptNo) {
             ed = store.feeTransactions.filter(function (t) { return String(t['Receipt No']) === String(receiptNo); })[0];
-            if (!ed) { toast('Receipt nahi mila'); return; }
+            if (!ed) { toast('Receipt not found'); return; }
         }
         var students = store.students.slice().sort(function (a, b) { return num(a['Admission No']) - num(b['Admission No']); });
         var dl = students.map(function (s) { return '<option value="' + esc(studentLabel(s)) + '"></option>'; }).join('');
@@ -1030,7 +1030,7 @@
                 '<div class="modal-body">' +
                     '<div class="form-group fg-full"><label>Student *</label>' +
                         '<input type="text" class="form-control" id="cfStudent" list="cfStudentList" autocomplete="off" ' +
-                        'placeholder="Adm No ya naam type karein..." value="' + esc(stLabel) + '" oninput="CRM.cfPick()">' +
+                        'placeholder="Type Adm No or name..." value="' + esc(stLabel) + '" oninput="CRM.cfPick()">' +
                         '<datalist id="cfStudentList">' + dl + '</datalist>' +
                         '<div id="cfStudentInfo" class="cf-info"></div></div>' +
                     '<div class="form-group"><label>Fee Head *</label><select class="form-control" id="cfHead" onchange="CRM.cfHeadChange()">' + headOpts + '</select></div>' +
@@ -1069,14 +1069,14 @@
             cfPick();
             cfCalc(false);
         } else {
-            cfSet('cfMonth', MONTHS_FULL[(new Date().getMonth() + 9) % 12]);  // session April se shuru
+            cfSet('cfMonth', MONTHS_FULL[(new Date().getMonth() + 9) % 12]);  // session starts in April
             cfCalc(false);
         }
     }
 
     function cfSave(receiptNo) {
         var s = studentFromLabel(cfVal('cfStudent'));
-        if (!s) { toast('Student list se chuno'); return; }
+        if (!s) { toast('Pick from the student list'); return; }
         var head = cfVal('cfHead');
         var amt = num(cfVal('cfAmt'));
         if (!head) { toast('Fee Head chuno'); return; }
@@ -1137,8 +1137,8 @@
 
     function delReceipt(receiptNo) {
         var t = store.feeTransactions.filter(function (x) { return String(x['Receipt No']) === String(receiptNo); })[0];
-        if (!t) { toast('Receipt nahi mila'); return; }
-        if (!confirm('Receipt ' + receiptNo + ' delete karein?\n\n' + t['Student Name'] + ' \u2014 ' + t['Fee Head'] + ' \u2014 ' + money(t['Net Amount']))) return;
+        if (!t) { toast('Receipt not found'); return; }
+        if (!confirm('Delete receipt ' + receiptNo + '?\n\n' + t['Student Name'] + ' \u2014 ' + t['Fee Head'] + ' \u2014 ' + money(t['Net Amount']))) return;
         store.feeTransactions = store.feeTransactions.filter(function (x) { return String(x['Receipt No']) !== String(receiptNo); });
         reapplyFeeStatus(t['Admission No']);
         saveStore();
@@ -1167,7 +1167,7 @@
                     '<a class="btn btn-icon" target="_blank" rel="noopener" title="WhatsApp reminder" href="' + (function () {
                         var st = studentByAdm(d['Admission No']) || {};
                         var mob = st['Mobile'] || '';
-                        var msg = 'Namaste, ' + (d['Student Name'] || '') + ' ka ' + money(d['Balance']) + ' previous dues pending hai. Kripya jald payment karein. — Apna School';
+                        var msg = 'Hello, ' + (d['Student Name'] || '') + ' has previous dues of ' + money(d['Balance']) + ' pending. Please pay soon. — Apna School';
                         return mob ? 'https://wa.me/91' + String(mob).replace(/[^0-9]/g, '').replace(/^91/, '') + '?text=' + encodeURIComponent(msg) : '#';
                     })() + '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
                 '</td></tr>';
@@ -1183,7 +1183,7 @@
     function openLedger(adm) {
         var f = feeRowByAdm(adm);
         var st = studentByAdm(adm) || {};
-        if (!f) { toast('Is student ka fee record nahi mila'); return; }
+        if (!f) { toast('No fee record found for this student'); return; }
         var txns = txnsByAdm(adm);
         var dues = duesByAdm(adm);
 
@@ -1222,14 +1222,14 @@
                 '<td style="text-align:right"><strong>' + money(t['Net Amount']) + '</strong></td>' +
                 '<td><button class="btn btn-icon" title="Receipt Print" onclick="CRM.printReceipt(\'' + esc(t['Receipt No']) + '\')"><i class="fas fa-print"></i></button></td>' +
             '</tr>';
-        }).join('') : '<tr><td colspan="8" style="text-align:center;color:#888">Koi transaction nahi</td></tr>';
+        }).join('') : '<tr><td colspan="8" style="text-align:center;color:#888">No transactions</td></tr>';
 
         var dueRows = dues.length ? dues.map(function (d) {
             return '<tr><td>' + esc(d['Session']) + '</td><td style="text-align:right">' + money(d['Opening Due']) + '</td>' +
                    '<td style="text-align:right">' + money(d['Current Year Due']) + '</td>' +
                    '<td style="text-align:right">' + money(d['Received']) + '</td>' +
                    '<td style="text-align:right"><strong>' + money(d['Balance']) + '</strong></td></tr>';
-        }).join('') : '<tr><td colspan="5" style="text-align:center;color:#888">Koi previous due nahi</td></tr>';
+        }).join('') : '<tr><td colspan="5" style="text-align:center;color:#888">No previous dues</td></tr>';
 
         var totals =
             '<div class="lg-totals">' +
@@ -1272,7 +1272,7 @@
     /* ---------- PRINT (new window) ---------- */
     function openPrintWindow(title, bodyHtml) {
         var w = window.open('', '_blank', 'width=850,height=950');
-        if (!w) { toast('Popup block ho gaya — browser me popup allow karein'); return; }
+        if (!w) { toast('Popup blocked — allow popups in the browser'); return; }
         w.document.open();
         w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + esc(title) + '</title>' +
             '<style>' +
@@ -1343,14 +1343,14 @@
 
     function printReceipt(receiptNo) {
         var tx = store.feeTransactions.filter(function (t) { return String(t['Receipt No']) === String(receiptNo); })[0];
-        if (!tx) { toast('Receipt nahi mila'); return; }
+        if (!tx) { toast('Receipt not found'); return; }
         openPrintWindow('Receipt ' + receiptNo, receiptHTML(tx));
         toast('Receipt print ho raha hai...');
     }
 
     function ledgerHTML(adm) {
         var f = feeRowByAdm(adm), st = studentByAdm(adm) || {};
-        if (!f) return '<p>Student ledger nahi mila</p>';
+        if (!f) return '<p>Student ledger not found</p>';
         var txns = txnsByAdm(adm), dues = duesByAdm(adm);
         var m = meta || {};
         var headRows = FEE_HEADS.map(function (h) {
@@ -1464,7 +1464,7 @@
     }
 
     function printFeeStructure() {
-        if (!feeStruct || !feeStruct.classes || !feeStruct.classes.length) { toast('Fee structure load nahi hua'); return; }
+        if (!feeStruct || !feeStruct.classes || !feeStruct.classes.length) { toast('Could not load the fee structure'); return; }
         openPrintWindow('Fee Structure', feeStructureHTML());
         toast('Fee structure print ho raha hai...');
     }

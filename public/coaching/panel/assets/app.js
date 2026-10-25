@@ -171,13 +171,13 @@
             const rows = pendingInvoices.slice(0, 6).map(function (i) {
                 const st_ = s.students.filter(function (x) { return x.id === i.studentId; })[0] || {};
                 const ph = st_.parentPhone || st_.phone || '';
-                const msg = encodeURIComponent('Namaste, ' + i.student + ' ki fees Rs.' + i.total + ' due hai (invoice ' + i.no + '). Kripya jaldi payment karein. - ' + (s.config.shopName || 'Coaching'));
+                const msg = encodeURIComponent('Hello, ' + i.student + ' has a fee due of Rs.' + i.total + ' pending (invoice ' + i.no + '). Please pay soon. - ' + (s.config.shopName || 'Coaching'));
                 return '<tr><td><b>' + esc(i.student) + '</b><div class="small muted">' + esc(i.adm || '') + '</div></td>' +
                     '<td>' + esc(i.batch || '') + '</td><td>' + esc(fmtDate(i.dueDate)) + '</td>' +
                     '<td><b class="t-red">' + money(i.total) + '</b></td>' +
                     '<td>' + (ph ? '<a class="btn btn-light btn-sm" target="_blank" href="https://wa.me/91' + esc(ph) + '?text=' + msg + '"><i class="fab fa-whatsapp" style="color:#25D366"></i> Remind</a>' : '—') + '</td></tr>';
             }).join('');
-            dv.innerHTML = rows || '<tr><td colspan="5" class="muted">Koi pending fee nahi — good news!</td></tr>';
+            dv.innerHTML = rows || '<tr><td colspan="5" class="muted">No pending fees — good news!</td></tr>';
         }
 
         /* recent payments */
@@ -188,7 +188,7 @@
                     return '<tr><td>' + esc(fmtDate(p.date)) + '</td><td><b>' + esc(p.student) + '</b><div class="small muted">' + esc(p.adm || '') + '</div></td>' +
                         '<td>' + money(p.amount) + '</td><td><span class="chip">' + esc(p.mode) + '</span></td></tr>';
                 }).join('');
-            pv.innerHTML = rows || '<tr><td colspan="4" class="muted">Abhi koi payment nahi aayi</td></tr>';
+            pv.innerHTML = rows || '<tr><td colspan="4" class="muted">No payments received yet</td></tr>';
         }
 
         /* batches overview */
@@ -214,7 +214,7 @@
                 const present = recs.filter(function (r) { return r.status === 'Present'; }).length;
                 const total = recs.length;
                 const pct = total ? Math.round(present * 100 / total) : null;
-                return '<tr><td><b>' + esc(b.name) + '</b></td><td>' + (total ? present + '/' + total + ' (' + pct + '%)' : '<span class="muted">Mark nahi hua</span>') + '</td>' +
+                return '<tr><td><b>' + esc(b.name) + '</b></td><td>' + (total ? present + '/' + total + ' (' + pct + '%)' : '<span class="muted">Not marked</span>') + '</td>' +
                     '<td>' + (total ? (pct >= 75 ? '<span class="chip chip-green">Good</span>' : '<span class="chip chip-red">Low</span>') : '<span class="chip chip-amber">Pending</span>') + '</td></tr>';
             }).join('');
             av.innerHTML = rows;
@@ -274,7 +274,7 @@
                 const b = s.batches.filter(function (bb) { return bb.id === x.batchId; })[0];
                 const ph = x.parentPhone || x.phone || '';
                 const due = Number(x.feeTotal || 0) - Number(x.feePaid || 0);
-                const msg = encodeURIComponent('Namaste, ' + x.name + ' (' + (x.adm || '') + ') ki fees:\nTotal: Rs.' + x.feeTotal + '\nPaid: Rs.' + x.feePaid + '\nPending: Rs.' + due + '\nDue date: ' + fmtDate(x.dueDate) + '\nKripya payment jama karein. - ' + (s.config.shopName || 'Coaching'));
+                const msg = encodeURIComponent('Hello, ' + x.name + ' (' + (x.adm || '') + ') — fee details:\nTotal: Rs.' + x.feeTotal + '\nPaid: Rs.' + x.feePaid + '\nPending: Rs.' + due + '\nDue date: ' + fmtDate(x.dueDate) + '\nKripya payment jama karein. - ' + (s.config.shopName || 'Coaching'));
                 const actions = (canCRUD(u)
                     ? '<button class="btn btn-light btn-sm" title="Edit" onclick="App.editStudent(\'' + x.id + '\')"><i class="fas fa-pen"></i></button> ' +
                       '<button class="btn btn-light btn-sm" title="Delete" onclick="App.delStudent(\'' + x.id + '\')"><i class="fas fa-trash" style="color:var(--danger)"></i></button> '
@@ -291,7 +291,7 @@
                     '</td></tr>';
             }).join('');
         const body = $('sBody');
-        if (body) body.innerHTML = rows || '<tr><td colspan="7" class="muted">Students na mile (search clear karein ya Add karein)</td></tr>';
+        if (body) body.innerHTML = rows || '<tr><td colspan="7" class="muted">No students found (clear the search or add one)</td></tr>';
     }
 
     function recalcBatchCounts(s) {
@@ -353,13 +353,13 @@
 
     function validateStudent(s, d) {
         const errs = [];
-        if (!d.name) errs.push('Name bharein');
+        if (!d.name) errs.push('Fill in the name');
         if (!d.batchId) errs.push('Batch chunein');
-        if (d.feeTotal === '' || isNaN(Number(d.feeTotal))) errs.push('Total Fee sahi bharein');
+        if (d.feeTotal === '' || isNaN(Number(d.feeTotal))) errs.push('Enter a valid Total Fee');
         [d.phone, d.parentPhone].forEach(function (p) {
             if (p && !/^\d{10}$/.test(String(p))) errs.push('Phone 10 digit hona chahiye (' + p + ')');
         });
-        if (d.feePaid !== '' && Number(d.feePaid) > Number(d.feeTotal || 0)) errs.push('Paid > Total nahi ho sakta');
+        if (d.feePaid !== '' && Number(d.feePaid) > Number(d.feeTotal || 0)) errs.push('Paid cannot exceed Total');
         return errs;
     }
 

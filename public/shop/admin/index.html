@@ -16,7 +16,7 @@
         <main class="content">
 
             <div class="page-head">
-                <div><h2>Namaste, <span id="helloName">Admin</span> 👋</h2><p>Aaj ke kaam ka quick overview.</p></div>
+                <div><h2>Hello, <span id="helloName">Admin</span> 👋</h2><p>Aaj ke kaam ka quick overview.</p></div>
                 <div class="actions">
                     <a class="btn btn-ghost btn-sm" href="/shop/admin/service-requests.html"><i class="fas fa-inbox"></i> Requests</a>
                     <a class="btn btn-primary btn-sm" href="/shop/admin/transactions.html"><i class="fas fa-plus"></i> New Transaction</a>
@@ -116,7 +116,7 @@
                     render();
                 }).catch(function (e) {
                     console.error(e);
-                    U.toast('Data load nahi hua.');
+                    U.toast('Could not load data.');
                 });
         }
 
@@ -171,9 +171,9 @@
                 return '<tr><td><b>' + U.esc(t.customerName) + '</b><span class="subtle">' + U.esc(t.mobile || '') + '</span></td>' +
                     '<td class="t-right amount red">' + U.money(due) + '</td>' +
                     '<td class="t-right"><a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" href="' +
-                    U.waLink(t.mobile, 'Namaste ' + t.customerName + ', aapka ' + U.money(due) + ' payment pending hai. — Apna Online Center') +
+                    U.waLink(t.mobile, 'Hello ' + t.customerName + ', your ' + U.money(due) + ' payment is pending. — Apna Online Center') +
                     '" title="WhatsApp reminder"><i class="fab fa-whatsapp" style="color:#25D366"></i></a></td></tr>';
-            }).join('') : '<tr><td colspan="3" class="empty-row">Koi pending payment nahi 🎉</td></tr>';
+            }).join('') : '<tr><td colspan="3" class="empty-row">No pending payments 🎉</td></tr>';
 
             // recent
             var rb = document.getElementById('recentBody');
@@ -182,7 +182,7 @@
                 return '<tr><td class="t-nowrap"><b>' + U.esc(t.receiptNumber || '—') + '</b><span class="subtle">' + U.fmtDate(t.transactionDate) + '</span></td>' +
                     '<td>' + U.esc(t.customerName) + '</td><td class="small muted">' + U.esc(t.service) + '</td>' +
                     '<td class="t-right amount">' + U.money(t.totalAmount) + '</td><td>' + statusBadge(t.paymentStatus) + '</td></tr>';
-            }).join('') : '<tr><td colspan="5" class="empty-row">Abhi koi transaction nahi.</td></tr>';
+            }).join('') : '<tr><td colspan="5" class="empty-row">No transactions yet.</td></tr>';
 
             // requests
             var open = RQ.filter(function (r) { return r.status !== 'completed' && r.status !== 'rejected'; })
@@ -192,7 +192,7 @@
                     '<div style="display:flex;gap:8px;align-items:center"><b style="font-size:12.5px">' + U.esc(r.customerName) + '</b>' +
                     '<span class="badge blue" style="margin-left:auto">' + U.esc(String(r.status || '').replace(/_/g, ' ')) + '</span></div>' +
                     '<div class="subtle">' + U.esc(r.serviceName) + ' · ' + U.esc(r.mobile) + '</div></div>';
-            }).join('') : '<p class="small muted">Koi open request nahi.</p>';
+            }).join('') : '<p class="small muted">No open requests.</p>';
         }
     })();
     </script>

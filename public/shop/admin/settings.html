@@ -16,7 +16,7 @@
         <main class="content">
 
             <div class="page-head">
-                <div><h2>Settings</h2><p>Shop ki details — website aur receipt par dikhti hain.</p></div>
+                <div><h2>Settings</h2><p>Shop details — shown on the website and receipts.</p></div>
             </div>
 
             <div class="grid-2" style="grid-template-columns:1.2fr 1fr;align-items:start">
@@ -43,7 +43,7 @@
                     <div class="card" style="margin-bottom:14px">
                         <div class="card-head"><h3><i class="fas fa-circle-info" style="color:var(--accent)"></i> Demo Login</h3></div>
                         <div class="card-body">
-                            <p class="small muted" style="margin-bottom:10px">Ye ek demo module hai — login client-side hai. Production me Firebase Auth + role-based rules lagega.</p>
+                            <p class="small muted" style="margin-bottom:10px">This is a demo module — login is client-side. Production would use Firebase Auth with role-based rules.</p>
                             <div class="small" style="display:grid;gap:6px">
                                 <div style="display:flex;justify-content:space-between"><span class="muted">Email</span><b>admin@apna.com</b></div>
                                 <div style="display:flex;justify-content:space-between"><span class="muted">Password</span><b>admin123</b></div>
@@ -96,7 +96,7 @@
             data.currency = '₹';
             S.set(S.coll.config, 'app', data).then(function () {
                 U.toast('Settings save ho gayi.');
-            }).catch(function (err) { console.error(err); U.toast('Save nahi hui.'); });
+            }).catch(function (err) { console.error(err); U.toast('Could not save.'); });
         }
 
         function loadCounts() {

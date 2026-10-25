@@ -80,7 +80,7 @@
             S.all(S.coll.enquiries).then(function (r) {
                 rows = r.sort(U.byDateDesc('createdAt'));
                 render();
-            }).catch(function (e) { console.error(e); U.toast('Data load nahi hua.'); });
+            }).catch(function (e) { console.error(e); U.toast('Could not load data.'); });
         }
 
         function render() {
@@ -103,15 +103,15 @@
                     '<td>' + badge(r.status) + '</td>' +
                     '<td class="t-right"><div class="q-actions" style="justify-content:flex-end">' +
                     '<button class="view" title="Details"><i class="fas fa-eye"></i></button>' +
-                    '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" title="WhatsApp" href="' + U.waLink(r.mobile, 'Namaste ' + r.customerName + ', aapki ticket enquiry (' + (r.enquiryId || '') + ') mil gayi hai. — Apna Online Center') + '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
+                    '<a class="btn btn-ghost btn-sm btn-icon" target="_blank" rel="noopener" title="WhatsApp" href="' + U.waLink(r.mobile, 'Hello ' + r.customerName + ', aapki ticket enquiry (' + (r.enquiryId || '') + ') mil gayi hai. — Apna Online Center') + '"><i class="fab fa-whatsapp" style="color:#25D366"></i></a>' +
                     '<button class="del" title="Delete"><i class="fas fa-trash"></i></button></div></td></tr>';
-            }).join('') : '<tr><td colspan="6" class="empty-row">Koi enquiry nahi mili.</td></tr>';
+            }).join('') : '<tr><td colspan="6" class="empty-row">No enquiries found.</td></tr>';
 
             b.querySelectorAll('tr[data-id]').forEach(function (tr) {
                 var rec = rows.filter(function (x) { return x.id === tr.getAttribute('data-id'); })[0];
                 tr.querySelector('.view').addEventListener('click', function () { openDetail(rec); });
                 tr.querySelector('.del').addEventListener('click', function () {
-                    if (!confirm('Enquiry delete karein?')) return;
+                    if (!confirm('Delete enquiry?')) return;
                     S.remove(S.coll.enquiries, rec.id).then(function () { U.toast('Enquiry delete ho gayi.'); load(); });
                 });
             });
@@ -145,7 +145,7 @@
                 adminNotes: document.getElementById('adminNotes').value.trim(),
                 updatedAt: new Date().toISOString()
             }).then(function () { U.closeModal('modal'); U.toast('Enquiry update ho gayi.'); load(); })
-              .catch(function (err) { console.error(err); U.toast('Update nahi hua.'); });
+              .catch(function (err) { console.error(err); U.toast('Could not update.'); });
         }
 
         function exportCsv() {

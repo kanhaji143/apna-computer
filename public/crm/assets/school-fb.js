@@ -2,13 +2,13 @@
    SCHOOL CRM — Firestore loader (apna-computer-ltd)
    Path: public/crm/assets/school-fb.js
 
-   Data Firestore se load hota hai taaki sabhi devices pe same ho.
+   Data is loaded from Firestore so it is the same on all devices.
    Collections: sc_students, sc_fee_register, sc_fee_transactions,
    sc_employees, sc_transport, sc_previous_dues, sc_expenses,
    sc_config (meta / school / fee_struct / extra)
 
-   Note: Firestore field names me dot allowed nahi, isliye upload ke
-   waqt '.' → '_' kiya gaya tha. Yahan '_' → '.' wapas kar rahe hain.
+   Note: dots are not allowed in Firestore field names, so during upload
+   they were converted '.' → '_'. Here we convert '_' → '.' back.
    ============================================================ */
 
 (function () {

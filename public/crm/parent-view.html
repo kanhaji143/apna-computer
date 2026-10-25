@@ -31,11 +31,11 @@
             </div>
 
             <div class="pv-search">
-                <input type="text" id="pvAdm" placeholder="Admission No enter karein..." onkeydown="if(event.key==='Enter') PV.load()">
+                <input type="text" id="pvAdm" placeholder="Enter Admission No..." onkeydown="if(event.key==='Enter') PV.load()">
                 <button class="btn btn-primary" onclick="PV.load()"><i class="fas fa-search"></i> Search</button>
             </div>
 
-            <div id="pvResult"><p class="small muted">Admission number enter karke search karein.</p></div>
+            <div id="pvResult"><p class="small muted">Enter an admission number to search.</p></div>
         </div>
     </div>
 </div>
@@ -56,10 +56,10 @@
 
     PV.load = function () {
         var adm = document.getElementById('pvAdm').value.trim();
-        if (!adm) { alert('Admission no enter karein'); return; }
+        if (!adm) { alert('Enter the admission no'); return; }
         var st = null;
         (store.students || []).forEach(function (s) { if (String(s['Admission No']) === adm) st = s; });
-        if (!st) { document.getElementById('pvResult').innerHTML = '<p class="small muted">Student nahi mila: ' + esc(adm) + '</p>'; return; }
+        if (!st) { document.getElementById('pvResult').innerHTML = '<p class="small muted">Student not found: ' + esc(adm) + '</p>'; return; }
 
         var fee = null;
         (store.feeRegister || []).forEach(function (f) { if (String(f['Admission No']) === adm) fee = f; });
