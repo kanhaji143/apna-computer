@@ -274,7 +274,7 @@
                 const b = s.batches.filter(function (bb) { return bb.id === x.batchId; })[0];
                 const ph = x.parentPhone || x.phone || '';
                 const due = Number(x.feeTotal || 0) - Number(x.feePaid || 0);
-                const msg = encodeURIComponent('Hello, ' + x.name + ' (' + (x.adm || '') + ') — fee details:\nTotal: Rs.' + x.feeTotal + '\nPaid: Rs.' + x.feePaid + '\nPending: Rs.' + due + '\nDue date: ' + fmtDate(x.dueDate) + '\nKripya payment jama karein. - ' + (s.config.shopName || 'Coaching'));
+                const msg = encodeURIComponent('Hello, ' + x.name + ' (' + (x.adm || '') + ') — fee details:\nTotal: Rs.' + x.feeTotal + '\nPaid: Rs.' + x.feePaid + '\nPending: Rs.' + due + '\nDue date: ' + fmtDate(x.dueDate) + '\nPlease deposit the payment. - ' + (s.config.shopName || 'Coaching'));
                 const actions = (canCRUD(u)
                     ? '<button class="btn btn-light btn-sm" title="Edit" onclick="App.editStudent(\'' + x.id + '\')"><i class="fas fa-pen"></i></button> ' +
                       '<button class="btn btn-light btn-sm" title="Delete" onclick="App.delStudent(\'' + x.id + '\')"><i class="fas fa-trash" style="color:var(--danger)"></i></button> '

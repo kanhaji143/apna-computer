@@ -1014,7 +1014,7 @@
             'Date: ' + new Date().toLocaleDateString('en-IN') + '\n\n' +
             lines + '\n\n' +
             'Total ' + st.lowStockList.length + ' items need reorder.\n' +
-            'Kripya maal mangwa lein. 🙏';
+            'Please reorder the stock. 🙏';
 
         const num = String(s.config.whatsapp || '').replace(/\D/g, '');
         const url = 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
