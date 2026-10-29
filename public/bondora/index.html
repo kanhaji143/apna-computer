@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bondora — Privacy-first relationships | Apna Software Hub</title>
+    <meta name="description" content="Bondora is a privacy-first, consent-led relationship preview by Apna Software Hub.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/hub.css">
+    <style>
+        .bondora-page { min-height: 100vh; background: linear-gradient(135deg, #fff5f7 0%, #f7f1ff 55%, #eef4ff 100%); color: #212121; }
+        .bondora-wrap { max-width: 1120px; margin: 0 auto; padding: 72px 24px 96px; }
+        .bondora-card { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; background: rgba(255,255,255,.88); border: 1px solid #eadbe2; border-radius: 28px; padding: clamp(28px, 6vw, 72px); box-shadow: 0 24px 70px rgba(80, 43, 70, .12); }
+        .bondora-kicker { color: #a52b62; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+        .bondora-card h1 { margin: 14px 0 18px; font-size: clamp(38px, 6vw, 68px); line-height: 1.02; letter-spacing: -.05em; }
+        .bondora-card h1 span { color: #b83268; }
+        .bondora-card p { max-width: 600px; color: #5f6368; font-size: 18px; line-height: 1.7; }
+        .bondora-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+        .bondora-btn { display: inline-flex; align-items: center; border-radius: 10px; padding: 13px 20px; text-decoration: none; font-weight: 700; background: #b83268; color: #fff; }
+        .bondora-btn.alt { background: #fff; color: #a52b62; border: 1px solid #e3c7d3; }
+        .bondora-features { display: grid; gap: 14px; }
+        .bondora-feature { border-radius: 16px; padding: 18px; background: #fff; border: 1px solid #f0e2e8; }
+        .bondora-feature strong { display: block; margin-bottom: 5px; }
+        .bondora-feature span { color: #6c6870; font-size: 14px; line-height: 1.5; }
+        .bondora-note { margin: 22px auto 0; max-width: 900px; color: #6c6870; text-align: center; font-size: 13px; }
+        @media (max-width: 760px) { .bondora-card { grid-template-columns: 1fr; gap: 28px; } .bondora-wrap { padding-top: 36px; } }
+    </style>
+</head>
+<body class="bondora-page">
+    <header id="hubHeader"></header>
+    <main class="bondora-wrap">
+        <section class="bondora-card">
+            <div>
+                <div class="bondora-kicker">A new Apna Software Hub preview</div>
+                <h1>Relationships with <span>clear intent.</span></h1>
+                <p>Bondora is a privacy-first, consent-led relationship experience. Discover people thoughtfully, match mutually and keep safety controls free for everyone.</p>
+                <div class="bondora-actions">
+                    <a class="bondora-btn" href="https://github.com/kanhaji143/Relationship" target="_blank" rel="noopener">View product project</a>
+                    <a class="bondora-btn alt" href="/">Back to Hub</a>
+                </div>
+            </div>
+            <div class="bondora-features" aria-label="Bondora highlights">
+                <div class="bondora-feature"><strong>Privacy by default</strong><span>Broad location, controlled visibility and privacy center controls.</span></div>
+                <div class="bondora-feature"><strong>Mutual matches only</strong><span>Messages are available only to participants in a mutual match.</span></div>
+                <div class="bondora-feature"><strong>Safety is free</strong><span>Block, report, unmatch and moderation protections are never paywalled.</span></div>
+                <div class="bondora-feature"><strong>Development preview</strong><span>Advanced features and billing remain intentionally paused for now.</span></div>
+            </div>
+        </section>
+        <p class="bondora-note">Bondora is an independent product preview within Apna Software Hub. Existing Hub products remain unchanged.</p>
+    </main>
+    <footer id="hubFooter"></footer>
+    <script src="/assets/js/hub.js"></script>
+</body>
+</html>

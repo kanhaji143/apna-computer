@@ -9,6 +9,7 @@ One Firebase project hosting three things:
 | 🌐 Apna Multisoftware Hub | `/` | Education marketplace landing page (courses, categories, products) |
 | 🏫 Apna School CRM | `/crm/` | Complete school management — students, fees, dues, reports |
 | 👕 Apna Clothing CRM | `/clothing/` | Garment shop management — sales, purchases, stock, staff |
+| 💗 Bondora | `/bondora/` | Privacy-first relationship product preview |
 
 ---
 

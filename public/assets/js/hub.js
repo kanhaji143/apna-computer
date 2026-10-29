@@ -23,6 +23,7 @@
             { label: 'School ERP + CRM', href: '/crm/', live: true },
             { label: 'Apnivo Business (Seller CRM)', href: '/clothing/panel/', live: true },
             { label: 'Apnivo Fashion (Store)', href: '/clothing/store/', live: true },
+            { label: 'Bondora — Relationship Preview', href: '/bondora/', live: true },
             { label: 'Blog (Tutorials)', href: '/blog/', live: true },
             { label: 'Online Courses (LMS)', href: '/contact.html?module=courses', live: false },
             { label: 'Coaching ERP', href: '/contact.html?module=coaching', live: false },
@@ -124,6 +125,7 @@
                     '<a href="/crm/">School ERP + CRM</a>' +
                     '<a href="/clothing/panel/">Apnivo Business (Seller CRM)</a>' +
                     '<a href="/clothing/store/">Apnivo Fashion (Store)</a>' +
+                    '<a href="/bondora/">Bondora — Relationship Preview</a>' +
                     '<a href="/blog/">Blog (Tutorials)</a>' +
                     '<a href="/contact.html?module=realestate">Real Estate Portal</a>' +
                 '</div>' +
