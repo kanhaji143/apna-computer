@@ -24,7 +24,24 @@
         .bondora-feature strong { display: block; margin-bottom: 5px; }
         .bondora-feature span { color: #6c6870; font-size: 14px; line-height: 1.5; }
         .bondora-note { margin: 22px auto 0; max-width: 900px; color: #6c6870; text-align: center; font-size: 13px; }
-        @media (max-width: 760px) { .bondora-card { grid-template-columns: 1fr; gap: 28px; } .bondora-wrap { padding-top: 36px; } }
+        .bondora-section { max-width: 1120px; margin: 26px auto 0; padding: 30px 0; }
+        .bondora-section h2 { margin-bottom: 10px; font-size: clamp(25px, 4vw, 38px); letter-spacing: -.03em; }
+        .bondora-section-intro { max-width: 650px; color: #6c6870; line-height: 1.7; }
+        .bondora-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+        .bondora-tile { background: rgba(255,255,255,.82); border: 1px solid #eadbe2; border-radius: 18px; padding: 22px; }
+        .bondora-tile .icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; margin-bottom: 14px; background: #fde8f0; color: #b83268; font-size: 20px; }
+        .bondora-tile h3 { margin-bottom: 7px; font-size: 17px; }
+        .bondora-tile p { color: #6c6870; font-size: 14px; line-height: 1.6; }
+        .bondora-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 22px; }
+        .bondora-step { padding: 18px; border-top: 3px solid #c85a84; background: rgba(255,255,255,.7); border-radius: 0 0 14px 14px; }
+        .bondora-step b { color: #b83268; font-size: 13px; }
+        .bondora-step h3 { margin: 8px 0 5px; font-size: 16px; }
+        .bondora-step p { color: #6c6870; font-size: 13px; line-height: 1.5; }
+        .bondora-cta { margin-top: 34px; border-radius: 22px; padding: 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; background: #43243d; color: #fff; }
+        .bondora-cta h2 { margin: 0 0 7px; font-size: 25px; }
+        .bondora-cta p { color: #eadce7; line-height: 1.5; font-size: 14px; }
+        .bondora-cta .bondora-btn { background: #fff; color: #8d2858; white-space: nowrap; }
+        @media (max-width: 760px) { .bondora-card { grid-template-columns: 1fr; gap: 28px; } .bondora-wrap { padding-top: 36px; } .bondora-grid, .bondora-steps { grid-template-columns: 1fr; } .bondora-cta { display: block; } .bondora-cta .bondora-btn { margin-top: 18px; } }
     </style>
 </head>
 <body class="bondora-page">
@@ -46,6 +63,31 @@
                 <div class="bondora-feature"><strong>Safety is free</strong><span>Block, report, unmatch and moderation protections are never paywalled.</span></div>
                 <div class="bondora-feature"><strong>Development preview</strong><span>Advanced features and billing remain intentionally paused for now.</span></div>
             </div>
+        </section>
+        <section class="bondora-section">
+            <h2>Designed for thoughtful connections</h2>
+            <p class="bondora-section-intro">Bondora brings the useful parts of modern relationship products together without compromising consent, privacy or safety.</p>
+            <div class="bondora-grid">
+                <article class="bondora-tile"><div class="icon">♥</div><h3>Clear intent</h3><p>Share what you are looking for so conversations begin with honesty instead of assumptions.</p></article>
+                <article class="bondora-tile"><div class="icon">⌕</div><h3>Thoughtful discovery</h3><p>Use profile details, prompts and preferences to find people who fit your direction.</p></article>
+                <article class="bondora-tile"><div class="icon">▣</div><h3>Consent-led chat</h3><p>Private conversations are available only after a mutual match between both participants.</p></article>
+                <article class="bondora-tile"><div class="icon">◉</div><h3>Privacy center</h3><p>Review visibility and account-data controls, including export and deletion requests.</p></article>
+                <article class="bondora-tile"><div class="icon">!</div><h3>Safety tools</h3><p>Block, report and unmatch whenever something feels wrong. Safety is never a premium feature.</p></article>
+                <article class="bondora-tile"><div class="icon">⌁</div><h3>India-first approach</h3><p>Broad location and language-aware profiles help people connect without exposing precise addresses.</p></article>
+            </div>
+        </section>
+        <section class="bondora-section">
+            <h2>How Bondora works</h2>
+            <div class="bondora-steps">
+                <div class="bondora-step"><b>01</b><h3>Create your profile</h3><p>Tell people about your intent, interests and conversation style.</p></div>
+                <div class="bondora-step"><b>02</b><h3>Discover thoughtfully</h3><p>Review compatible profiles with privacy-friendly location details.</p></div>
+                <div class="bondora-step"><b>03</b><h3>Match mutually</h3><p>A connection becomes a match only when interest is mutual.</p></div>
+                <div class="bondora-step"><b>04</b><h3>Talk safely</h3><p>Chat privately, keep boundaries clear and use safety tools when needed.</p></div>
+            </div>
+        </section>
+        <section class="bondora-cta">
+            <div><h2>Want to know more about Bondora?</h2><p>Send us your feedback while the product preview is being prepared for the next stage.</p></div>
+            <a class="bondora-btn" href="/contact.html?module=bondora">Share feedback</a>
         </section>
         <p class="bondora-note">Bondora is an independent product preview within Apna Software Hub. Existing Hub products remain unchanged.</p>
     </main>
